@@ -7,14 +7,22 @@ usado pelo painel administrativo e pelo formulário de contato).
 
 - `index.html` — Home (hero + resumo de cada seção, com links "saiba mais" pra página dedicada)
 - `sobre.html` — Institucional (história + como trabalhamos + diferenciais, tudo em uma página só)
-- `linhas.html` — Linhas de produto (com âncoras internas `#embalagens`, `#comodato`, `#indicadores`, `#suporte`)
-- `depoimentos.html` — Depoimentos (5 depoimentos, cada um com placeholder de foto)
+- `linhas.html` — Produtos (com âncoras internas `#embalagens`, `#indicadores`, `#suporte`; o item
+  "Equipamentos em comodato" agora aponta pra sua própria página, `phm-medcontrol.html`)
+- `phm-medcontrol.html` — Página dedicada ao PHM MedControl (esterilizador a plasma por peróxido de
+  hidrogênio): o que é, como funciona (5 fases), materiais compatíveis/incompatíveis, parâmetros
+  críticos, benefícios, comparativo com outros métodos de esterilização e conformidade regulatória
+- `depoimentos.html` — Depoimentos (5 depoimentos com placeholder de foto) + seção de logos de
+  parceiros/clientes (mesmo padrão da home)
 - `contato.html` — Contato (caixa de WhatsApp, redes sociais, endereço, mapa real do Google Maps,
   **formulário funcional** — grava lead direto no Firestore)
-- `blog.html` — Listagem do blog (4 artigos placeholder, ainda estáticos)
-- `blog-1.html` a `blog-4.html` — Artigos individuais estáticos, com navegação Anterior/Próximo
+- `blog.html` — Listagem do blog, **agora dinâmica**: busca direto no Firestore os artigos
+  com `status: "publicado"` criados pelo painel administrativo
+- `artigo.html` — Template único de artigo (dinâmico): lê `?id=` na URL, busca o artigo
+  correspondente no Firestore e monta a página, com navegação Anterior/Próximo calculada
+  a partir da lista de publicados
 
-Menu (nesta ordem): **Linhas, Sobre, Depoimentos, Blog, Contato**.
+Menu (nesta ordem): **Produtos, Sobre, Depoimentos, Blog, Contato**.
 
 ## Painel administrativo (`admin.html`)
 
@@ -27,7 +35,9 @@ Painel com login (Firebase Authentication) para gerenciar:
   excluir, exportar CSV, contador de mensagens não lidas na aba, e paginação ("carregar mais")
   — mesma estrutura do painel do Plane Aviation.
 - **Artigos** — criar, editar, arquivar/reativar e excluir artigos do blog, com capa,
-  categoria, resumo, conteúdo e status (`rascunho` / `publicado` / `arquivado`).
+  categoria, resumo, conteúdo e status (`rascunho` / `publicado` / `arquivado`). Assim que
+  um artigo é marcado como **publicado**, ele aparece automaticamente em `blog.html` — não
+  precisa mexer em nenhum arquivo HTML.
 
 ### Formulário de contato → Mensagens no painel
 
@@ -67,21 +77,19 @@ pra WebP) direto no Firestore (`IMAGE_MODE: "inline"` em `js/firebase-config.js`
 Se e quando você migrar pro plano Blaze, troque para `IMAGE_MODE: "storage"` e as
 capas WebP passam a subir pro Firebase Storage normalmente.
 
-### Importante: o blog público ainda é estático
+### Blog agora é 100% dinâmico
 
-Por enquanto, os artigos criados no painel ficam salvos no Firestore (coleção
-`articles`), mas `blog.html` e `blog-1.html`...`blog-4.html` continuam sendo
-arquivos estáticos — não estão lendo do Firestore ainda. Quando você quiser,
-dá pra conectar o `blog.html` pra buscar e listar os artigos publicados
-direto do Firestore (as regras em `firestore.rules` já preveem essa leitura
-pública). É só avisar quando quiser esse próximo passo.
+`blog.html` e `artigo.html` buscam os artigos direto do Firestore (coleção `articles`,
+filtrando por `status: "publicado"`). Não existem mais arquivos estáticos de artigo —
+tudo é criado, editado e publicado pelo painel. As regras em `firestore.rules` já
+liberam a leitura pública apenas dos artigos publicados.
 
 ## Arquivos de suporte
 
 - `styles.css` — todos os estilos do site público (paleta, tipografia, componentes)
 - `script.js` — só atualiza o ano no rodapé do site público
 - `logo.svg` / `logo-branco.svg` — logos (colorido no header, branco no rodapé)
-- `hero-nurse.png` / `hero-bg.jpg` — imagens do hero da home
+- `hero-nurse.webp` / `hero-bg.jpg` — imagens do hero da home
 - `js/firebase-config.js` — configuração do Firebase usada pelo `admin.html` e pelo
   formulário de `contato.html` (já preenchida com as chaves do projeto `medcontrol-e07c2`)
 - `firestore.rules` — regras de segurança pra colar no Firebase Console
@@ -114,8 +122,7 @@ depois que Authentication e Firestore estiverem ativados no Firebase Console.
 
 ## Pendências / observações
 
-- `hero-nurse.png` está com 21MB — vale comprimir antes de subir pra produção
+- `hero-nurse.webp` está com 21MB — vale comprimir antes de subir pra produção
 - Placeholders `[imagem]`, `[vídeo]`, `[logo]`, `[mapa]` — substituir por mídia real quando disponível
 - O painel precisa das chaves do Firebase preenchidas em `js/firebase-config.js` pra funcionar
   (já estão preenchidas — falta só ativar Authentication + Firestore no console)
-- O blog público ainda não lê os artigos do Firestore (ver seção acima)
