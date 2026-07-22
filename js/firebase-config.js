@@ -32,18 +32,35 @@
     firebase.initializeApp(firebaseConfig);
   }
 
+  // Nem toda página carrega todos os SDKs do Firebase — páginas públicas
+  // (blog.html, artigo.html, contato.html) só carregam app + firestore,
+  // sem auth nem storage. Por isso cada recurso só é inicializado se o
+  // SDK correspondente estiver de fato presente na página.
+  function safeAuth() {
+    if (!isConfigured || typeof firebase.auth !== "function") return null;
+    try { return firebase.auth(); } catch (e) { return null; }
+  }
+  function safeFirestore() {
+    if (!isConfigured || typeof firebase.firestore !== "function") return null;
+    try { return firebase.firestore(); } catch (e) { return null; }
+  }
+  function safeStorage() {
+    if (!isConfigured || typeof firebase.storage !== "function") return null;
+    try { return firebase.storage(); } catch (e) { return null; }
+  }
+
   window.MC = {
     configured: isConfigured,
     config: firebaseConfig,
-    auth: isConfigured ? firebase.auth() : null,
-    db: isConfigured ? firebase.firestore() : null,
+    auth: safeAuth(),
+    db: safeFirestore(),
     // Storage é opcional: no plano gratuito (Spark) do Firebase, o Storage
     // exige upgrade para o plano Blaze. Enquanto isso, IMAGE_MODE "inline"
     // guarda a capa do artigo como base64 direto no Firestore (funciona,
     // mas com limite de tamanho por imagem). Quando fizer o upgrade pra
     // Blaze, troque para "storage" e a capa passa a subir pro Firebase
     // Storage normalmente.
-    storage: isConfigured && firebase.apps.length && firebase.storage ? (() => { try { return firebase.storage(); } catch (e) { return null; } })() : null,
+    storage: safeStorage(),
     IMAGE_MODE: "inline", // "inline" ou "storage"
     ROLES: ["admin", "editor"],
   };
