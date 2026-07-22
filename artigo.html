@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Blog MedControl — Conteúdo Técnico para CME Hospitalar</title>
-  <meta name="description" content="Boas práticas, tendências e orientações técnicas sobre esterilização hospitalar, CME e segurança do paciente." />
+  <title>Artigo — Blog MedControl</title>
+  <meta name="description" content="Conteúdo técnico MedControl sobre esterilização hospitalar e segurança do paciente." />
   <meta name="author" content="MedControl" />
 
-  <meta property="og:title" content="Blog MedControl — Conteúdo Técnico para CME Hospitalar" />
-  <meta property="og:description" content="Boas práticas, tendências e orientações técnicas sobre esterilização hospitalar, CME e segurança do paciente." />
+  <meta property="og:title" content="Artigo — Blog MedControl" />
+  <meta property="og:description" content="Conteúdo técnico MedControl sobre esterilização hospitalar e segurança do paciente." />
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="pt_BR" />
   <meta name="twitter:card" content="summary_large_image" />
@@ -42,25 +42,21 @@
   </header>
 
   <main>
-    <!-- ===================== BANNER DA PÁGINA ===================== -->
     <section class="page-banner">
       <div class="container">
         <div class="breadcrumb">
           <a href="index.html">Início</a>
           <span aria-hidden="true">/</span>
-          <span>Blog</span>
+          <a href="blog.html">Blog</a>
         </div>
-        <span class="eyebrow">Blog MedControl</span>
-        <h1>Conteúdo técnico para quem vive uma central de esterilização.</h1>
-        <p class="lead">Boas práticas, tendências e orientações técnicas para enfermeiros, coordenadores de CME e gestores hospitalares.</p>
+        <span class="eyebrow" id="artBannerEyebrow">Artigo</span>
+        <h1 id="artBannerTitle">Carregando…</h1>
       </div>
     </section>
 
     <section>
-      <div class="container section-inner">
-        <div class="blog-grid" id="blogGrid">
-          <p style="grid-column:1/-1;color:#6b6d6e;">Carregando artigos…</p>
-        </div>
+      <div class="container section-inner" id="articleWrap">
+        <p style="color:#6b6d6e;">Carregando artigo…</p>
       </div>
     </section>
   </main>
@@ -148,45 +144,69 @@
   <script src="js/firebase-config.js"></script>
   <script>
   (function () {
-    const grid = document.getElementById("blogGrid");
-    if (!grid) return;
+    const wrap = document.getElementById("articleWrap");
+    if (!wrap) return;
 
     function esc(s) {
       return String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
     }
+    function paragraphs(text) {
+      return (text || "").split(/\n+/).filter(Boolean).map(p => "<p>" + esc(p) + "</p>").join("");
+    }
 
-    if (!window.MC || !MC.configured || !MC.db) {
-      grid.innerHTML = '<p style="grid-column:1/-1;color:#6b6d6e;">Não foi possível carregar os artigos no momento.</p>';
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+
+    if (!window.MC || !MC.configured || !MC.db || !id) {
+      wrap.innerHTML = '<p style="color:#6b6d6e;">Artigo não encontrado. <a href="blog.html">Voltar para o blog</a>.</p>';
       return;
     }
 
-    MC.db.collection("articles").where("status", "==", "publicado").orderBy("createdAt", "desc").get()
-      .then(function (snap) {
-        if (snap.empty) {
-          grid.innerHTML = '<p style="grid-column:1/-1;color:#6b6d6e;">Nenhum artigo publicado ainda. Volte em breve.</p>';
-          return;
-        }
-        let html = "";
-        snap.forEach(function (doc) {
-          const a = doc.data();
-          const img = a.imageUrl
-            ? '<img src="' + esc(a.imageUrl) + '" alt="' + esc(a.title || "") + '" style="width:100%;height:200px;object-fit:cover;display:block;border-bottom:1px solid var(--gray-light);">'
-            : '<div class="media-placeholder">[imagem]</div>';
-          html += ''
-            + '<article class="blog-card">'
-            +   img
-            +   '<div class="blog-card-body">'
-            +     '<h3>' + esc(a.title || "(sem título)") + '</h3>'
-            +     '<p>' + esc(a.excerpt || "") + '</p>'
-            +     '<a href="artigo.html?id=' + doc.id + '" class="blog-card-cta">Ler artigo <span aria-hidden="true">→</span></a>'
-            +   '</div>'
-            + '</article>';
-        });
-        grid.innerHTML = html;
-      })
-      .catch(function (err) {
-        grid.innerHTML = '<p style="grid-column:1/-1;color:#6b6d6e;">Erro ao carregar artigos: ' + esc(err.message) + '</p>';
-      });
+    Promise.all([
+      MC.db.collection("articles").doc(id).get(),
+      MC.db.collection("articles").where("status", "==", "publicado").orderBy("createdAt", "desc").get()
+    ]).then(function (results) {
+      const doc = results[0];
+      const listSnap = results[1];
+      if (!doc.exists || doc.data().status !== "publicado") {
+        wrap.innerHTML = '<p style="color:#6b6d6e;">Artigo não encontrado ou não publicado. <a href="blog.html">Voltar para o blog</a>.</p>';
+        return;
+      }
+      const a = doc.data();
+      document.title = (a.title || "Artigo") + " — Blog MedControl";
+
+      const list = [];
+      listSnap.forEach(d => list.push({ id: d.id, ...d.data() }));
+      const idx = list.findIndex(x => x.id === id);
+      const prevA = idx >= 0 && idx < list.length - 1 ? list[idx + 1] : null;
+      const nextA = idx > 0 ? list[idx - 1] : null;
+
+      const img = a.imageUrl
+        ? '<img src="' + esc(a.imageUrl) + '" alt="' + esc(a.title || "") + '" style="width:100%;border-radius:12px;display:block;">'
+        : '<div class="media-placeholder">[imagem]</div>';
+
+      let navHtml = '<div class="article-nav">';
+      navHtml += prevA
+        ? '<a href="artigo.html?id=' + prevA.id + '" class="article-nav-link"><span class="direction">← Anterior</span><span class="title">' + esc(prevA.title) + '</span></a>'
+        : '<span></span>';
+      navHtml += nextA
+        ? '<a href="artigo.html?id=' + nextA.id + '" class="article-nav-link next"><span class="direction">Próximo →</span><span class="title">' + esc(nextA.title) + '</span></a>'
+        : '';
+      navHtml += '</div>';
+
+      wrap.innerHTML = ''
+        + '<a href="blog.html" class="blog-back-link">← Voltar para o blog</a>'
+        + '<div class="article-hero">' + img + '</div>'
+        + '<div class="article-body">' + paragraphs(a.content) + '</div>'
+        + navHtml;
+
+      const bannerEyebrow = document.getElementById("artBannerEyebrow");
+      const bannerTitle = document.getElementById("artBannerTitle");
+      if (bannerEyebrow) bannerEyebrow.textContent = a.category || "Artigo";
+      if (bannerTitle) bannerTitle.textContent = a.title || "";
+    }).catch(function (err) {
+      wrap.innerHTML = '<p style="color:#6b6d6e;">Erro ao carregar o artigo: ' + esc(err.message) + '</p>';
+    });
   })();
   </script>
 </body>
