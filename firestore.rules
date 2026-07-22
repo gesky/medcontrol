@@ -1,0 +1,57 @@
+rules_version = '2';
+
+// ============================================================================
+// MedControl — Regras de segurança do Firestore
+// Cole isto em: Firebase Console → Firestore Database → Regras
+// ============================================================================
+//
+// Modelo de permissão:
+//   - "users"    → cada pessoa vê seu próprio documento; só admins listam/editam
+//                  os demais. Criação de documento é feita pelo painel logo após
+//                  o Auth criar a conta (createUserWithEmailAndPassword).
+//   - "articles" → qualquer visitante do site pode LER artigos com
+//                  status "publicado" (pro futuro blog dinâmico). Só usuários
+//                  autenticados com role admin/editor podem escrever.
+//
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function myRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && myRole() == "admin";
+    }
+
+    function isEditorOrAdmin() {
+      return isSignedIn() && (myRole() == "editor" || myRole() == "admin");
+    }
+
+    match /users/{uid} {
+      allow read: if isSignedIn() && (request.auth.uid == uid || isAdmin());
+      allow create: if isAdmin() || isSignedIn(); // documento próprio criado no primeiro login, ou pelo admin ao criar alguém
+      allow update: if isAdmin() || (isSignedIn() && request.auth.uid == uid);
+      allow delete: if isAdmin();
+    }
+
+    match /articles/{articleId} {
+      // Público só enxerga artigos publicados (útil quando o blog.html
+      // passar a buscar os artigos direto do Firestore no futuro)
+      allow read: if resource.data.status == "publicado" || isEditorOrAdmin();
+      allow write: if isEditorOrAdmin();
+    }
+
+    match /leads/{leadId} {
+      // Qualquer visitante pode enviar uma mensagem pelo formulário de contato,
+      // mas só quem está logado no painel (editor/admin) pode ler, alterar
+      // status, arquivar ou excluir mensagens recebidas.
+      allow create: if true;
+      allow read, update, delete: if isEditorOrAdmin();
+    }
+  }
+}
