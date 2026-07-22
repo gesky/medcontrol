@@ -1787,3 +1787,109 @@ h2 {
   background: #eef3fa;
   font-weight: 700;
 }
+
+/* Tabela chave/valor (ficha técnica, parâmetros) */
+.spec-table-wrap {
+  margin-top: 2rem;
+  border: 1px solid var(--gray-light);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--white);
+}
+
+.spec-row {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  border-bottom: 1px solid var(--gray-light);
+}
+
+.spec-row:last-child {
+  border-bottom: none;
+}
+
+.spec-row:nth-child(odd) {
+  background: var(--gray-light);
+}
+
+.spec-row .k {
+  padding: 0.9rem 1.25rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--blue);
+  border-right: 1px solid var(--gray-light);
+}
+
+.spec-row .v {
+  padding: 0.9rem 1.25rem;
+  font-size: 0.875rem;
+  color: var(--text);
+  line-height: 1.55;
+}
+
+@media (max-width: 560px) {
+  .spec-row {
+    grid-template-columns: 1fr;
+  }
+  .spec-row .k {
+    border-right: none;
+    border-bottom: 1px solid var(--gray-light);
+    padding-bottom: 0.4rem;
+  }
+}
+
+/* Tabela de materiais compatíveis / incompatíveis */
+.materials-table-wrap {
+  margin-top: 2rem;
+  overflow-x: auto;
+  border: 1px solid var(--gray-light);
+  border-radius: var(--radius);
+}
+
+.materials-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 480px;
+}
+
+.materials-table th {
+  padding: 0.85rem 1.25rem;
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--white);
+}
+
+.materials-table th.ok-head {
+  background: var(--blue);
+}
+
+.materials-table th.no-head {
+  background: var(--accent);
+}
+
+.materials-table td {
+  padding: 0.65rem 1.25rem;
+  font-size: 0.875rem;
+  color: var(--text);
+  border-bottom: 1px solid var(--gray-light);
+  border-right: 1px solid var(--gray-light);
+  vertical-align: top;
+}
+
+.materials-table td:last-child {
+  border-right: none;
+}
+
+.materials-table tr:last-child td {
+  border-bottom: none;
+}
+
+.materials-table tr:nth-child(even) td {
+  background: var(--gray-light);
+}
+
+.materials-table td.empty-cell {
+  color: #b6b8b9;
+}
