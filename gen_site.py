@@ -12,7 +12,6 @@ WA_LINK = "https://wa.me/551432087108?text=Ol%C3%A1%2C%20gostaria%20de%20falar%2
 NAV_ITEMS = [
     ("linhas.html", "Produtos"),
     ("sobre.html", "Sobre"),
-    ("depoimentos.html", "Depoimentos"),
     ("blog.html", "Blog"),
     ("contato.html", "Contato"),
 ]
@@ -645,7 +644,7 @@ linhas_body = f'''{page_banner(
 
           <div class="line-block" id="comodato">
             <div class="line-media">
-              <div class="media-placeholder">[imagem]</div>
+              <img src="phm-medcontrol-1.webp" alt="Equipamentos em comodato MedControl" />
             </div>
             <div class="line-copy">
               <span class="line-number">01 · Linha</span>
@@ -664,7 +663,7 @@ linhas_body = f'''{page_banner(
 
           <div class="line-block" id="embalagens">
             <div class="line-media">
-              <div class="media-placeholder">[imagem]</div>
+              <img src="embalagens.webp" alt="Embalagens para esterilização MedControl" />
             </div>
             <div class="line-copy">
               <span class="line-number">02 · Linha</span>
@@ -684,7 +683,7 @@ linhas_body = f'''{page_banner(
 
           <div class="line-block" id="indicadores">
             <div class="line-media">
-              <div class="media-placeholder">[imagem]</div>
+              <img src="indicadores.webp" alt="Indicadores e controle de processo MedControl" />
             </div>
             <div class="line-copy">
               <span class="line-number">03 · Linha</span>
@@ -703,7 +702,7 @@ linhas_body = f'''{page_banner(
 
           <div class="line-block" id="suporte">
             <div class="line-media">
-              <div class="media-placeholder">[imagem]</div>
+              <img src="suporte.webp" alt="Suporte técnico e capacitação MedControl" />
             </div>
             <div class="line-copy">
               <span class="line-number">04 · Linha</span>
@@ -773,7 +772,7 @@ phm_body = f'''{page_banner(
     <!-- ===================== O QUE É ===================== -->
     <section class="phm-intro">
       <div class="container section-inner">
-        <div class="media-placeholder">[imagem]</div>
+        <img src="phm-medcontrol-2.webp" alt="PHM MedControl — esterilizador a plasma" />
         <div class="phm-intro-copy">
           <span class="eyebrow">O que é o PHM</span>
           <h2>Esterilização a plasma, sem abrir mão da segurança.</h2>
@@ -790,8 +789,46 @@ phm_body = f'''{page_banner(
       </div>
     </section>
 
-    <!-- ===================== COMO FUNCIONA ===================== -->
+    <!-- ===================== FICHA TÉCNICA RÁPIDA ===================== -->
     <section style="background-color:var(--gray-light);">
+      <div class="container section-inner">
+        <span class="eyebrow">Ficha técnica</span>
+        <h2>PHM MedControl em resumo.</h2>
+        <div class="spec-table-wrap">
+          <div class="spec-row">
+            <div class="k">Tecnologia</div>
+            <div class="v">Esterilização por Plasma de Peróxido de Hidrogênio (EPPH)</div>
+          </div>
+          <div class="spec-row">
+            <div class="k">Temperatura de operação</div>
+            <div class="v">45°C a 55°C</div>
+          </div>
+          <div class="spec-row">
+            <div class="k">Duração do ciclo</div>
+            <div class="v">25 a 45 minutos, dependendo do modelo e do ciclo específico</div>
+          </div>
+          <div class="spec-row">
+            <div class="k">Concentração do peróxido</div>
+            <div class="v">Aproximadamente 59%</div>
+          </div>
+          <div class="spec-row">
+            <div class="k">Subprodutos do processo</div>
+            <div class="v">Água e oxigênio — sem resíduos tóxicos</div>
+          </div>
+          <div class="spec-row">
+            <div class="k">Modalidade</div>
+            <div class="v">Disponível em comodato, com manutenção inclusa</div>
+          </div>
+          <div class="spec-row">
+            <div class="k">Conformidade</div>
+            <div class="v">Notificado na ANVISA · fabricado sob certificação ISO 13485</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== COMO FUNCIONA ===================== -->
+    <section>
       <div class="container section-inner">
         <span class="eyebrow">Como funciona</span>
         <h2>O ciclo de esterilização em 5 fases.</h2>
@@ -825,73 +862,75 @@ phm_body = f'''{page_banner(
       </div>
     </section>
 
-    <!-- ===================== MATERIAIS ===================== -->
-    <section>
-      <div class="container section-inner">
-        <span class="eyebrow">Compatibilidade</span>
-        <h2>Materiais compatíveis e incompatíveis.</h2>
-        <div class="phm-materials" style="margin-top:2.5rem;">
-          <div class="phm-materials-card ok">
-            <h3>Pode ser esterilizado com peróxido de hidrogênio</h3>
-            <ul>
-              <li>Aço inoxidável</li>
-              <li>Plásticos</li>
-              <li>Vidros</li>
-              <li>Borrachas</li>
-              <li>Acrílicos</li>
-              <li>Alumínio</li>
-              <li>Bronze</li>
-              <li>Látex</li>
-              <li>PVC</li>
-              <li>Silicone</li>
-              <li>Teflon</li>
-              <li>Fibras ópticas</li>
-              <li>Materiais elétricos</li>
-            </ul>
-          </div>
-          <div class="phm-materials-card no">
-            <h3>Não deve ser esterilizado por esse método</h3>
-            <ul>
-              <li>Celulose</li>
-              <li>Ferro</li>
-              <li>Líquidos</li>
-              <li>Materiais à base de papel</li>
-              <li>Tecidos</li>
-              <li>Lumens longos e estreitos (fundo cego)</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </section>
-
     <!-- ===================== PARÂMETROS ===================== -->
     <section style="background-color:var(--gray-light);">
       <div class="container section-inner">
         <span class="eyebrow">Controle de processo</span>
         <h2>5 parâmetros críticos, monitorados em cada ciclo.</h2>
-        <div class="differentials-grid" style="margin-top:2.5rem;">
-          <div class="differential-card">
-            <p class="label">Temperatura</p>
+        <div class="spec-table-wrap">
+          <div class="spec-row">
+            <div class="k">Temperatura</div>
+            <div class="v">Mantida entre 45°C e 55°C durante todo o ciclo, preservando materiais termossensíveis.</div>
           </div>
-          <div class="differential-card">
-            <p class="label">Pressão</p>
+          <div class="spec-row">
+            <div class="k">Pressão</div>
+            <div class="v">Controlada em cada fase — do vácuo inicial até o retorno à pressão atmosférica na ventilação.</div>
           </div>
-          <div class="differential-card">
-            <p class="label">Concentração do peróxido</p>
+          <div class="spec-row">
+            <div class="k">Concentração do peróxido</div>
+            <div class="v">Monitorada para garantir a formação adequada do plasma e a eficácia esterilizante.</div>
           </div>
-          <div class="differential-card">
-            <p class="label">Energia do plasma</p>
+          <div class="spec-row">
+            <div class="k">Energia do plasma</div>
+            <div class="v">Ajustada via radiofrequência para gerar a nuvem de partículas ionizadas necessária ao processo.</div>
+          </div>
+          <div class="spec-row">
+            <div class="k">Tempo</div>
+            <div class="v">Duração de cada fase controlada com precisão, do vácuo à ventilação final.</div>
           </div>
         </div>
         <p style="margin-top:1.5rem;color:#55585a;font-size:0.9375rem;">
-          Esses parâmetros — mais o tempo total do ciclo — são cuidadosamente controlados para
-          garantir a eficácia da esterilização, preservando a integridade dos materiais processados.
+          Esses parâmetros são cuidadosamente controlados para garantir a eficácia da
+          esterilização, preservando a integridade dos materiais processados.
         </p>
       </div>
     </section>
 
-    <!-- ===================== BENEFÍCIOS ===================== -->
+    <!-- ===================== MATERIAIS ===================== -->
     <section>
+      <div class="container section-inner">
+        <span class="eyebrow">Compatibilidade</span>
+        <h2>Materiais compatíveis e incompatíveis.</h2>
+        <div class="materials-table-wrap">
+          <table class="materials-table">
+            <thead>
+              <tr>
+                <th class="ok-head">Pode ser esterilizado com peróxido de hidrogênio</th>
+                <th class="no-head">Não deve ser esterilizado por esse método</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Aço inoxidável</td><td>Celulose</td></tr>
+              <tr><td>Plásticos</td><td>Ferro</td></tr>
+              <tr><td>Vidros</td><td>Líquidos</td></tr>
+              <tr><td>Borrachas</td><td>Materiais à base de papel</td></tr>
+              <tr><td>Acrílicos</td><td>Tecidos</td></tr>
+              <tr><td>Alumínio</td><td>Lumens longos e estreitos (fundo cego)</td></tr>
+              <tr><td>Bronze</td><td class="empty-cell">—</td></tr>
+              <tr><td>Látex</td><td class="empty-cell">—</td></tr>
+              <tr><td>PVC</td><td class="empty-cell">—</td></tr>
+              <tr><td>Silicone</td><td class="empty-cell">—</td></tr>
+              <tr><td>Teflon</td><td class="empty-cell">—</td></tr>
+              <tr><td>Fibras ópticas</td><td class="empty-cell">—</td></tr>
+              <tr><td>Materiais elétricos</td><td class="empty-cell">—</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== BENEFÍCIOS ===================== -->
+    <section style="background-color:var(--gray-light);">
       <div class="container section-inner">
         <span class="eyebrow">Benefícios</span>
         <h2>Por que o PHM faz sentido para a sua CME.</h2>
@@ -933,7 +972,7 @@ phm_body = f'''{page_banner(
     </section>
 
     <!-- ===================== COMPARATIVO ===================== -->
-    <section style="background-color:var(--gray-light);">
+    <section>
       <div class="container section-inner">
         <span class="eyebrow">Comparativo</span>
         <h2>Como o PHM se compara a outros métodos de esterilização.</h2>
@@ -1011,7 +1050,7 @@ phm_body = f'''{page_banner(
     </section>
 
     <!-- ===================== CONFORMIDADE ===================== -->
-    <section>
+    <section style="background-color:var(--gray-light);">
       <div class="container section-inner">
         <span class="eyebrow">Conformidade</span>
         <h2>Registrado na ANVISA, fabricado sob certificação internacional.</h2>
@@ -1160,7 +1199,7 @@ page = (
         "Depoimentos MedControl — O que Dizem Hospitais e Clínicas Parceiras",
         "Veja depoimentos reais de enfermeiros, coordenadores de CME e gestores hospitalares sobre a parceria técnica com a MedControl.",
     )
-    + header(active="depoimentos.html")
+    + header(active=None)  # Depoimentos não está mais no menu do header (só no footer)
     + depoimentos_body
     + footer()
     + whatsapp_float()
