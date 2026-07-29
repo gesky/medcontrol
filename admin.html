@@ -206,6 +206,7 @@
   <div class="admin-shell">
     <div class="tabs">
       <button class="tab active" data-tab="articles">Artigos</button>
+      <button class="tab" data-tab="catalog">Catálogo</button>
       <button class="tab" data-tab="leads">Mensagens <span id="unreadBadge" class="badge-count" style="display:none">0</span></button>
       <button class="tab admin-only" data-tab="users">Usuários & Permissões</button>
     </div>
@@ -238,6 +239,37 @@
           </tr>
         </thead>
         <tbody id="articleRows"></tbody>
+      </table>
+    </div>
+
+    <!-- ===================== PAINEL CATÁLOGO ===================== -->
+    <div class="panel" id="panel-catalog">
+      <div class="row-head">
+        <div>
+          <h2>Catálogo de produtos</h2>
+          <p class="sub">Cadastre, edite, arquive ou exclua produtos exibidos em <code>catalogo.html</code>.</p>
+        </div>
+        <button class="btn-sm-solid" id="addCatalogItem">+ Novo produto</button>
+      </div>
+
+      <div class="status-tabs">
+        <button class="status-tab active" data-cat-status="todos">Todos</button>
+        <button class="status-tab" data-cat-status="publicado">Publicados</button>
+        <button class="status-tab" data-cat-status="rascunho">Rascunhos</button>
+        <button class="status-tab" data-cat-status="arquivado">Arquivados</button>
+      </div>
+
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th style="width:4.5rem"></th>
+            <th>Título</th>
+            <th>Categoria</th>
+            <th>Status</th>
+            <th style="text-align:right">Ações</th>
+          </tr>
+        </thead>
+        <tbody id="catalogRows"></tbody>
       </table>
     </div>
 
@@ -308,6 +340,48 @@
     <div class="modal-foot">
       <a href="#" id="ldMailTo" class="icon-btn">Responder por e-mail</a>
       <a href="#" id="ldWhatsApp" target="_blank" rel="noopener noreferrer" class="btn-sm-solid" style="background:#25D366;text-decoration:none;">Chamar no WhatsApp</a>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MODAL: PRODUTO DO CATÁLOGO ===================== -->
+<div class="overlay" id="ovCatalog">
+  <div class="modal">
+    <div class="modal-head"><h3 id="catModalTitle">Novo produto</h3><button class="x-btn" data-close>✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="catId">
+      <div class="grid2">
+        <div class="fld"><label>Título do produto *</label><input id="catTitle" placeholder="Ex: Autoclave 120L"></div>
+        <div class="fld"><label>Categoria</label><input id="catCategory" placeholder="Ex: Equipamentos, Indicadores, Embalagens..."></div>
+      </div>
+      <div class="fld"><label>Resumo breve (exibido no card do catálogo)</label><textarea id="catExcerpt" rows="2" style="resize:vertical"></textarea></div>
+      <div class="fld">
+        <label>Imagem do produto (convertida automaticamente para WebP)</label>
+        <div class="uploader" id="catUpZone"><div class="hint">Clique para enviar a imagem (JPG/PNG)</div><input type="file" id="catFile" accept="image/*"></div>
+        <div class="prog" id="catProg"><div class="bar"></div></div>
+        <div class="thumbs-edit" id="catThumb"></div>
+      </div>
+      <div class="fld">
+        <label>Descrição completa (exibida no pop-up de detalhes)</label>
+        <textarea id="catDescription" rows="6" style="resize:vertical; font-family:var(--font-sans)" placeholder="Descreva o produto. Quebras de linha (Enter) criam novos parágrafos no pop-up."></textarea>
+      </div>
+      <div class="fld">
+        <label>Especificações adicionais (opcional)</label>
+        <textarea id="catSpecs" rows="4" style="resize:vertical; font-family:var(--font-sans)" placeholder="Um item por linha, no formato Campo: valor. Ex:&#10;Capacidade: 120 litros&#10;Voltagem: 110V / 220V&#10;Garantia: 2 anos"></textarea>
+      </div>
+      <div class="fld">
+        <label>Status</label>
+        <select id="catStatus">
+          <option value="rascunho">Rascunho — não aparece no site</option>
+          <option value="publicado">Publicado — visível no catálogo</option>
+          <option value="arquivado">Arquivado — oculto, mas não excluído</option>
+        </select>
+      </div>
+      <div id="catMsg" class="msg"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="icon-btn" data-close>Cancelar</button>
+      <button class="btn-sm-solid" id="catSave">Salvar produto</button>
     </div>
   </div>
 </div>
@@ -410,6 +484,9 @@
   let editUserId = null;
   let currentStatusFilter = "todos";
   let articlesCache = [];
+  let currentCatalogStatusFilter = "todos";
+  let catalogCache = [];
+  let catalogCoverUrl = "";
 
   function msg(el, text, type){
     if (!el) return;
@@ -488,16 +565,25 @@
 
     loadArticles();
     wireArticleModal();
+    loadCatalog();
+    wireCatalogModal();
     loadLeads();
     $("exportLeadsBtn").onclick = exportLeadsCSV;
     if (me.role === "admin") loadUsers();
     wireUserModal();
 
-    document.querySelectorAll(".status-tab").forEach(t => t.onclick = () => {
-      document.querySelectorAll(".status-tab").forEach(x=>x.classList.remove("active"));
+    document.querySelectorAll("#panel-articles .status-tab").forEach(t => t.onclick = () => {
+      document.querySelectorAll("#panel-articles .status-tab").forEach(x=>x.classList.remove("active"));
       t.classList.add("active");
       currentStatusFilter = t.dataset.status;
       renderArticles();
+    });
+
+    document.querySelectorAll("#panel-catalog .status-tab").forEach(t => t.onclick = () => {
+      document.querySelectorAll("#panel-catalog .status-tab").forEach(x=>x.classList.remove("active"));
+      t.classList.add("active");
+      currentCatalogStatusFilter = t.dataset.catStatus;
+      renderCatalog();
     });
   }
 
@@ -702,6 +788,116 @@
         artCoverUrl = url;
         $("artThumb").innerHTML = `<div class="t"><img src="${url}"><button class="del" type="button">×</button></div>`;
         $("artThumb").querySelector(".del").onclick = () => { artCoverUrl = ""; $("artThumb").innerHTML = ""; };
+      });
+    };
+  }
+
+  /* ============================================================
+     CATÁLOGO DE PRODUTOS
+     ============================================================ */
+  async function loadCatalog(){
+    const rows = $("catalogRows");
+    rows.innerHTML = `<tr><td class="empty-row" colspan="5">Carregando produtos…</td></tr>`;
+    try {
+      const snap = await db.collection("catalog").orderBy("createdAt", "desc").get();
+      catalogCache = [];
+      snap.forEach(doc => catalogCache.push({ id: doc.id, ...doc.data() }));
+      renderCatalog();
+    } catch(e) {
+      rows.innerHTML = `<tr><td class="empty-row" colspan="5">Erro ao carregar produtos: ${esc(e.message)}</td></tr>`;
+    }
+  }
+
+  function renderCatalog(){
+    const rows = $("catalogRows");
+    const list = catalogCache.filter(a => currentCatalogStatusFilter==="todos" || (a.status||"rascunho")===currentCatalogStatusFilter);
+    if (!list.length) { rows.innerHTML = `<tr><td class="empty-row" colspan="5">Nenhum produto encontrado.</td></tr>`; return; }
+    rows.innerHTML = "";
+    list.forEach(a => {
+      const status = a.status || "rascunho";
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${a.imageUrl ? `<img class="thumb" src="${esc(a.imageUrl)}">` : `<div class="thumb" style="display:flex;align-items:center;justify-content:center;font-size:9px;color:#9a9c9d;text-align:center;">SEM IMAGEM</div>`}</td>
+        <td><b>${esc(a.title||"(sem título)")}</b></td>
+        <td>${esc(a.category||"—")}</td>
+        <td><span class="badge-status ${status}">${status}</span></td>
+        <td>
+          <div class="act">
+            <button class="icon-btn edit-cat" data-id="${a.id}">Editar</button>
+            ${status !== "arquivado"
+              ? `<button class="icon-btn archive-cat" data-id="${a.id}">Arquivar</button>`
+              : `<button class="icon-btn unarchive-cat" data-id="${a.id}">Reativar</button>`}
+            <button class="icon-btn danger del-cat" data-id="${a.id}">Excluir</button>
+          </div>
+        </td>`;
+      rows.appendChild(tr);
+    });
+
+    rows.querySelectorAll(".edit-cat").forEach(b => b.onclick = () => {
+      const a = catalogCache.find(x => x.id === b.dataset.id);
+      openCatalogItem(b.dataset.id, a || {});
+    });
+    rows.querySelectorAll(".archive-cat").forEach(b => b.onclick = () => setCatalogStatus(b.dataset.id, "arquivado"));
+    rows.querySelectorAll(".unarchive-cat").forEach(b => b.onclick = () => setCatalogStatus(b.dataset.id, "publicado"));
+    rows.querySelectorAll(".del-cat").forEach(b => b.onclick = () => delDoc("catalog", b.dataset.id, "produto", loadCatalog));
+  }
+
+  async function setCatalogStatus(id, status){
+    try { await db.collection("catalog").doc(id).update({ status, updatedAt: ts(), updatedBy: me.email }); loadCatalog(); }
+    catch(e) { alert(e.message); }
+  }
+
+  function openCatalogItem(id, a){
+    clearMsg($("catMsg"));
+    $("catModalTitle").textContent = id ? "Editar produto" : "Novo produto";
+    $("catId").value = id || "";
+    $("catTitle").value = a.title || "";
+    $("catCategory").value = a.category || "";
+    $("catExcerpt").value = a.excerpt || "";
+    $("catDescription").value = a.description || "";
+    $("catSpecs").value = a.specs || "";
+    $("catStatus").value = a.status || "rascunho";
+    catalogCoverUrl = a.imageUrl || "";
+    $("catThumb").innerHTML = catalogCoverUrl
+      ? `<div class="t"><img src="${catalogCoverUrl}"><button class="del" type="button">×</button></div>`
+      : "";
+    const delBtn = $("catThumb").querySelector(".del");
+    if (delBtn) delBtn.onclick = () => { catalogCoverUrl = ""; $("catThumb").innerHTML = ""; };
+    $("ovCatalog").classList.add("open");
+  }
+
+  async function saveCatalogItem(){
+    if (!$("catTitle").value.trim()) return msg($("catMsg"), "O título é obrigatório.", "err");
+    const data = {
+      title: $("catTitle").value.trim(),
+      category: $("catCategory").value.trim(),
+      excerpt: $("catExcerpt").value.trim(),
+      description: $("catDescription").value.trim(),
+      specs: $("catSpecs").value.trim(),
+      imageUrl: catalogCoverUrl,
+      status: $("catStatus").value,
+      updatedAt: ts(),
+      updatedBy: me.email,
+    };
+    try {
+      if ($("catId").value) await db.collection("catalog").doc($("catId").value).update(data);
+      else await db.collection("catalog").add({ ...data, createdAt: ts(), createdBy: me.email });
+      msg($("catMsg"), "Produto salvo com sucesso.", "ok");
+      loadCatalog();
+      setTimeout(() => $("ovCatalog").classList.remove("open"), 900);
+    } catch(e) { msg($("catMsg"), e.message, "err"); }
+  }
+
+  function wireCatalogModal(){
+    $("addCatalogItem").onclick = () => openCatalogItem(null, {});
+    $("catSave").onclick = saveCatalogItem;
+    $("catUpZone").onclick = (e) => { if (e.target.tagName !== "INPUT") $("catFile").click(); };
+    $("catFile").onchange = (e) => {
+      const f = e.target.files[0];
+      if (f) uploadCoverImage(f, $("catProg"), (url) => {
+        catalogCoverUrl = url;
+        $("catThumb").innerHTML = `<div class="t"><img src="${url}"><button class="del" type="button">×</button></div>`;
+        $("catThumb").querySelector(".del").onclick = () => { catalogCoverUrl = ""; $("catThumb").innerHTML = ""; };
       });
     };
   }

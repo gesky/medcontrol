@@ -1,128 +1,88 @@
 # MedControl — Site institucional (multi-página) + Painel administrativo
 
 Site em HTML/CSS/JS puro, sem build step, sem dependências (exceto Firebase,
-usado pelo painel administrativo e pelo formulário de contato).
+usado pelo painel administrativo, pelo formulário de contato, pelo blog e
+agora também pelo catálogo).
 
 ## Páginas do site público
 
-- `index.html` — Home (hero + resumo de cada seção, com links "saiba mais" pra página dedicada)
-- `sobre.html` — Institucional (história + como trabalhamos + diferenciais, tudo em uma página só)
-- `linhas.html` — Produtos (com âncoras internas `#embalagens`, `#indicadores`, `#suporte`; o item
-  "Equipamentos em comodato" agora aponta pra sua própria página, `phm-medcontrol.html`)
-- `phm-medcontrol.html` — Página dedicada ao PHM MedControl (esterilizador a plasma por peróxido de
-  hidrogênio): o que é, como funciona (5 fases), materiais compatíveis/incompatíveis, parâmetros
-  críticos, benefícios, comparativo com outros métodos de esterilização e conformidade regulatória
-- `depoimentos.html` — Depoimentos (5 depoimentos com placeholder de foto) + seção de logos de
-  parceiros/clientes (mesmo padrão da home)
-- `contato.html` — Contato (caixa de WhatsApp, redes sociais, endereço, mapa real do Google Maps,
-  **formulário funcional** — grava lead direto no Firestore)
-- `blog.html` — Listagem do blog, **agora dinâmica**: busca direto no Firestore os artigos
-  com `status: "publicado"` criados pelo painel administrativo
-- `artigo.html` — Template único de artigo (dinâmico): lê `?id=` na URL, busca o artigo
-  correspondente no Firestore e monta a página, com navegação Anterior/Próximo calculada
-  a partir da lista de publicados
+- `index.html` — Home
+- `catalogo.html` — **Catálogo de produtos**, dinâmico: grid de produtos vindos do Firestore
+  (coleção `catalog`, só os com `status: "publicado"`), 4 por linha / 8 por página, com
+  paginação (Anterior/Próxima). Clicar em um produto abre um **pop-up** com a descrição
+  completa e especificações — não existe uma página separada por produto.
+- `sobre.html` — Institucional (história + como trabalhamos + diferenciais)
+- `linhas.html` — Produtos (5 linhas, nesta ordem: Equipamentos em comodato → Sistema
+  Sterifast → Embalagens para esterilização → Indicadores e controle de processo →
+  Suporte técnico e capacitação)
+- `phm-medcontrol.html` — Página dedicada ao PHM MedControl
+- `depoimentos.html` — Depoimentos + logos de parceiros/clientes
+- `contato.html` — Contato (formulário funcional, grava lead no Firestore)
+- `blog.html` — Listagem do blog, dinâmica (Firestore)
+- `artigo.html` — Template dinâmico de artigo (`?id=`)
 
-Menu (nesta ordem): **Produtos, Sobre, Depoimentos, Blog, Contato**.
+Menu (nesta ordem): **Catálogo, Produtos, Sobre, Blog, Contato**. "Depoimentos" só
+aparece no rodapé, não no menu do topo.
 
 ## Painel administrativo (`admin.html`)
 
-Painel com login (Firebase Authentication) para gerenciar:
+Abas:
 
-- **Usuários & permissões** (só quem é `admin` vê essa aba) — criar, editar nome/permissão,
-  remover. Duas permissões: `admin` (acesso total) e `editor` (edita conteúdo).
-- **Mensagens** — leads recebidos pelo formulário da página Contato: nome, e-mail, telefone,
-  assunto, mensagem. Suporta status (Novo/Lido/Contatado/Não responder), arquivar/restaurar,
-  excluir, exportar CSV, contador de mensagens não lidas na aba, e paginação ("carregar mais")
-  — mesma estrutura do painel do Plane Aviation.
-- **Artigos** — criar, editar, arquivar/reativar e excluir artigos do blog, com capa,
-  categoria, resumo, conteúdo e status (`rascunho` / `publicado` / `arquivado`). Assim que
-  um artigo é marcado como **publicado**, ele aparece automaticamente em `blog.html` — não
-  precisa mexer em nenhum arquivo HTML.
+- **Artigos** — publicar, editar, arquivar, excluir artigos do blog
+- **Catálogo** (nova) — cadastrar, editar, arquivar, excluir produtos do catálogo público.
+  Campos: título, categoria, resumo curto (card), descrição completa (pop-up), especificações
+  adicionais (texto livre, um item por linha no formato `Campo: valor`), imagem (convertida
+  automaticamente para WebP, mesmo pipeline dos artigos), e status (rascunho/publicado/arquivado)
+- **Mensagens** — leads recebidos pelo formulário de contato
+- **Usuários & permissões** (só admin) — criar, editar, remover usuários
 
-### Formulário de contato → Mensagens no painel
+### Catálogo — como funciona
 
-A página `contato.html` está conectada ao Firestore: quando alguém preenche e envia o
-formulário, a mensagem cai direto na coleção `leads` e aparece na aba **Mensagens** do
-painel. Isso já está funcionando (não é mais ilustrativo) — só depende das chaves do
-Firebase estarem certas em `js/firebase-config.js` e das regras em `firestore.rules`
-estarem publicadas.
-
-### Upload de capa dos artigos — agora em WebP
-
-A capa dos artigos é convertida automaticamente para **WebP** antes de ser salva, tanto no
-modo inline (Firestore) quanto no modo Storage — a mesma otimização que já usamos no Plane
-Aviation. Se o navegador da pessoa não suportar exportação WebP (bem raro hoje em dia), o
-painel cai automaticamente para JPEG sem quebrar nada.
-
-### Como ativar
-
-1. Crie um projeto em [console.firebase.google.com](https://console.firebase.google.com)
-2. Ative **Authentication → método E-mail/senha**
-3. Crie um **Firestore Database** (modo produção)
-4. Cole as chaves do seu app web em `js/firebase-config.js` (tem instruções comentadas
-   no topo do arquivo) — **já preenchido com as chaves do projeto `medcontrol-e07c2`**
-5. Publique as regras de `firestore.rules` (Firebase Console → Firestore → Regras)
-6. Crie o primeiro usuário admin manualmente:
-   - Authentication → Adicionar usuário (e-mail + senha)
-   - Firestore → coleção `users` → documento com **ID = UID** desse usuário →
-     campos `{ name: "Seu nome", email: "seu@email.com", role: "admin" }`
-7. Acesse `admin.html`, faça login — a partir daqui você já cria os próximos
-   usuários direto pelo painel (aba Usuários & Permissões)
-
-### Sobre upload de imagem (capa do artigo)
-
-O Firebase Storage exige o plano pago (Blaze) do Firebase. Enquanto seu projeto
-estiver no plano gratuito (Spark), o painel salva a capa do artigo (já convertida
-pra WebP) direto no Firestore (`IMAGE_MODE: "inline"` em `js/firebase-config.js`).
-Se e quando você migrar pro plano Blaze, troque para `IMAGE_MODE: "storage"` e as
-capas WebP passam a subir pro Firebase Storage normalmente.
-
-### Blog agora é 100% dinâmico
-
-`blog.html` e `artigo.html` buscam os artigos direto do Firestore (coleção `articles`,
-filtrando por `status: "publicado"`). Não existem mais arquivos estáticos de artigo —
-tudo é criado, editado e publicado pelo painel. As regras em `firestore.rules` já
-liberam a leitura pública apenas dos artigos publicados.
+- Cada produto é **um item genérico**: não existe campo fixo por tipo de produto — dá pra
+  cadastrar qualquer coisa (equipamento, insumo, acessório) com os mesmos campos
+- A "descrição completa" e as "especificações adicionais" só aparecem no pop-up que abre
+  ao clicar no card — o card em si mostra só título, categoria e resumo curto
+- O grid público mostra 4 produtos por linha (2 no mobile, 3 no tablet) e pagina de 8 em 8
+- Assim como os artigos, a primeira vez que a consulta rodar no site publicado, o Firestore
+  provavelmente vai pedir pra criar um **índice composto** (status + createdAt) — é só clicar
+  no link que aparece no erro do console e criar, uma vez só
 
 ## Arquivos de suporte
 
-- `styles.css` — todos os estilos do site público (paleta, tipografia, componentes)
-- `script.js` — só atualiza o ano no rodapé do site público
-- `logo.svg` / `logo-branco.svg` — logos (colorido no header, branco no rodapé)
+- `styles.css` — todos os estilos do site público
+- `script.js` — atualiza o ano no rodapé
+- `logo.svg` / `logo-branco.svg` — logos
 - `hero-nurse.webp` / `hero-bg.jpg` — imagens do hero da home
-- `js/firebase-config.js` — configuração do Firebase usada pelo `admin.html` e pelo
-  formulário de `contato.html` (já preenchida com as chaves do projeto `medcontrol-e07c2`)
-- `firestore.rules` — regras de segurança pra colar no Firebase Console
-- `gen_site.py` — script Python que gera as páginas do site público (não inclui o admin.html,
-  que é mantido à parte por ter estrutura própria)
+- `phm-medcontrol-1.webp` — imagem do PHM na página de Produtos
+- `phm-medcontrol-2.webp` — imagem do PHM na página dedicada
+- `embalagens.webp`, `indicadores.webp`, `suporte.webp` — imagens das respectivas linhas de produto
+- `js/firebase-config.js` — configuração do Firebase (chaves do projeto `medcontrol-e07c2`)
+- `firestore.rules` — regras de segurança (inclui agora `users`, `articles`, `leads` e `catalog`)
+- `gen_site.py` — script Python que gera todas as páginas do site público (não inclui o
+  `admin.html`, mantido à parte)
 
 ## Testar localmente
 
 ```bash
 python3 -m http.server 8000
-# depois abra http://localhost:8000
 ```
-O painel (`admin.html`) e o envio do formulário de contato só funcionam de verdade
-depois que Authentication e Firestore estiverem ativados no Firebase Console.
 
 ## Deploy no GitHub Pages
 
 1. Subir todos os arquivos (exceto `gen_site.py`) na raiz do repo, branch `main`
 2. Settings → Pages → Source: `main` / `/ (root)`
-3. **Atenção:** `admin.html` fica publicamente acessível (como qualquer página estática),
-   mas só quem tiver login e permissão no Firestore consegue ver o conteúdo — a proteção
-   real é a regra do Firestore, não a URL.
+3. Publicar as regras atualizadas de `firestore.rules` no Firebase Console
 
 ## Editar conteúdo do site público
 
-- Cada página é um arquivo `.html` independente — edite direto nele
-- Se precisar mudar o header, footer ou botão do WhatsApp em **todas** as páginas de uma vez,
-  edite o `gen_site.py` e rode `python3 gen_site.py` de novo — ele regenera todos os HTMLs
-  do site público (não mexe no `admin.html`)
+- Cada página é um arquivo `.html` independente
+- Pra mudar header/footer/botão do WhatsApp em todas as páginas de uma vez: editar
+  `gen_site.py` e rodar `python3 gen_site.py` de novo
 
 ## Pendências / observações
 
-- `hero-nurse.webp` está com 21MB — vale comprimir antes de subir pra produção
-- Placeholders `[imagem]`, `[vídeo]`, `[logo]`, `[mapa]` — substituir por mídia real quando disponível
-- O painel precisa das chaves do Firebase preenchidas em `js/firebase-config.js` pra funcionar
-  (já estão preenchidas — falta só ativar Authentication + Firestore no console)
+- A linha "Sistema Sterifast" ainda está com placeholder `[imagem]` — quando tiver a
+  imagem real, é só me mandar que eu aplico do mesmo jeito que as outras
+- `blog.html`/`artigo.html`/`catalogo.html` podem pedir criação de índice composto no
+  Firestore na primeira consulta — normal, resolve uma vez só clicando no link do erro
+- Placeholders `[logo]`, `[vídeo]`, `[mapa]` ainda pendentes de mídia real

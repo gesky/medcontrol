@@ -1908,3 +1908,240 @@ h2 {
 .materials-table td.empty-cell {
   color: #b6b8b9;
 }
+
+/* ==========================================================================
+   Catálogo — grid de produtos + modal de detalhes
+   ========================================================================== */
+
+.catalog-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+@media (min-width: 640px) {
+  .catalog-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 900px) {
+  .catalog-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.catalog-card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--white);
+  border: 1px solid var(--gray-light);
+  border-radius: var(--radius);
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+  text-align: left;
+  font-family: var(--font-sans);
+  padding: 0;
+}
+
+.catalog-card:hover {
+  border-color: var(--blue);
+  transform: translateY(-3px);
+}
+
+.catalog-card .catalog-card-img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  display: block;
+  background-color: var(--gray-light);
+}
+
+.catalog-card .catalog-card-img.placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #9a9c9d;
+}
+
+.catalog-card-body {
+  padding: 1rem 1.1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1;
+}
+
+.catalog-card-body .cat-label {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--blue);
+}
+
+.catalog-card-body h3 {
+  font-size: 0.9375rem;
+  line-height: 1.3;
+  margin: 0;
+  color: var(--text);
+}
+
+.catalog-card-body p {
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: #6b6d6e;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.catalog-card-cta {
+  margin-top: auto;
+  padding-top: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--blue);
+}
+
+/* Paginação */
+.catalog-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  margin-top: 3rem;
+}
+
+.catalog-pagination button {
+  background: var(--white);
+  border: 1px solid var(--gray-light);
+  border-radius: 999px;
+  padding: 0.6rem 1.25rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text);
+  cursor: pointer;
+  font-family: var(--font-sans);
+}
+
+.catalog-pagination button:hover:not(:disabled) {
+  border-color: var(--blue);
+  color: var(--blue);
+}
+
+.catalog-pagination button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.catalog-pagination .page-info {
+  font-size: 0.8125rem;
+  color: #6b6d6e;
+  font-weight: 600;
+}
+
+/* Modal do produto (público) */
+.catalog-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 24, 28, 0.55);
+  display: none;
+  align-items: flex-start;
+  justify-content: center;
+  z-index: 200;
+  padding: 2rem 1rem;
+  overflow-y: auto;
+}
+
+.catalog-modal-overlay.open {
+  display: flex;
+}
+
+.catalog-modal {
+  background: var(--white);
+  border-radius: 12px;
+  width: 100%;
+  max-width: 40rem;
+  margin: auto;
+  overflow: hidden;
+}
+
+.catalog-modal-img {
+  width: 100%;
+  max-height: 320px;
+  object-fit: cover;
+  display: block;
+}
+
+.catalog-modal-body {
+  padding: 2rem;
+}
+
+.catalog-modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 999px;
+  width: 2.25rem;
+  height: 2.25rem;
+  font-size: 1.125rem;
+  cursor: pointer;
+  color: var(--text);
+  line-height: 1;
+}
+
+.catalog-modal-wrap {
+  position: relative;
+}
+
+.catalog-modal-body .cat-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--blue);
+}
+
+.catalog-modal-body h2 {
+  font-size: 1.5rem;
+  margin: 0.5rem 0 1.25rem 0;
+}
+
+.catalog-modal-body .description p {
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: #55585a;
+  margin: 0 0 1rem 0;
+}
+
+.catalog-modal-specs {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--gray-light);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.catalog-modal-specs .spec-line {
+  font-size: 0.875rem;
+  color: var(--text);
+}
+
+.catalog-modal-specs .spec-line b {
+  color: var(--blue);
+}

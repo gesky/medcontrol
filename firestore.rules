@@ -46,6 +46,13 @@ service cloud.firestore {
       allow write: if isEditorOrAdmin();
     }
 
+    match /catalog/{itemId} {
+      // Mesmo modelo dos artigos: público só vê produtos publicados,
+      // só editor/admin logado pode criar, editar ou excluir.
+      allow read: if resource.data.status == "publicado" || isEditorOrAdmin();
+      allow write: if isEditorOrAdmin();
+    }
+
     match /leads/{leadId} {
       // Qualquer visitante pode enviar uma mensagem pelo formulário de contato,
       // mas só quem está logado no painel (editor/admin) pode ler, alterar

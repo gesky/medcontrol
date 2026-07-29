@@ -10,6 +10,7 @@ import os
 WA_LINK = "https://wa.me/551432087108?text=Ol%C3%A1%2C%20gostaria%20de%20falar%20com%20um%20especialista%20MedControl."
 
 NAV_ITEMS = [
+    ("catalogo.html", "Catálogo"),
     ("linhas.html", "Produtos"),
     ("sobre.html", "Sobre"),
     ("blog.html", "Blog"),
@@ -216,6 +217,7 @@ def footer():
           <h3>Navegação</h3>
           <ul>
             <li><a href="index.html">Início</a></li>
+            <li><a href="catalogo.html">Catálogo</a></li>
             <li><a href="sobre.html">Sobre</a></li>
             <li><a href="linhas.html">Produtos</a></li>
             <li><a href="depoimentos.html">Depoimentos</a></li>
@@ -228,6 +230,7 @@ def footer():
           <h3>Produtos</h3>
           <ul>
             <li><a href="phm-medcontrol.html">Equipamentos em comodato</a></li>
+            <li><a href="linhas.html#sterifast">Sistema Sterifast</a></li>
             <li><a href="linhas.html#embalagens">Embalagens para esterilização</a></li>
             <li><a href="linhas.html#indicadores">Indicadores e controle de processo</a></li>
             <li><a href="linhas.html#suporte">Suporte técnico e capacitação</a></li>
@@ -357,18 +360,24 @@ home_body = f'''    <!-- ===================== HERO ===================== -->
           </article>
           <article class="product-card">
             <div class="product-card-top"><span>02</span><span>Linha</span></div>
+            <h3>Sistema Sterifast</h3>
+            <p>Rastreabilidade técnica completa para a sua CME, com etiquetas automatizadas, registro fotográfico e tablets exclusivos por setor.</p>
+            <a href="linhas.html#sterifast" class="product-card-cta">Saiba mais <span aria-hidden="true">→</span></a>
+          </article>
+          <article class="product-card">
+            <div class="product-card-top"><span>03</span><span>Linha</span></div>
             <h3>Embalagens para esterilização</h3>
             <p>Papel grau cirúrgico, bobinas tubulares e envelopes com resistência mecânica validada, em conformidade com ANVISA e normas internacionais.</p>
             <a href="linhas.html#embalagens" class="product-card-cta">Saiba mais <span aria-hidden="true">→</span></a>
           </article>
           <article class="product-card">
-            <div class="product-card-top"><span>03</span><span>Linha</span></div>
+            <div class="product-card-top"><span>04</span><span>Linha</span></div>
             <h3>Indicadores e controle de processo</h3>
             <p>Indicadores biológicos, químicos e integradores Tipo 5 que validam cada parâmetro do ciclo, com rastreabilidade auditável.</p>
             <a href="linhas.html#indicadores" class="product-card-cta">Saiba mais <span aria-hidden="true">→</span></a>
           </article>
           <article class="product-card">
-            <div class="product-card-top"><span>04</span><span>Linha</span></div>
+            <div class="product-card-top"><span>05</span><span>Linha</span></div>
             <h3>Suporte técnico e capacitação</h3>
             <p>Atendimento consultivo presencial, validação de processos e o programa CME Masterclass by MedControl.</p>
             <a href="linhas.html#suporte" class="product-card-cta">Saiba mais <span aria-hidden="true">→</span></a>
@@ -661,12 +670,35 @@ linhas_body = f'''{page_banner(
             </div>
           </div>
 
+          <div class="line-block" id="sterifast">
+            <div class="line-media">
+              <div class="media-placeholder">[imagem]</div>
+            </div>
+            <div class="line-copy">
+              <span class="line-number">02 · Linha</span>
+              <h2>Sistema Sterifast — rastreabilidade técnica para CMEs</h2>
+              <p>
+                Sistema de rastreabilidade desenvolvido para atender integralmente às exigências
+                operacionais da sua Central de Material Esterilizado, assegurando controle total
+                do ciclo de reprocessamento — do recebimento à liberação dos materiais. Emite
+                etiquetas automaticamente com roteamento por tipo e origem do material, reduzindo
+                falhas operacionais, e registra fotograficamente cada etapa do processo, com
+                documentação visual completa. A operação é feita por tablets exclusivos, com
+                capas setorizadas que evitam contaminação cruzada, sobre infraestrutura Plug and
+                Play que agiliza a implantação e facilita a higienização.
+              </p>
+              <a href="{WA_LINK}" target="_blank" rel="noopener noreferrer" class="btn btn-outline-blue">
+                Falar com um especialista <span aria-hidden="true">→</span>
+              </a>
+            </div>
+          </div>
+
           <div class="line-block" id="embalagens">
             <div class="line-media">
               <img src="embalagens.webp" alt="Embalagens para esterilização MedControl" />
             </div>
             <div class="line-copy">
-              <span class="line-number">02 · Linha</span>
+              <span class="line-number">03 · Linha</span>
               <h2>Embalagens para esterilização</h2>
               <p>
                 Papel grau cirúrgico, bobinas tubulares e envelopes com resistência mecânica
@@ -686,7 +718,7 @@ linhas_body = f'''{page_banner(
               <img src="indicadores.webp" alt="Indicadores e controle de processo MedControl" />
             </div>
             <div class="line-copy">
-              <span class="line-number">03 · Linha</span>
+              <span class="line-number">04 · Linha</span>
               <h2>Indicadores e controle de processo</h2>
               <p>
                 Indicadores biológicos, químicos e integradores Tipo 5 que validam cada
@@ -705,7 +737,7 @@ linhas_body = f'''{page_banner(
               <img src="suporte.webp" alt="Suporte técnico e capacitação MedControl" />
             </div>
             <div class="line-copy">
-              <span class="line-number">04 · Linha</span>
+              <span class="line-number">05 · Linha</span>
               <h2>Suporte técnico e capacitação</h2>
               <p>
                 Atendimento consultivo presencial, validação de processos, treinamento de
@@ -1327,6 +1359,190 @@ page = (
     + whatsapp_float(CONTACT_FORM_SCRIPTS)
 )
 write_page("contato.html", page)
+
+# =============================================================================
+# CATÁLOGO — grid dinâmica (Firestore) + modal de detalhes
+# =============================================================================
+
+CATALOG_SCRIPTS = '''
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script>
+  (function () {
+    const grid = document.getElementById("catalogGrid");
+    const pagination = document.getElementById("catalogPagination");
+    if (!grid) return;
+
+    const PAGE_SIZE = 8;
+    let items = [];
+    let currentPage = 0;
+
+    function esc(s) {
+      return String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+    }
+    function paragraphs(text) {
+      return (text || "").split(/\\n+/).filter(Boolean).map(p => "<p>" + esc(p) + "</p>").join("");
+    }
+    function specLines(text) {
+      return (text || "").split(/\\n+/).filter(Boolean).map(function (line) {
+        const idx = line.indexOf(":");
+        if (idx === -1) return '<div class="spec-line">' + esc(line) + '</div>';
+        const k = line.slice(0, idx).trim();
+        const v = line.slice(idx + 1).trim();
+        return '<div class="spec-line"><b>' + esc(k) + ':</b> ' + esc(v) + '</div>';
+      }).join("");
+    }
+
+    function renderPage() {
+      const start = currentPage * PAGE_SIZE;
+      const pageItems = items.slice(start, start + PAGE_SIZE);
+      if (!pageItems.length) {
+        grid.innerHTML = '<p style="grid-column:1/-1;color:#6b6d6e;">Nenhum produto publicado ainda. Volte em breve.</p>';
+        pagination.style.display = "none";
+        return;
+      }
+      let html = "";
+      pageItems.forEach(function (p) {
+        const img = p.imageUrl
+          ? '<img src="' + esc(p.imageUrl) + '" alt="' + esc(p.title || "") + '" class="catalog-card-img">'
+          : '<div class="catalog-card-img placeholder">[imagem]</div>';
+        html += ''
+          + '<button type="button" class="catalog-card" data-id="' + p.id + '">'
+          +   img
+          +   '<div class="catalog-card-body">'
+          +     (p.category ? '<span class="cat-label">' + esc(p.category) + '</span>' : '')
+          +     '<h3>' + esc(p.title || "(sem título)") + '</h3>'
+          +     '<p>' + esc(p.excerpt || "") + '</p>'
+          +     '<span class="catalog-card-cta">Ver detalhes →</span>'
+          +   '</div>'
+          + '</button>';
+      });
+      grid.innerHTML = html;
+
+      grid.querySelectorAll(".catalog-card").forEach(function (card) {
+        card.onclick = function () {
+          const p = items.find(function (x) { return x.id === card.dataset.id; });
+          if (p) openModal(p);
+        };
+      });
+
+      const totalPages = Math.max(1, Math.ceil(items.length / PAGE_SIZE));
+      if (totalPages > 1) {
+        pagination.style.display = "flex";
+        pagination.innerHTML = ''
+          + '<button type="button" id="catPrev"' + (currentPage === 0 ? " disabled" : "") + '>← Anterior</button>'
+          + '<span class="page-info">Página ' + (currentPage + 1) + ' de ' + totalPages + '</span>'
+          + '<button type="button" id="catNext"' + (currentPage >= totalPages - 1 ? " disabled" : "") + '>Próxima →</button>';
+        const prevBtn = document.getElementById("catPrev");
+        const nextBtn = document.getElementById("catNext");
+        if (prevBtn) prevBtn.onclick = function () { currentPage--; renderPage(); window.scrollTo({ top: grid.offsetTop - 100, behavior: "smooth" }); };
+        if (nextBtn) nextBtn.onclick = function () { currentPage++; renderPage(); window.scrollTo({ top: grid.offsetTop - 100, behavior: "smooth" }); };
+      } else {
+        pagination.style.display = "none";
+      }
+    }
+
+    function openModal(p) {
+      const overlay = document.getElementById("catalogModalOverlay");
+      const img = document.getElementById("catalogModalImg");
+      const label = document.getElementById("catalogModalLabel");
+      const title = document.getElementById("catalogModalTitle");
+      const desc = document.getElementById("catalogModalDesc");
+      const specsWrap = document.getElementById("catalogModalSpecsWrap");
+      const specs = document.getElementById("catalogModalSpecs");
+
+      if (p.imageUrl) { img.src = p.imageUrl; img.style.display = "block"; }
+      else { img.style.display = "none"; }
+      label.textContent = p.category || "";
+      label.style.display = p.category ? "block" : "none";
+      title.textContent = p.title || "";
+      desc.innerHTML = paragraphs(p.description || p.excerpt);
+      if (p.specs && p.specs.trim()) {
+        specs.innerHTML = specLines(p.specs);
+        specsWrap.style.display = "flex";
+      } else {
+        specsWrap.style.display = "none";
+      }
+      overlay.classList.add("open");
+    }
+
+    document.getElementById("catalogModalClose").onclick = function () {
+      document.getElementById("catalogModalOverlay").classList.remove("open");
+    };
+    document.getElementById("catalogModalOverlay").onclick = function (e) {
+      if (e.target.id === "catalogModalOverlay") e.currentTarget.classList.remove("open");
+    };
+
+    if (!window.MC || !MC.configured || !MC.db) {
+      grid.innerHTML = '<p style="grid-column:1/-1;color:#6b6d6e;">Não foi possível carregar o catálogo no momento.</p>';
+      return;
+    }
+
+    MC.db.collection("catalog").where("status", "==", "publicado").orderBy("createdAt", "desc").get()
+      .then(function (snap) {
+        items = [];
+        snap.forEach(function (doc) { items.push({ id: doc.id, ...doc.data() }); });
+        renderPage();
+      })
+      .catch(function (err) {
+        grid.innerHTML = '<p style="grid-column:1/-1;color:#6b6d6e;">Erro ao carregar catálogo: ' + esc(err.message) + '</p>';
+      });
+  })();
+  </script>
+'''
+
+catalogo_body = f'''{page_banner(
+    "Catálogo",
+    "Catálogo de produtos MedControl.",
+    "Explore nossa linha completa de equipamentos, insumos e acessórios para esterilização hospitalar. Toque em um produto para ver todos os detalhes.",
+    "Catálogo",
+)}
+    <section>
+      <div class="container section-inner">
+        <div class="catalog-grid" id="catalogGrid">
+          <p style="grid-column:1/-1;color:#6b6d6e;">Carregando catálogo…</p>
+        </div>
+        <div class="catalog-pagination" id="catalogPagination" style="display:none;"></div>
+      </div>
+    </section>
+  </main>
+
+'''
+
+page = (
+    head(
+        "Catálogo MedControl — Produtos para Esterilização Hospitalar",
+        "Conheça o catálogo completo da MedControl: equipamentos, insumos, indicadores e acessórios para centrais de esterilização.",
+    )
+    + header(active="catalogo.html")
+    + catalogo_body
+    + footer()
+    + whatsapp_float(CATALOG_SCRIPTS)
+)
+
+# Modal de detalhes do produto (injetado antes do fechamento do </body>)
+CATALOG_MODAL_HTML = '''
+  <div class="catalog-modal-overlay" id="catalogModalOverlay">
+    <div class="catalog-modal">
+      <div class="catalog-modal-wrap">
+        <button type="button" class="catalog-modal-close" id="catalogModalClose">✕</button>
+        <img id="catalogModalImg" class="catalog-modal-img" src="" alt="" />
+        <div class="catalog-modal-body">
+          <span class="cat-label" id="catalogModalLabel"></span>
+          <h2 id="catalogModalTitle"></h2>
+          <div class="description" id="catalogModalDesc"></div>
+          <div class="catalog-modal-specs" id="catalogModalSpecsWrap" style="display:none;">
+            <div id="catalogModalSpecs"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+'''
+page = page.replace("</body>\n</html>", CATALOG_MODAL_HTML + "</body>\n</html>")
+
+write_page("catalogo.html", page)
 
 # =============================================================================
 # BLOG — listagem dinâmica (Firestore) + página de artigo dinâmica
