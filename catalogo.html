@@ -66,6 +66,25 @@
     </section>
   </main>
 
+  <!-- Modal de detalhes do produto — precisa existir no DOM ANTES do script
+       que referencia esses IDs rodar, por isso fica aqui e não lá embaixo -->
+  <div class="catalog-modal-overlay" id="catalogModalOverlay">
+    <div class="catalog-modal">
+      <div class="catalog-modal-wrap">
+        <button type="button" class="catalog-modal-close" id="catalogModalClose">✕</button>
+        <img id="catalogModalImg" class="catalog-modal-img" src="" alt="" />
+        <div class="catalog-modal-body">
+          <span class="cat-label" id="catalogModalLabel"></span>
+          <h2 id="catalogModalTitle"></h2>
+          <div class="description" id="catalogModalDesc"></div>
+          <div class="catalog-modal-specs" id="catalogModalSpecsWrap" style="display:none;">
+            <div id="catalogModalSpecs"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ===================== FOOTER ===================== -->
   <footer class="site-footer">
     <div class="container">
@@ -271,22 +290,5 @@
       });
   })();
   </script>
-
-  <div class="catalog-modal-overlay" id="catalogModalOverlay">
-    <div class="catalog-modal">
-      <div class="catalog-modal-wrap">
-        <button type="button" class="catalog-modal-close" id="catalogModalClose">✕</button>
-        <img id="catalogModalImg" class="catalog-modal-img" src="" alt="" />
-        <div class="catalog-modal-body">
-          <span class="cat-label" id="catalogModalLabel"></span>
-          <h2 id="catalogModalTitle"></h2>
-          <div class="description" id="catalogModalDesc"></div>
-          <div class="catalog-modal-specs" id="catalogModalSpecsWrap" style="display:none;">
-            <div id="catalogModalSpecs"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 </body>
 </html>
