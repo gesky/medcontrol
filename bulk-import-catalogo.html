@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Importar Catálogo | MedControl</title>
+<link rel="icon" href="favicon.ico" type="image/x-icon" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" />
+<link rel="stylesheet" href="styles.css">
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<style>
+  body { background: #f7f7f8; }
+  .wrap { max-width: 900px; margin: 0 auto; padding: 2.5rem 1.5rem 5rem; }
+  .top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
+  .top img { height: 28px; }
+  h1 { font-size: 1.375rem; font-weight: 700; margin: 0 0 .5rem 0; color: var(--text); }
+  .muted { color: #6b6d6e; font-size: .875rem; line-height: 1.6; }
+  .card { background: #fff; border: 1px solid #e3e4e5; border-radius: 10px; padding: 1.25rem 1.5rem; margin-bottom: .9rem; }
+  .card-head { display: flex; align-items: flex-start; gap: .75rem; }
+  .card-head input[type="checkbox"] { margin-top: .3rem; width: 1.1rem; height: 1.1rem; flex-shrink: 0; }
+  .card-title { font-weight: 700; font-size: .9375rem; color: var(--text); }
+  .card-cat { font-size: .6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--blue); margin-bottom: .2rem; display: block; }
+  .card-excerpt { font-size: .8125rem; color: #55585a; margin-top: .35rem; line-height: 1.55; }
+  details { margin-top: .6rem; }
+  summary { cursor: pointer; font-size: .75rem; font-weight: 700; color: var(--blue); text-transform: uppercase; letter-spacing: .04em; }
+  .specs-preview { font-size: .8125rem; color: #55585a; white-space: pre-wrap; margin-top: .5rem; line-height: 1.6; background: #f7f7f8; padding: .75rem; border-radius: 6px; }
+  .desc-preview { font-size: .8125rem; color: #55585a; white-space: pre-wrap; margin-top: .5rem; line-height: 1.6; }
+  .status-line { font-size: .75rem; font-weight: 700; margin-top: .5rem; }
+  .status-line.ok { color: #1a7f47; }
+  .status-line.err { color: var(--accent); }
+  .status-line.pending { color: #9a9c9d; }
+  .toolbar { position: sticky; top: 0; z-index: 10; background: rgba(247,247,248,.95); backdrop-filter: blur(6px); padding: 1rem 0; margin-bottom: 1.5rem; border-bottom: 1px solid #e3e4e5; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+  .btn-import { background: var(--blue); color: #fff; border: none; border-radius: 999px; padding: .75rem 1.5rem; font-size: .8125rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; cursor: pointer; font-family: var(--font-sans); }
+  .btn-import:hover:not(:disabled) { background: var(--blue-dark); }
+  .btn-import:disabled { opacity: .5; cursor: default; }
+  .link-btn { background: none; border: none; color: var(--blue); text-decoration: underline; font-size: .8125rem; cursor: pointer; font-family: var(--font-sans); padding: 0; }
+  .progress-info { font-size: .8125rem; color: #55585a; font-weight: 600; }
+  .auth-card { max-width: 22rem; margin: 4rem auto; background: #fff; border: 1px solid #e3e4e5; border-radius: 10px; padding: 2rem; }
+  .auth-card .fld { margin-bottom: 1rem; }
+  .auth-card label { display: block; font-size: .75rem; font-weight: 700; text-transform: uppercase; color: #6b6d6e; margin-bottom: .35rem; }
+  .auth-card input { width: 100%; border: 1px solid #cfd1d2; border-radius: 8px; padding: .65rem .75rem; font-size: .875rem; font-family: var(--font-sans); }
+  .msg-box { font-size: .8125rem; padding: .6rem .75rem; border-radius: 8px; margin-bottom: 1rem; }
+  .msg-box.err { background: #fdecec; color: var(--accent); }
+</style>
+</head>
+<body>
+
+<div id="view-login" class="wrap" style="display:none;">
+  <div class="auth-card">
+    <h1>Importar catálogo</h1>
+    <p class="muted" style="margin-bottom:1.25rem;">Faça login com sua conta de admin/editor da MedControl.</p>
+    <div id="loginMsg"></div>
+    <div class="fld"><label>E-mail</label><input type="email" id="loginEmail"></div>
+    <div class="fld"><label>Senha</label><input type="password" id="loginPass"></div>
+    <button class="btn-import" style="width:100%;justify-content:center;" id="loginBtn">Entrar</button>
+  </div>
+</div>
+
+<div id="view-app" class="wrap" style="display:none;">
+  <div class="top">
+    <img src="logo.svg" alt="MedControl" />
+    <a href="admin.html" class="link-btn">← Voltar para o painel</a>
+  </div>
+  <h1>Importar produtos do catálogo em PDF</h1>
+  <p class="muted">
+    Extraí e organizei os produtos do catálogo que você me mandou. Revise abaixo — desmarque o que
+    não quiser importar agora — e clique em "Importar selecionados". Cada item entra como
+    <b>rascunho</b>, então nada aparece no site público até você revisar e publicar pelo painel
+    normal. Nenhum item tem foto ainda (o PDF não tinha fotos individuais reaproveitáveis) —
+    adicione depois editando cada produto no painel.
+  </p>
+
+  <div class="toolbar">
+    <button class="btn-import" id="importBtn">Importar selecionados</button>
+    <button class="link-btn" id="selectAllBtn">Marcar todos</button>
+    <button class="link-btn" id="selectNoneBtn">Desmarcar todos</button>
+    <span class="progress-info" id="progressInfo"></span>
+  </div>
+
+  <div id="productList"></div>
+</div>
+
+<script src="js/firebase-config.js"></script>
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id);
+
+  const PRODUCTS = [
+    {
+      title: "Etiquetas para esterilização e rastreabilidade (linha LB)",
+      category: "Rastreabilidade",
+      excerpt: "Etiquetas para vapor, peróxido de hidrogênio e identificação de materiais, em diferentes formatos e dimensões.",
+      description: "Linha completa de etiquetas para o controle e a rastreabilidade da esterilização, cobrindo processos a vapor e a peróxido de hidrogênio, com opções de preenchimento manual e indicador químico integrado.",
+      specs: "LB-01: Etiqueta para Esterilização em Vapor — 90x50mm\nLB-02: Etiqueta para Esterilização em Vapor com Indicador Químico e 3 cortes — 102x56mm\nLB-03: Etiqueta para Esterilização em Vapor de Procedimento (preenchimento manual) — 90x50mm\nLB-04: Mini Etiqueta para Esterilização — 65x35mm\nLB-05: Etiqueta para Etiquetadora — 26x26mm\nLB-06: Etiqueta para Vapor sem Indicador Químico — 90x50mm\nLB-07: Etiqueta para Peróxido sem Indicador Químico — 90x50mm\nLB-08: Etiqueta para Material Desinfectado — 90x50mm\nLB-09: Etiqueta para Peróxido de Hidrogênio — 90x50mm\nTambém disponíveis: etiquetas coloridas avulsas e etiquetas coloridas para etiquetadora"
+    },
+    {
+      title: "Acessórios para rastreabilidade",
+      category: "Rastreabilidade",
+      excerpt: "Marcadores de instrumental, etiquetadora manual, impressora Zebra e pulseiras de identificação.",
+      description: "Acessórios complementares ao sistema Sterifast e à rotina de identificação da CME: marcadores de instrumental, etiquetadora manual, impressora térmica para etiquetas e pulseiras de identificação para adulto e neonatal.",
+      specs: "Marcadores de instrumental\nEtiquetadora manual\nImpressora Zebra (etiquetas)\nPulseiras de identificação — Adulto e Neonatal"
+    },
+    {
+      title: "Testes de eficácia para lavadoras",
+      category: "Limpeza e monitoração",
+      excerpt: "Testes de validação para lavadoras, termodesinfectoras e equipamentos canulados.",
+      description: "Conjunto de testes para monitorar a eficácia do processo de limpeza automatizada, incluindo teste de cavitação para lavadoras ultrassônicas e teste de resíduo de proteína.",
+      specs: "UT-01: Teste de Lavadora, Termodesinfectora e Canulados\nTC-01: Teste de Cavitação MedControl MD-W120\nTP-01: Teste de Proteína"
+    },
+    {
+      title: "Saneantes para limpeza hospitalar",
+      category: "Limpeza e monitoração",
+      excerpt: "Linha de saneantes regularizados para a rotina de limpeza da central de esterilização.",
+      description: "Produtos saneantes formulados para uso hospitalar, dentro das exigências regulatórias para ambientes de saúde."
+    },
+    {
+      title: "Suportes para lavadora ultrassônica",
+      category: "Limpeza e monitoração",
+      excerpt: "Suportes em inox e suporte canulado para organização durante o ciclo de lavagem.",
+      description: "Suportes desenvolvidos para acomodar instrumentais rígidos e canulados dentro da lavadora ultrassônica, otimizando o posicionamento durante o ciclo.",
+      specs: "Suporte inox\nSuporte canulado"
+    },
+    {
+      title: "Lavadora ultrassônica",
+      category: "Limpeza e monitoração",
+      excerpt: "Lavadora ultrassônica MedControl, disponível também com sistema de impressão integrado.",
+      description: "Equipamento para limpeza por ultrassom de instrumentais cirúrgicos, com opção de sistema de impressão integrado para documentação do ciclo."
+    },
+    {
+      title: "Lavanderia hospitalar",
+      category: "Limpeza e monitoração",
+      excerpt: "Linha líquida completa e de alto rendimento para lavanderia hospitalar, produtos regularizados.",
+      description: "Linha completa de produtos líquidos de alto rendimento para lavanderia hospitalar, todos regularizados junto aos órgãos competentes."
+    },
+    {
+      title: "Tratamento de piso",
+      category: "Limpeza e monitoração",
+      excerpt: "Linha completa Tecpon de alto desempenho para tratamento de piso hospitalar, produtos regularizados.",
+      description: "Linha Tecpon completa para tratamento de piso em ambientes hospitalares, com alto desempenho e produtos regularizados."
+    },
+    {
+      title: "Papel grau cirúrgico",
+      category: "Embalagens para esterilização",
+      excerpt: "Bobinas de papel grau cirúrgico em diversas larguras, de 5cm a 40cm, todas com 100m.",
+      description: "Papel grau cirúrgico para embalagem de materiais a serem esterilizados, garantindo barreira estéril adequada durante o processo e o armazenamento.",
+      specs: "Larguras disponíveis (todas com 100m): 05cm, 08cm, 10cm, 12cm, 15cm, 20cm, 25cm, 30cm, 40cm"
+    },
+    {
+      title: "Papel Tyvek",
+      category: "Embalagens para esterilização",
+      excerpt: "Bobinas de papel Tyvek em diversas larguras, de 8cm a 40cm, com 70m.",
+      description: "Papel Tyvek para embalagens de esterilização de alta performance, indicado para processos que exigem barreira estéril superior.",
+      specs: "Larguras disponíveis (todas com 70m): 8cm, 10cm, 15cm, 20cm, 25cm, 30cm, 35cm, 40cm"
+    },
+    {
+      title: "Invólucro SMS",
+      category: "Embalagens para esterilização",
+      excerpt: "Invólucro não-tecido SMS, disponível nas gramaturas leve, pesada e super pesada.",
+      description: "Invólucro SMS para embalagem de kits e conjuntos cirúrgicos, com opções de gramatura conforme o peso e a complexidade do material a ser esterilizado.",
+      specs: "Gramaturas: Leve, Pesado, Super Pesado"
+    },
+    {
+      title: "Acessórios para embalagens",
+      category: "Embalagens para esterilização",
+      excerpt: "Teste de seladora, suporte e cortador, e seladora automática.",
+      description: "Itens complementares à linha de embalagens: teste de validação de seladora, suporte com cortador para bobinas, e seladora automática para o fechamento das embalagens.",
+      specs: "TS-01: Teste de Seladora\nSuporte e cortador\nSeladora automática"
+    },
+    {
+      title: "Indicadores biológicos BI Test",
+      category: "Indicadores biológicos",
+      excerpt: "Indicadores biológicos de resposta rápida para peróxido de hidrogênio e vapor.",
+      description: "Indicadores biológicos BI Test para validação da eficácia dos ciclos de esterilização, com tempos de resposta que vão de 20 minutos a 3 horas, conforme o processo utilizado.",
+      specs: "Indicador Biológico Peróxido de Hidrogênio — resposta em 20min\nIndicador Biológico Vapor — resposta em 20min\nIndicador Biológico Vapor — resposta em 1h\nIndicador Biológico Vapor — resposta em 3h"
+    },
+    {
+      title: "Pacote desafio com indicador biológico",
+      category: "Indicadores biológicos",
+      excerpt: "Pacote desafio disponível para 1 hora e 3 horas, processo a vapor.",
+      description: "Pacote desafio com indicador biológico para validação de rotina, disponível nas configurações Ampola + Contra Teste + Integrador Tipo 5, nos tempos de 1 hora e 3 horas para o processo a vapor."
+    },
+    {
+      title: "Acessórios para indicadores biológicos",
+      category: "Indicadores biológicos",
+      excerpt: "PCD inox, quebra-ampola, incubadora 6 em 1 e autoclave de baixa temperatura.",
+      description: "Equipamentos de apoio à rotina de indicadores biológicos: PCD em inox, quebra-ampola, incubadora 6 em 1 para leitura dos resultados, e autoclave de baixa temperatura.",
+      specs: "PCD inox\nQuebra ampola inox\nIncubadora 6 em 1\nAutoclave de baixa temperatura"
+    },
+    {
+      title: "Indicadores e integradores químicos",
+      category: "Indicadores biológicos",
+      excerpt: "Indicador tipo 4, integrador tipo 5, emulador tipo 6, Bowie & Dick e pacote desafio.",
+      description: "Linha completa de indicadores e integradores químicos para o controle de processo em cada ciclo de esterilização, cobrindo os principais tipos exigidos por norma.",
+      specs: "CI-04P: Indicador Químico Tipo 4 — Peróxido de Hidrogênio\nCI-05: Integrador Químico Tipo 5\nCI-06: Emulador Químico Tipo 6\nBD-02: Bowie & Dick Tipo 2, pacote pronto\nPacote Desafio — Integrador Químico Tipo 5, vapor"
+    },
+    {
+      title: "Escovas reutilizáveis para limpeza de instrumental",
+      category: "Escovas para limpeza",
+      excerpt: "Linha de escovas reutilizáveis com cerdas em diferentes durezas, para limpeza de instrumental.",
+      description: "Escovas reutilizáveis desenvolvidas para a limpeza manual de instrumental cirúrgico, com opções de cerdas extra flexíveis, flexíveis, rígidas e extra rígidas.",
+      specs: "FB-20-001: escova total 19,5cm, cerdas 50mm, largura 45mm, cerdas auxiliares 30mm\nFB-22-001 (cerdas extra flexíveis): total 22cm, cerdas 78mm, largura 17mm, altura 10mm\nFB-22-002 (cerdas flexíveis): total 22cm, cerdas 78mm, largura 17mm, altura 20mm\nFB-22-003 (cerdas rígidas): total 22cm, cerdas 78mm, largura 17mm, altura 15mm\nFB-22-004 (cerdas extra rígidas): total 22cm, cerdas 78mm, largura 17mm, altura 25mm\nFBC5-T013: total 18cm, cerdas 40mm, cerdas auxiliares 10mm"
+    },
+    {
+      title: "Escovas para uso geral",
+      category: "Escovas para limpeza",
+      excerpt: "Escovas com cerdas em latão, nylon e aço para uso geral na CME.",
+      description: "Escovas de uso geral com diferentes materiais de cerda, indicadas conforme o tipo de superfície e resistência necessária na limpeza.",
+      specs: "FBC5-D01: total 18cm, cerdas 35mm, altura 10mm\nFBC5-T001 (cerdas em latão): total 17,5cm, cerdas 30mm, altura 13mm\nFBC5-T003 (cerdas em nylon): total 17,5cm, cerdas 30mm, altura 13mm\nFBC5-T004 (cerdas em aço): total 17,5cm, cerdas 30mm, altura 13mm"
+    },
+    {
+      title: "Escovas para uso geral e limpeza de jarros",
+      category: "Escovas para limpeza",
+      excerpt: "Escovas de maior porte para limpeza de jarros e uso geral/instrumental.",
+      description: "Escovas de maior comprimento voltadas à limpeza de jarros e uso geral em instrumentais de grande porte.",
+      specs: "FB-21-001 (limpeza de jarros): total 34cm, cerdas 120mm, altura 70mm\nFBC5-H01 (uso geral/instrumental grande): total 22cm, cerdas 75mm, altura 15mm"
+    },
+    {
+      title: "Escovas de limpeza com cabos em aço inox",
+      category: "Escovas para limpeza",
+      excerpt: "Escovas com várias fileiras de cerdas, cabo em aço inox, para endoscópios e canulados.",
+      description: "Variedade de escovas com cabo em aço inox, desenvolvidas para atender diferentes necessidades de limpeza de endoscópios e canulados, com diâmetros de cerda variados.",
+      specs: "FBC3-MCB-65-3: 65cm, cerdas 3mm\nFBC3-MCB-65-4: 65cm, cerdas 4mm\nFBC3-MCB-65-5: 65cm, cerdas 5mm\nFBC3-MCB-65-6: 65cm, cerdas 6mm\nFBC3-MCB-65-8: 65cm, cerdas 8mm\nFBC3-MCB-65-10: 65cm, cerdas 10mm\nFBC3-MCB-65-15: 65cm, cerdas 15mm"
+    },
+    {
+      title: "Escovas para canulados com cabo em plástico",
+      category: "Escovas para limpeza",
+      excerpt: "Escovas para limpeza de canulados, cabo em plástico, em diversos comprimentos e diâmetros.",
+      description: "Linha de escovas com cabo plástico para limpeza de canulados, com opções de 30cm e 60cm de comprimento e diâmetros de cerda de 3mm a 20mm.",
+      specs: "FBC3-C300-3.0: 30cm, cerdas 3mm, comprimento cerdas 50mm\nFBC3-C300-4.0: 30cm, cerdas 4mm, comprimento cerdas 50mm\nFBC3-C300-5.0: 30cm, cerdas 5mm, comprimento cerdas 50mm\nFBC3-C600-5.0: 60cm, cerdas 5mm, comprimento cerdas 50mm\nFBC3-C600-7.0: 60cm, cerdas 7mm, comprimento cerdas 50mm\nFBC3-C600-10: 60cm, cerdas 10mm, comprimento cerdas 50mm\nFBC3-C600-15: 60cm, cerdas 15mm, comprimento cerdas 50mm\nFBC3-C600-20: 60cm, cerdas 20mm, comprimento cerdas 50mm"
+    },
+    {
+      title: "Escovas tamanho grande para canulados",
+      category: "Escovas para limpeza",
+      excerpt: "Escovas de maior diâmetro para canulados, cabo em plástico.",
+      description: "Versões de maior diâmetro de cerda da linha de escovas para canulados com cabo plástico, indicadas para lumens mais largos.",
+      specs: "FBC3-D600-5.0: 60cm, cerdas 5mm, comprimento cerdas 50mm\nFBC3-D600-7.0: 30cm, cerdas 7mm, comprimento cerdas 50mm"
+    },
+    {
+      title: "Escova de endoscópio com escova de válvula",
+      category: "Escovas para limpeza",
+      excerpt: "Escova flexível de 240cm com escova de válvula na extremidade.",
+      description: "Escova flexível de grande comprimento, desenvolvida especificamente para a limpeza de endoscópios, com escova de válvula complementar.",
+      specs: "FBC3-V01-B: total 240cm, cerdas 5mm, comprimento cerdas 20mm, cerdas auxiliares diâmetro 10mm / comprimento 35mm"
+    },
+    {
+      title: "Escovas mistas com cerdas macias e rígidas",
+      category: "Escovas para limpeza",
+      excerpt: "Escovas flexíveis de longo comprimento, com duas fileiras de cerdas de durezas diferentes.",
+      description: "Escovas flexíveis com duas fileiras de cerdas de diâmetros distintos, combinando cerdas mais macias e mais rígidas na mesma peça, indicadas para endoscópios e canulados longos.",
+      specs: "FBC3-F01-6A: 265cm, 1ª fileira 6mm/150mm, 2ª fileira 6mm/20mm\nFBC3-F02-5A: 265cm, 1ª fileira 5mm/150mm, 2ª fileira 5mm/20mm\nFBC3-F03-3A: 230cm, 1ª fileira 3mm/150mm, 2ª fileira 3mm/20mm"
+    },
+    {
+      title: "Escovas para endoscópios e canulados com cerdas nas duas extremidades",
+      category: "Escovas para limpeza",
+      excerpt: "Escovas flexíveis com cerdas em ambas as pontas, cabos de 1,0mm, 1,5mm e 1,7mm.",
+      description: "Escovas flexíveis de longo comprimento, com cerdas nas duas extremidades, indicadas para limpeza bidirecional de endoscópios e canulados longos e estreitos.",
+      specs: "Cabo 1,0mm — FBC3-D02-15A: 100cm, cerdas 1,5mm\nCabo 1,0mm — FBC3-D02-20A: 100cm, cerdas 2mm, comprimento 20mm\nCabo 1,5mm — FBC3-D04-25A: 100cm, cerdas 2,5mm, comprimento 20mm\nCabo 1,5mm — FBC3-D04-35A: 100cm, cerdas 3,5mm, comprimento 20mm\nCabo 1,7mm — FBC3-D01-30: 100cm, cerdas 3mm, comprimento 20mm\nCabo 1,7mm — FBC3-D01-40: 240cm, cerdas 4mm, comprimento 20mm\nCabo 1,7mm — FBC3-D01-50: 240cm, cerdas 5mm, comprimento 20mm\nCabo 1,7mm — FBC3-D01-60: 240cm, cerdas 6mm, comprimento 20mm"
+    },
+    {
+      title: "Escovas para endoscópios e canulados com 3 fileiras de cerdas",
+      category: "Escovas para limpeza",
+      excerpt: "Escovas de 240cm com três fileiras de cerdas, para maior cobertura de limpeza.",
+      description: "Escovas flexíveis com três fileiras de cerdas, oferecendo maior área de contato para a limpeza de endoscópios e canulados.",
+      specs: "FBC3-T03-30: 240cm, cerdas 3mm, comprimento 20mm\nFBC3-T03-50: 240cm, cerdas 5mm, comprimento 20mm"
+    },
+    {
+      title: "Fitas identificadoras — Estrelas",
+      category: "Fitas identificadoras",
+      excerpt: "Fitas em formato de estrelas, em 5 cores, para identificação de instrumentais.",
+      description: "Fitas identificadoras para instrumentais cirúrgicos no formato estrelas — ajudam a evitar erros médicos, melhorar a comunicação da equipe e reduzir custos. Cada folha contém 380 fitas (220 unidades de 6x25,4mm + 44 de 6x38,1mm + 44 de 6x50,8mm).",
+      specs: "Amarelo: 16 205 4001\nAzul Claro: 16 205 4002\nAzul: 16 205 4003\nVerde: 16 205 4014\nVermelho: 16 205 4015"
+    },
+    {
+      title: "Fitas identificadoras — Triângulo",
+      category: "Fitas identificadoras",
+      excerpt: "Fitas em formato triângulo, em 5 cores, para identificação de instrumentais.",
+      description: "Fitas identificadoras para instrumentais cirúrgicos no formato triângulo. Cada folha contém 380 fitas, nas dimensões 6x25,4mm, 6x38,1mm e 6x50,8mm.",
+      specs: "Amarelo: 16 205 6001\nAzul Claro: 16 205 6002\nAzul: 16 205 6003\nVerde: 16 205 6014\nVermelho: 16 205 6015"
+    },
+    {
+      title: "Fitas identificadoras — Redonda",
+      category: "Fitas identificadoras",
+      excerpt: "Fitas em formato redondo, em 5 cores, para identificação de instrumentais.",
+      description: "Fitas identificadoras para instrumentais cirúrgicos no formato redondo. Cada folha contém 380 fitas, nas dimensões 6x25,4mm, 6x38,1mm e 6x50,8mm.",
+      specs: "Amarelo: 16 205 5001\nAzul Claro: 16 205 5002\nAzul: 16 205 5003\nVerde: 16 205 5014\nVermelho: 16 205 5015"
+    },
+    {
+      title: "Fitas identificadoras — Variadas",
+      category: "Fitas identificadoras",
+      excerpt: "Fitas com símbolos variados (carinhas e corações), em 3 cores.",
+      description: "Fitas identificadoras para instrumentais cirúrgicos com símbolos variados. Cada folha contém 380 fitas, nas dimensões 6x25,4mm, 6x38,1mm e 6x50,8mm.",
+      specs: "Amarelo (carinhas): 16 205 7001\nBranco (corações): 16 205 7004\nVermelho (corações): 16 205 7015"
+    },
+    {
+      title: "Fitas identificadoras — Especiais",
+      category: "Fitas identificadoras",
+      excerpt: "Fitas em padrão listrado especial, em 2 cores.",
+      description: "Fitas identificadoras para instrumentais cirúrgicos em padrão especial listrado. Cada folha contém 380 fitas.",
+      specs: "Amarelo: 16 205 8001\nVermelho: 16 205 8015"
+    },
+    {
+      title: "Fitas identificadoras — Sólidas",
+      category: "Fitas identificadoras",
+      excerpt: "Fitas sólidas lisas, em 18 cores disponíveis.",
+      description: "Fitas identificadoras para instrumentais cirúrgicos em cor sólida lisa — a opção mais versátil para organização por cor de equipe ou setor.",
+      specs: "Amarelo: 16 205 0001\nAzul Claro: 16 205 0002\nAzul: 16 205 0003\nBranca: 16 205 0004\nLaranja: 16 205 0005\nMarrom Claro: 16 205 0006\nMarrom: 16 205 0007\nPrata: 16 205 0008\nPreta: 16 205 0009\nRosa: 16 205 0010\nRoxo: 16 205 0011\nRoxo Escuro: 16 205 0012\nTurquesa: 16 205 0013\nVerde: 16 205 0014\nVermelho: 16 205 0015\nVinho: 16 205 0016\nCinza: 16 205 0017\nBege: 16 205 0018\nCreme: 16 205 0019"
+    },
+    {
+      title: "Fitas identificadoras — Preto diagonal",
+      category: "Fitas identificadoras",
+      excerpt: "Fitas com padrão diagonal preto sobre cor, em 15 cores.",
+      description: "Fitas identificadoras para instrumentais cirúrgicos com padrão diagonal preto sobreposto à cor de base — alto contraste visual para identificação rápida.",
+      specs: "Amarelo: 16 205 1001\nAzul Claro: 16 205 1002\nAzul: 16 205 1003\nLaranja: 16 205 1005\nMarrom Claro: 16 205 1006\nPrata: 16 205 1008\nRosa: 16 205 1010\nRoxo: 16 205 1011\nRoxo Escuro: 16 205 0012\nTurquesa: 16 205 1013\nVerde: 16 205 1014\nVermelho: 16 205 1015\nVinho: 16 205 1016\nCinza: 16 205 1017\nBege: 16 205 1018\nCreme: 16 205 1019"
+    },
+    {
+      title: "Fitas identificadoras — Faixas brancas",
+      category: "Fitas identificadoras",
+      excerpt: "Fitas de cor sólida com uma faixa branca central, em 17 cores.",
+      description: "Fitas identificadoras para instrumentais cirúrgicos com faixa branca central sobre cor sólida — permite anotação manual sobre a fita.",
+      specs: "Amarelo: 16 205 2001\nAzul Claro: 16 205 2002\nAzul: 16 205 2003\nLaranja: 16 205 2005\nMarrom Claro: 16 205 2006\nMarrom: 16 205 2007\nPrata: 16 205 2008\nPreta: 16 205 2009\nRosa: 16 205 2010\nRoxo: 16 205 2011\nRoxo Escuro: 16 205 2012\nTurquesa: 16 205 2013\nVerde: 16 205 2014\nVermelho: 16 205 2015\nVinho: 16 205 2016\nCinza: 16 205 2017\nBege: 16 205 2018\nCreme: 16 205 2019"
+    },
+    {
+      title: "Fitas identificadoras — Faixas pretas",
+      category: "Fitas identificadoras",
+      excerpt: "Fitas de cor sólida com uma faixa preta central, em 17 cores.",
+      description: "Fitas identificadoras para instrumentais cirúrgicos com faixa preta central sobre cor sólida.",
+      specs: "Amarelo: 16 205 3001\nAzul Claro: 16 205 3002\nAzul: 16 205 3003\nLaranja: 16 205 3005\nMarrom Claro: 16 205 3006\nMarrom: 16 205 3007\nPrata: 16 205 3008\nRosa: 16 205 3010\nRoxo: 16 205 3011\nRoxo Escuro: 16 205 3012\nTurquesa: 16 205 3013\nVerde: 16 205 3014\nVermelho: 16 205 3015\nVinho: 16 205 3016\nCinza: 16 205 3017\nBege: 16 205 3018\nCreme: 16 205 3019\nBranca: 16 205 3004"
+    },
+  ];
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  }
+
+  if (!window.MC || !MC.configured) {
+    document.body.innerHTML = '<div class="wrap"><p class="muted">Firebase não configurado. Verifique js/firebase-config.js.</p></div>';
+    return;
+  }
+
+  const { auth, db } = MC;
+
+  auth.onAuthStateChanged(async (user) => {
+    if (!user) { $("view-login").style.display = "block"; return; }
+    try {
+      const snap = await db.collection("users").doc(user.uid).get();
+      if (!snap.exists || !MC.ROLES.includes(snap.data().role)) {
+        document.body.innerHTML = '<div class="wrap"><p class="muted">Sua conta não tem permissão de admin/editor.</p></div>';
+        return;
+      }
+      $("view-login").style.display = "none";
+      $("view-app").style.display = "block";
+      renderList();
+    } catch (e) {
+      document.body.innerHTML = '<div class="wrap"><p class="muted">Erro ao verificar permissão: ' + esc(e.message) + '</p></div>';
+    }
+  });
+
+  $("loginBtn").onclick = async () => {
+    $("loginMsg").innerHTML = "";
+    try {
+      await auth.signInWithEmailAndPassword($("loginEmail").value.trim(), $("loginPass").value);
+    } catch (e) {
+      $("loginMsg").innerHTML = '<div class="msg-box err">Usuário ou senha incorretos.</div>';
+    }
+  };
+
+  function renderList() {
+    const list = $("productList");
+    list.innerHTML = "";
+    PRODUCTS.forEach((p, i) => {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+        <div class="card-head">
+          <input type="checkbox" class="prod-check" data-idx="${i}" checked>
+          <div style="flex:1">
+            <span class="card-cat">${esc(p.category)}</span>
+            <div class="card-title">${esc(p.title)}</div>
+            <div class="card-excerpt">${esc(p.excerpt)}</div>
+            <details>
+              <summary>Ver descrição e especificações completas</summary>
+              <div class="desc-preview">${esc(p.description)}</div>
+              ${p.specs ? `<div class="specs-preview">${esc(p.specs)}</div>` : ""}
+            </details>
+            <div class="status-line pending" id="status-${i}"></div>
+          </div>
+        </div>`;
+      list.appendChild(card);
+    });
+  }
+
+  $("selectAllBtn").onclick = () => document.querySelectorAll(".prod-check").forEach(c => c.checked = true);
+  $("selectNoneBtn").onclick = () => document.querySelectorAll(".prod-check").forEach(c => c.checked = false);
+
+  $("importBtn").onclick = async () => {
+    const checks = Array.from(document.querySelectorAll(".prod-check")).filter(c => c.checked);
+    if (!checks.length) { alert("Nenhum produto selecionado."); return; }
+    if (!confirm(`Importar ${checks.length} produto(s) como rascunho? Você pode revisar e publicar cada um depois pelo painel.`)) return;
+
+    $("importBtn").disabled = true;
+    let done = 0;
+    for (const chk of checks) {
+      const idx = Number(chk.dataset.idx);
+      const p = PRODUCTS[idx];
+      const statusEl = $("status-" + idx);
+      statusEl.textContent = "Importando…";
+      statusEl.className = "status-line pending";
+      try {
+        await db.collection("catalog").add({
+          title: p.title,
+          category: p.category,
+          excerpt: p.excerpt,
+          description: p.description,
+          specs: p.specs || "",
+          imageUrl: "",
+          status: "rascunho",
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          createdBy: auth.currentUser.email,
+        });
+        statusEl.textContent = "✓ Importado";
+        statusEl.className = "status-line ok";
+      } catch (e) {
+        statusEl.textContent = "Erro: " + e.message;
+        statusEl.className = "status-line err";
+      }
+      done++;
+      $("progressInfo").textContent = `${done} de ${checks.length} processados`;
+    }
+    $("importBtn").disabled = false;
+    alert("Importação concluída! Vá até o painel administrativo, aba Catálogo, para revisar e publicar os itens.");
+  };
+})();
+</script>
+</body>
+</html>
