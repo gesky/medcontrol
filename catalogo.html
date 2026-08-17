@@ -52,12 +52,45 @@
         </div>
         <span class="eyebrow">Catálogo</span>
         <h1>Catálogo de produtos MedControl.</h1>
-        <p class="lead">Explore nossa linha completa de equipamentos, insumos e acessórios para esterilização hospitalar. Toque em um produto para ver todos os detalhes.</p>
+        <p class="lead">Folheie o catálogo completo abaixo, ou explore produtos em destaque cadastrados individualmente logo mais abaixo.</p>
       </div>
     </section>
 
+    <!-- ===================== CATÁLOGO EM PDF (FOLHEÁVEL) ===================== -->
+    <section class="flipbook-section">
+      <div class="container section-inner">
+        <div class="flipbook-intro">
+          <span class="eyebrow">Catálogo completo</span>
+          <h2>Folheie nosso catálogo, como se fosse de papel.</h2>
+          <p>Use as setas, arraste ou toque nas bordas para virar as páginas.</p>
+        </div>
+        <div class="flipbook-wrap">
+          <div class="flipbook-stage" id="flipStage">
+            <div class="flipbook-loading" id="flipLoading">
+              <div class="flipbook-spinner"></div>
+              <span>Carregando catálogo…</span>
+            </div>
+            <div class="flipbook-nav-zone prev" id="flipPrevZone"><span class="arrow-circle" aria-hidden="true">‹</span></div>
+            <div class="flipbook-nav-zone next" id="flipNextZone"><span class="arrow-circle" aria-hidden="true">›</span></div>
+          </div>
+          <div class="flipbook-controls">
+            <button type="button" id="flipPrevBtn" aria-label="Página anterior">‹</button>
+            <span class="flipbook-page-info" id="flipPageInfo">– / –</span>
+            <button type="button" id="flipNextBtn" aria-label="Próxima página">›</button>
+          </div>
+          <a href="catalogo-medcontrol.pdf" target="_blank" rel="noopener noreferrer" class="flipbook-download">Baixar catálogo em PDF</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== CATÁLOGO ESTRUTURADO (CADASTRADO NO ADMIN) ===================== -->
     <section>
       <div class="container section-inner">
+        <div class="catalog-divider" style="margin-bottom:2rem;">
+          <span class="eyebrow">Produtos em destaque</span>
+          <h2>Alguns produtos, com detalhes prontos para consulta rápida.</h2>
+          <p>Cadastrados individualmente pela nossa equipe — toque em um produto para ver a ficha completa.</p>
+        </div>
         <div class="catalog-grid" id="catalogGrid">
           <p style="grid-column:1/-1;color:#6b6d6e;">Carregando catálogo…</p>
         </div>
@@ -164,6 +197,134 @@
   </a>
 
   <script src="script.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+  <script>
+  (function () {
+    const stage = document.getElementById("flipStage");
+    if (!stage) return;
+    const loading = document.getElementById("flipLoading");
+    const pageInfo = document.getElementById("flipPageInfo");
+    const prevBtn = document.getElementById("flipPrevBtn");
+    const nextBtn = document.getElementById("flipNextBtn");
+    const prevZone = document.getElementById("flipPrevZone");
+    const nextZone = document.getElementById("flipNextZone");
+
+    if (typeof pdfjsLib === "undefined") {
+      loading.innerHTML = "Não foi possível carregar o visualizador.";
+      return;
+    }
+    pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js";
+
+    let pdfDoc = null;
+    let currentPage = 1;
+    let totalPages = 0;
+    let isRendering = false;
+    let activeLayer = null;
+    const pageCache = {};
+
+    function createLayer() {
+      const el = document.createElement("div");
+      el.className = "flipbook-page-layer";
+      stage.appendChild(el);
+      return el;
+    }
+
+    async function renderPageToCanvas(num) {
+      if (pageCache[num]) return pageCache[num];
+      const page = await pdfDoc.getPage(num);
+      const baseViewport = page.getViewport({ scale: 1 });
+      const dpr = window.devicePixelRatio > 1 ? 2 : 1.5;
+      const targetWidth = stage.clientWidth * dpr;
+      const scale = targetWidth / baseViewport.width;
+      const viewport = page.getViewport({ scale: scale });
+      const canvas = document.createElement("canvas");
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+      const ctx = canvas.getContext("2d");
+      await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+      pageCache[num] = canvas;
+      return canvas;
+    }
+
+    function updateControls() {
+      pageInfo.textContent = currentPage + " / " + totalPages;
+      prevBtn.disabled = currentPage <= 1;
+      nextBtn.disabled = currentPage >= totalPages;
+    }
+
+    function preload(num) {
+      if (num >= 1 && num <= totalPages && !pageCache[num]) {
+        renderPageToCanvas(num).catch(function () {});
+      }
+    }
+
+    async function showPage(num, direction) {
+      if (isRendering || num < 1 || num > totalPages || num === currentPage) return;
+      isRendering = true;
+      try {
+        const canvas = await renderPageToCanvas(num);
+        const newLayer = createLayer();
+        newLayer.appendChild(canvas);
+        newLayer.style.transform = direction === "next" ? "rotateY(95deg)" : "rotateY(-95deg)";
+        newLayer.style.opacity = "0";
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            newLayer.style.transform = "rotateY(0deg)";
+            newLayer.style.opacity = "1";
+          });
+        });
+        if (activeLayer) {
+          const oldLayer = activeLayer;
+          oldLayer.classList.add(direction === "next" ? "flip-out-left" : "flip-out-right");
+          setTimeout(function () { oldLayer.remove(); }, 500);
+        }
+        activeLayer = newLayer;
+        currentPage = num;
+        updateControls();
+        preload(num + 1);
+        preload(num - 1);
+      } catch (e) {}
+      isRendering = false;
+    }
+
+    function goNext() { showPage(currentPage + 1, "next"); }
+    function goPrev() { showPage(currentPage - 1, "prev"); }
+
+    prevBtn.onclick = goPrev;
+    nextBtn.onclick = goNext;
+    prevZone.onclick = goPrev;
+    nextZone.onclick = goNext;
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowRight") goNext();
+      if (e.key === "ArrowLeft") goPrev();
+    });
+
+    let touchStartX = null;
+    stage.addEventListener("touchstart", function (e) { touchStartX = e.touches[0].clientX; }, { passive: true });
+    stage.addEventListener("touchend", function (e) {
+      if (touchStartX === null) return;
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      if (Math.abs(dx) > 40) { dx < 0 ? goNext() : goPrev(); }
+      touchStartX = null;
+    }, { passive: true });
+
+    pdfjsLib.getDocument("catalogo-medcontrol.pdf").promise.then(async function (doc) {
+      pdfDoc = doc;
+      totalPages = doc.numPages;
+      const canvas = await renderPageToCanvas(1);
+      loading.style.display = "none";
+      activeLayer = createLayer();
+      activeLayer.appendChild(canvas);
+      currentPage = 1;
+      updateControls();
+      preload(2);
+    }).catch(function () {
+      loading.innerHTML = "Não foi possível carregar o catálogo. <a href=\"catalogo-medcontrol.pdf\" style=\"color:#fff;text-decoration:underline;\" target=\"_blank\">Baixar PDF</a>";
+    });
+  })();
+  </script>
 
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
