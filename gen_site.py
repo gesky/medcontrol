@@ -40,7 +40,7 @@ def head(title, description, og_title=None, og_description=None):
   <meta property="og:locale" content="pt_BR" />
   <meta name="twitter:card" content="summary_large_image" />
 
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="imagens/favicon.ico" type="image/x-icon" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" />
@@ -61,14 +61,14 @@ def header(active=None):
   <header class="site-header">
     <div class="container">
       <a href="index.html" aria-label="MedControl">
-        <img src="logo.svg" alt="MedControl" class="logo-img" />
+        <img src="imagens/logo.svg" alt="MedControl" class="logo-img" />
       </a>
       <nav class="nav-links">
 {nav}
       </nav>
       <a href="{WA_LINK}"
          target="_blank" rel="noopener noreferrer" class="btn btn-accent header-whatsapp-btn">
-        WhatsApp
+        Falar com Especialista
       </a>
       <button type="button" class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Abrir menu" aria-expanded="false">
         <span></span><span></span><span></span>
@@ -204,7 +204,7 @@ def footer():
       <div class="footer-grid">
         <div class="footer-brand">
           <a href="index.html" aria-label="MedControl">
-            <img src="logo-branco.svg" alt="MedControl" class="footer-logo-img" />
+            <img src="imagens/logo-branco.svg" alt="MedControl" class="footer-logo-img" />
           </a>
           <p>Há mais de 39 anos, parceira técnica de hospitais e clínicas brasileiras em esterilização, segurança e controle de infecção. Comprometimento em cada processo.</p>
           <div class="social-icons">
@@ -231,7 +231,6 @@ def footer():
             <li><a href="catalogo.html">Catálogo</a></li>
             <li><a href="sobre.html">Sobre</a></li>
             <li><a href="linhas.html">Produtos</a></li>
-            <li><a href="depoimentos.html">Depoimentos</a></li>
             <li><a href="blog.html">Blog</a></li>
             <li><a href="contato.html">Contato</a></li>
           </ul>
@@ -302,14 +301,13 @@ home_body = f'''    <!-- ===================== HERO ===================== -->
             equipamentos em comodato e suporte técnico que não some depois da entrega.
           </p>
           <div class="hero-ctas">
-            <a href="{WA_LINK}"
-               target="_blank" rel="noopener noreferrer" class="btn btn-accent-lg">
-              Falar com um especialista <span aria-hidden="true">→</span>
+            <a href="linhas.html" class="btn btn-accent-lg">
+              Conheça nossos produtos <span aria-hidden="true">→</span>
             </a>
           </div>
         </div>
         <div class="hero-media">
-          <img src="hero-nurse.webp" alt="Profissional de saúde MedControl" class="hero-nurse" />
+          <img src="imagens/hero-nurse.webp" alt="Profissional de saúde MedControl" class="hero-nurse" />
         </div>
       </div>
     </section>
@@ -430,31 +428,6 @@ home_body = f'''    <!-- ===================== HERO ===================== -->
       </div>
     </section>
 
-    <!-- ===================== DEPOIMENTOS (teaser) ===================== -->
-    <section class="testimonials">
-      <div class="container section-inner">
-        <div class="testimonials-head">
-          <span class="eyebrow">Depoimentos</span>
-          <h2>A voz de quem opera uma central de esterilização todos os dias.</h2>
-        </div>
-        <div class="testimonials-grid">
-          <figure class="testimonial-card">
-            <div class="testimonial-media">
-              <div class="media-placeholder">[imagem]</div>
-            </div>
-            <div class="testimonial-body">
-              <blockquote>A MedControl não entrega só produto — entrega segurança. O suporte técnico que recebemos mudou o nível de confiança da nossa equipe em cada ciclo. É o tipo de parceria que a gente não troca.</blockquote>
-              <figcaption>
-                <div class="author">Enfermeira responsável, CME</div>
-                <div class="org">Hospital de médio porte — Interior de SP</div>
-              </figcaption>
-            </div>
-          </figure>
-        </div>
-        <a href="depoimentos.html" class="product-card-cta" style="color:var(--blue); margin-top:2.5rem;">Ver todos os depoimentos <span aria-hidden="true">→</span></a>
-      </div>
-    </section>
-
     <!-- ===================== VÍDEO INSTITUCIONAL ===================== -->
     <section class="video-section">
       <div class="container section-inner">
@@ -479,7 +452,6 @@ home_body = f'''    <!-- ===================== HERO ===================== -->
                target="_blank" rel="noopener noreferrer" class="btn btn-white">
               Iniciar conversa no WhatsApp <span aria-hidden="true">→</span>
             </a>
-            <a href="contato.html" class="btn btn-outline-white">Ver todos os contatos</a>
           </div>
         </div>
         <dl class="final-cta-info">
@@ -664,7 +636,7 @@ linhas_body = f'''{page_banner(
 
           <div class="line-block" id="comodato">
             <div class="line-media">
-              <img src="phm-medcontrol-1.webp" alt="Equipamentos em comodato MedControl" />
+              <img src="imagens/phm-medcontrol-1.webp" alt="Equipamentos em comodato MedControl" />
             </div>
             <div class="line-copy">
               <span class="line-number">01 · Linha</span>
@@ -683,7 +655,7 @@ linhas_body = f'''{page_banner(
 
           <div class="line-block" id="sterifast">
             <div class="line-media">
-              <div class="media-placeholder">[imagem]</div>
+              <img src="imagens/sterifast.webp" alt="Sistema Sterifast MedControl" />
             </div>
             <div class="line-copy">
               <span class="line-number">02 · Linha</span>
@@ -706,7 +678,7 @@ linhas_body = f'''{page_banner(
 
           <div class="line-block" id="embalagens">
             <div class="line-media">
-              <img src="embalagens.webp" alt="Embalagens para esterilização MedControl" />
+              <img src="imagens/embalagens.webp" alt="Embalagens para esterilização MedControl" />
             </div>
             <div class="line-copy">
               <span class="line-number">03 · Linha</span>
@@ -726,7 +698,7 @@ linhas_body = f'''{page_banner(
 
           <div class="line-block" id="indicadores">
             <div class="line-media">
-              <img src="indicadores.webp" alt="Indicadores e controle de processo MedControl" />
+              <img src="imagens/indicadores.webp" alt="Indicadores e controle de processo MedControl" />
             </div>
             <div class="line-copy">
               <span class="line-number">04 · Linha</span>
@@ -745,7 +717,7 @@ linhas_body = f'''{page_banner(
 
           <div class="line-block" id="suporte">
             <div class="line-media">
-              <img src="suporte.webp" alt="Suporte técnico e capacitação MedControl" />
+              <img src="imagens/suporte.webp" alt="Suporte técnico e capacitação MedControl" />
             </div>
             <div class="line-copy">
               <span class="line-number">05 · Linha</span>
@@ -773,13 +745,11 @@ linhas_body = f'''{page_banner(
           <span class="eyebrow">Catálogo completo</span>
           <h2>Quer conhecer o portfólio completo da MedControl?</h2>
           <p class="lead">
-            Solicite o catálogo pelo WhatsApp e receba, no mesmo dia útil, a lista completa de
-            produtos com ficha técnica de cada item.
+            Folheie nosso catálogo completo, com todos os produtos e fichas técnicas.
           </p>
           <div class="hero-ctas">
-            <a href="{WA_LINK}"
-               target="_blank" rel="noopener noreferrer" class="btn btn-white">
-              Solicitar catálogo <span aria-hidden="true">→</span>
+            <a href="catalogo.html" class="btn btn-white">
+              Ver catálogo <span aria-hidden="true">→</span>
             </a>
           </div>
         </div>
@@ -815,7 +785,7 @@ phm_body = f'''{page_banner(
     <!-- ===================== O QUE É ===================== -->
     <section class="phm-intro">
       <div class="container section-inner">
-        <img src="phm-medcontrol-2.webp" alt="PHM MedControl — esterilizador a plasma" />
+        <img src="imagens/phm-medcontrol-2.webp" alt="PHM MedControl — esterilizador a plasma" />
         <div class="phm-intro-copy">
           <span class="eyebrow">O que é o PHM</span>
           <h2>Esterilização a plasma, sem abrir mão da segurança.</h2>
@@ -1139,115 +1109,6 @@ page = (
     + whatsapp_float()
 )
 write_page("phm-medcontrol.html", page)
-
-# =============================================================================
-# DEPOIMENTOS
-# =============================================================================
-
-def testimonial(quote, author, org):
-    return f'''          <figure class="testimonial-card">
-            <div class="testimonial-media">
-              <div class="media-placeholder">[imagem]</div>
-            </div>
-            <div class="testimonial-body">
-              <blockquote>{quote}</blockquote>
-              <figcaption>
-                <div class="author">{author}</div>
-                <div class="org">{org}</div>
-              </figcaption>
-            </div>
-          </figure>
-'''
-
-testimonials_html = "".join([
-    testimonial(
-        "A MedControl não entrega só produto — entrega segurança. O suporte técnico que recebemos mudou o nível de confiança da nossa equipe em cada ciclo. É o tipo de parceria que a gente não troca.",
-        "Enfermeira responsável, CME",
-        "Hospital de médio porte — Interior de SP",
-    ),
-    testimonial(
-        "Retorno rápido, produto certificado e uma equipe que realmente entende de CME. Eles chegam antes da gente perceber que precisa de suporte. Isso é diferente de tudo que conhecemos no setor.",
-        "Coordenação de suprimentos",
-        "Rede hospitalar — Centro-Oeste",
-    ),
-    testimonial(
-        "Desde que migramos para a MedControl, o retrabalho da nossa central caiu de forma perceptível. Insumo de qualidade faz diferença no resultado. E o comodato dos equipamentos foi decisivo para modernizar sem comprometer o orçamento.",
-        "Gerência assistencial",
-        "Clínica cirúrgica — Bauru/SP",
-    ),
-    testimonial(
-        "O que mais pesa pra gente é ter alguém do outro lado que entende de rotina hospitalar, não só de venda. A MedControl acompanha de perto, e isso se traduz em segurança pro paciente.",
-        "Coordenação de enfermagem",
-        "Hospital regional — Sul de Minas",
-    ),
-    testimonial(
-        "Trocamos de fornecedor há dois anos e nunca mais pensamos em voltar. Rastreabilidade completa, prazo cumprido e um time técnico que resolve o problema antes de virar uma crise.",
-        "Gestão hospitalar",
-        "Hospital privado — Grande São Paulo",
-    ),
-])
-
-depoimentos_body = f'''{page_banner(
-    "Depoimentos",
-    "A voz de quem opera uma central de esterilização todos os dias.",
-    "Enfermeiros, coordenadores de CME e gestores hospitalares contam como a parceria com a MedControl mudou a rotina da central.",
-    "Depoimentos",
-)}
-    <section class="testimonials">
-      <div class="container section-inner">
-        <div class="testimonials-grid">
-{testimonials_html}        </div>
-      </div>
-    </section>
-
-    <!-- ===================== PARCEIROS / CLIENTES ===================== -->
-    <section aria-label="Instituições atendidas" class="social-proof">
-      <div class="container">
-        <p>Parceira técnica de hospitais, clínicas e centros cirúrgicos em todo o Brasil</p>
-        <div class="logo-grid">
-          <div>[logo]</div>
-          <div>[logo]</div>
-          <div>[logo]</div>
-          <div>[logo]</div>
-          <div>[logo]</div>
-          <div>[logo]</div>
-        </div>
-      </div>
-    </section>
-
-    <section class="final-cta">
-      <div class="container section-inner">
-        <div class="final-cta-main">
-          <span class="eyebrow">Sua central pode ser a próxima</span>
-          <h2>Fale com um especialista e veja como podemos apoiar sua CME.</h2>
-          <p class="lead">
-            Envie sua demanda pelo WhatsApp e receba, no mesmo dia útil, cotação e recomendação
-            técnica personalizada.
-          </p>
-          <div class="hero-ctas">
-            <a href="{WA_LINK}"
-               target="_blank" rel="noopener noreferrer" class="btn btn-white">
-              Falar com um especialista <span aria-hidden="true">→</span>
-            </a>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
-
-'''
-
-page = (
-    head(
-        "Depoimentos MedControl — O que Dizem Hospitais e Clínicas Parceiras",
-        "Veja depoimentos reais de enfermeiros, coordenadores de CME e gestores hospitalares sobre a parceria técnica com a MedControl.",
-    )
-    + header(active=None)  # Depoimentos não está mais no menu do header (só no footer)
-    + depoimentos_body
-    + footer()
-    + whatsapp_float()
-)
-write_page("depoimentos.html", page)
 
 # =============================================================================
 # CONTATO
@@ -1598,11 +1459,6 @@ catalogo_body = f'''{page_banner(
     <!-- ===================== CATÁLOGO EM PDF (FOLHEÁVEL) ===================== -->
     <section class="flipbook-section">
       <div class="container section-inner">
-        <div class="flipbook-intro">
-          <span class="eyebrow">Catálogo completo</span>
-          <h2>Folheie nosso catálogo, como se fosse de papel.</h2>
-          <p>Arraste o canto da página com o mouse ou o dedo, ou use as setas abaixo.</p>
-        </div>
         <div class="flipbook-wrap" id="flipWrap">
           <div class="flipbook-loading" id="flipLoading">
             <div class="flipbook-spinner"></div>

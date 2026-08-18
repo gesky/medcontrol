@@ -370,7 +370,7 @@ h2 {
 .hero {
   position: relative;
   overflow: hidden;
-  background-image: url('hero-bg.jpg');
+  background-image: url('imagens/hero-bg.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -2251,33 +2251,7 @@ h2 {
    ========================================================================== */
 
 .flipbook-section {
-  background-color: var(--blue-dark);
-}
-
-.flipbook-intro {
-  text-align: center;
-  max-width: 38rem;
-  margin: 0 auto 2.5rem;
-}
-
-.flipbook-intro .eyebrow {
-  color: #a9c1e0;
-  justify-content: center;
-}
-
-.flipbook-intro .eyebrow::before {
-  background-color: var(--accent);
-}
-
-.flipbook-intro h2 {
-  color: var(--white);
-}
-
-.flipbook-intro p {
-  margin-top: 1rem;
-  color: rgba(255, 255, 255, 0.78);
-  font-size: 0.9375rem;
-  line-height: 1.65;
+  background-color: var(--white);
 }
 
 .flipbook-wrap {
@@ -2294,7 +2268,7 @@ h2 {
 
 #pageFlipBook .page {
   background: #fff;
-  box-shadow: 0 20px 45px -15px rgba(0, 0, 0, 0.55);
+  box-shadow: 0 20px 45px -15px rgba(0, 0, 0, 0.25);
 }
 
 #pageFlipBook img {
@@ -2312,7 +2286,7 @@ h2 {
   justify-content: center;
   flex-direction: column;
   gap: 0.75rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: #6b6d6e;
   font-size: 0.8125rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -2323,8 +2297,8 @@ h2 {
 .flipbook-spinner {
   width: 2rem;
   height: 2rem;
-  border: 3px solid rgba(255, 255, 255, 0.2);
-  border-top-color: var(--white);
+  border: 3px solid var(--gray-light);
+  border-top-color: var(--blue);
   border-radius: 50%;
   animation: flipbook-spin 0.8s linear infinite;
 }
@@ -2342,9 +2316,9 @@ h2 {
 }
 
 .flipbook-controls button {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  color: var(--white);
+  background: var(--gray-light);
+  border: 1px solid var(--gray-light);
+  color: var(--text);
   border-radius: 999px;
   width: 2.5rem;
   height: 2.5rem;
@@ -2356,7 +2330,7 @@ h2 {
 }
 
 .flipbook-controls button:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.2);
+  background: #dcdddd;
 }
 
 .flipbook-controls button:disabled {
@@ -2365,7 +2339,7 @@ h2 {
 }
 
 .flipbook-page-info {
-  color: rgba(255, 255, 255, 0.85);
+  color: #55585a;
   font-size: 0.8125rem;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -2379,19 +2353,19 @@ h2 {
   margin-top: 1.5rem;
   font-size: 0.8125rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.75);
+  color: var(--blue);
   text-decoration: underline;
 }
 
 .flipbook-download:hover {
-  color: var(--white);
+  color: var(--blue-dark);
 }
 
 .flipbook-hint {
   text-align: center;
   margin-top: 0.75rem;
   font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: #9a9c9d;
 }
 
 /* Divisor entre o flipbook e o catálogo estruturado (cadastrado no admin) */

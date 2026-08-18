@@ -2,38 +2,74 @@
 
 Site em HTML/CSS/JS puro, sem build step, sem dependências (exceto Firebase,
 usado pelo painel administrativo, pelo formulário de contato, pelo blog e
-agora também pelo catálogo).
+pelo catálogo).
+
+## Estrutura de pastas
+
+Todas as imagens (logos, fotos, favicon) ficam centralizadas na pasta `imagens/`.
+Os demais arquivos (HTML, CSS, JS, PDF) continuam soltos na raiz.
+
+```
+├── imagens/
+│   ├── logo.svg / logo-branco.svg
+│   ├── favicon.ico
+│   ├── hero-bg.jpg / hero-nurse.webp
+│   ├── phm-medcontrol-1.webp / phm-medcontrol-2.webp
+│   ├── embalagens.webp / indicadores.webp / suporte.webp / sterifast.webp
+├── js/
+│   └── firebase-config.js
+├── *.html (páginas do site + admin.html + bulk-import-catalogo.html)
+├── styles.css / script.js
+├── catalogo-medcontrol.pdf
+├── firestore.rules
+└── gen_site.py
+```
 
 ## Páginas do site público
 
 - `index.html` — Home
 - `catalogo.html` — **Catálogo de produtos**, com duas partes:
-  1. **Visualizador de PDF folheável** (novo) — renderiza `catalogo-medcontrol.pdf` página por
-     página, direto no navegador, com efeito de "virar página" (setas, arraste ou toque nas
-     bordas). Não depende de cadastro nenhum — pra atualizar o catálogo, basta substituir o
-     arquivo `catalogo-medcontrol.pdf` por uma versão nova, com o mesmo nome
+  1. **Visualizador de PDF folheável** — renderiza `catalogo-medcontrol.pdf` página por
+     página, com efeito de "livro" (arrastar com mouse/touch). Fundo branco na área do
+     visualizador; o título/subtítulo no topo da página continuam com fundo azul. Pra
+     atualizar o catálogo, basta substituir o arquivo `catalogo-medcontrol.pdf` por uma
+     versão nova, com o mesmo nome
   2. **Grid de produtos em destaque**, dinâmico via Firestore (coleção `catalog`), pra produtos
      que você quiser cadastrar individualmente com ficha própria (pop-up com descrição completa),
      4 por linha / 8 por página, com paginação (Anterior/Próxima)
 - `sobre.html` — Institucional (história + como trabalhamos + diferenciais)
 - `linhas.html` — Produtos (5 linhas, nesta ordem: Equipamentos em comodato → Sistema
   Sterifast → Embalagens para esterilização → Indicadores e controle de processo →
-  Suporte técnico e capacitação)
+  Suporte técnico e capacitação). O card "Catálogo completo" no fim da página leva
+  direto para `catalogo.html`
 - `phm-medcontrol.html` — Página dedicada ao PHM MedControl
-- `depoimentos.html` — Depoimentos + logos de parceiros/clientes
 - `contato.html` — Contato (formulário funcional, grava lead no Firestore)
 - `blog.html` — Listagem do blog, dinâmica (Firestore)
 - `artigo.html` — Template dinâmico de artigo (`?id=`)
 
-Menu (nesta ordem): **Catálogo, Produtos, Sobre, Blog, Contato**. "Depoimentos" só
-aparece no rodapé, não no menu do topo.
+Menu (nesta ordem): **Catálogo, Produtos, Sobre, Blog, Contato**.
+
+A página e a seção de **Depoimentos foram removidas** do site (não existe mais
+`depoimentos.html`, nem no menu, nem no rodapé, nem teaser na home).
+
+### Header
+
+- **Desktop:** logo + menu horizontal + botão "Falar com Especialista" (WhatsApp)
+- **Mobile:** logo + botão hambúrguer (o botão de WhatsApp fica escondido no header
+  mobile pra não brigar de espaço com o menu). Ao abrir o menu, aparecem os links de
+  navegação + um botão "Falar no WhatsApp" no final
+
+### Hero da home
+
+Botão principal do hero agora é **"Conheça nossos produtos"**, levando para `linhas.html`
+(antes ia direto pro WhatsApp).
 
 ## Painel administrativo (`admin.html`)
 
 Abas:
 
 - **Artigos** — publicar, editar, arquivar, excluir artigos do blog
-- **Catálogo** (nova) — cadastrar, editar, arquivar, excluir produtos do catálogo público.
+- **Catálogo** — cadastrar, editar, arquivar, excluir produtos do catálogo público.
   Campos: título, categoria, resumo curto (card), descrição completa (pop-up), especificações
   adicionais (texto livre, um item por linha no formato `Campo: valor`), imagem (convertida
   automaticamente para WebP, mesmo pipeline dos artigos), e status (rascunho/publicado/arquivado)
@@ -50,19 +86,18 @@ Abas:
 - Assim como os artigos, a primeira vez que a consulta rodar no site publicado, o Firestore
   provavelmente vai pedir pra criar um **índice composto** (status + createdAt) — é só clicar
   no link que aparece no erro do console e criar, uma vez só
+- `bulk-import-catalogo.html` — ferramenta à parte pra importar vários produtos de uma vez
+  (feita a partir do catálogo em PDF); só funciona logado como admin/editor
 
 ## Arquivos de suporte
 
 - `styles.css` — todos os estilos do site público
-- `script.js` — atualiza o ano no rodapé
-- `logo.svg` / `logo-branco.svg` — logos
-- `hero-nurse.webp` / `hero-bg.jpg` — imagens do hero da home
-- `phm-medcontrol-1.webp` — imagem do PHM na página de Produtos
-- `phm-medcontrol-2.webp` — imagem do PHM na página dedicada
-- `embalagens.webp`, `indicadores.webp`, `suporte.webp` — imagens das respectivas linhas de produto
+- `script.js` — atualiza o ano no rodapé + controla o menu hambúrguer do mobile
+- `imagens/` — todas as imagens do site (ver "Estrutura de pastas" acima)
 - `js/firebase-config.js` — configuração do Firebase (chaves do projeto `medcontrol-e07c2`)
-- `firestore.rules` — regras de segurança (inclui agora `users`, `articles`, `leads` e `catalog`)
+- `firestore.rules` — regras de segurança (inclui `users`, `articles`, `leads` e `catalog`)
 - `gen_site.py` — script Python que gera todas as páginas do site público (não inclui o
+
   `admin.html`, mantido à parte)
 
 ## Testar localmente
@@ -84,6 +119,10 @@ python3 -m http.server 8000
   `gen_site.py` e rodar `python3 gen_site.py` de novo
 
 ## Pendências / observações
+
+- **`imagens/sterifast.webp` ainda não existe** — a página de Produtos já referencia esse
+  arquivo no bloco do Sistema Sterifast; é só colocar a imagem com esse nome exato dentro
+  da pasta `imagens/` que ela aparece automaticamente, sem precisar mexer em código
 
 - **Visualizador de PDF (`catalogo.html`):** usa PDF.js pra converter cada página do PDF em
   imagem, e a biblioteca **StPageFlip** pra cuidar da experiência de "livro" (arrastar o canto
