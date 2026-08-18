@@ -7,10 +7,14 @@ agora também pelo catálogo).
 ## Páginas do site público
 
 - `index.html` — Home
-- `catalogo.html` — **Catálogo de produtos**, dinâmico: grid de produtos vindos do Firestore
-  (coleção `catalog`, só os com `status: "publicado"`), 4 por linha / 8 por página, com
-  paginação (Anterior/Próxima). Clicar em um produto abre um **pop-up** com a descrição
-  completa e especificações — não existe uma página separada por produto.
+- `catalogo.html` — **Catálogo de produtos**, com duas partes:
+  1. **Visualizador de PDF folheável** (novo) — renderiza `catalogo-medcontrol.pdf` página por
+     página, direto no navegador, com efeito de "virar página" (setas, arraste ou toque nas
+     bordas). Não depende de cadastro nenhum — pra atualizar o catálogo, basta substituir o
+     arquivo `catalogo-medcontrol.pdf` por uma versão nova, com o mesmo nome
+  2. **Grid de produtos em destaque**, dinâmico via Firestore (coleção `catalog`), pra produtos
+     que você quiser cadastrar individualmente com ficha própria (pop-up com descrição completa),
+     4 por linha / 8 por página, com paginação (Anterior/Próxima)
 - `sobre.html` — Institucional (história + como trabalhamos + diferenciais)
 - `linhas.html` — Produtos (5 linhas, nesta ordem: Equipamentos em comodato → Sistema
   Sterifast → Embalagens para esterilização → Indicadores e controle de processo →
@@ -80,6 +84,14 @@ python3 -m http.server 8000
   `gen_site.py` e rodar `python3 gen_site.py` de novo
 
 ## Pendências / observações
+
+- **Visualizador de PDF (`catalogo.html`):** usa PDF.js pra converter cada página do PDF em
+  imagem, e a biblioteca **StPageFlip** pra cuidar da experiência de "livro" (arrastar o canto
+  da página com mouse/touch, dobra realista, responsivo). Ambas via CDN (jsDelivr) — funciona
+  offline localmente também, mas depende de internet quando publicado (o que já é o caso de tudo
+  que usa Firebase). O PDF (`catalogo-medcontrol.pdf`) tem ~9MB — carrega uma vez por visita e
+  fica em cache do navegador depois. Pra atualizar o catálogo, basta subir um novo arquivo com
+  esse mesmo nome por cima do atual no repositório.
 
 - A linha "Sistema Sterifast" ainda está com placeholder `[imagem]` — quando tiver a
   imagem real, é só me mandar que eu aplico do mesmo jeito que as outras

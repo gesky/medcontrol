@@ -67,8 +67,19 @@ def header(active=None):
 {nav}
       </nav>
       <a href="{WA_LINK}"
-         target="_blank" rel="noopener noreferrer" class="btn btn-accent">
+         target="_blank" rel="noopener noreferrer" class="btn btn-accent header-whatsapp-btn">
         WhatsApp
+      </a>
+      <button type="button" class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Abrir menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="mobile-menu" id="mobileMenu">
+      <nav class="mobile-menu-links">
+{nav}
+      </nav>
+      <a href="{WA_LINK}" target="_blank" rel="noopener noreferrer" class="btn btn-accent mobile-menu-whatsapp">
+        Falar no WhatsApp
       </a>
     </div>
   </header>
@@ -1492,14 +1503,130 @@ CATALOG_SCRIPTS = '''
   </script>
 '''
 
+FLIPBOOK_SCRIPTS = '''
+  <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
+  <script>
+  (function () {
+    const wrap = document.getElementById("flipWrap");
+    const bookEl = document.getElementById("pageFlipBook");
+    if (!wrap || !bookEl) return;
+    const loading = document.getElementById("flipLoading");
+    const pageInfo = document.getElementById("flipPageInfo");
+    const prevBtn = document.getElementById("flipPrevBtn");
+    const nextBtn = document.getElementById("flipNextBtn");
+
+    if (typeof pdfjsLib === "undefined" || typeof St === "undefined") {
+      loading.innerHTML = "Não foi possível carregar o visualizador.";
+      return;
+    }
+    pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js";
+
+    async function renderPageToImage(pdfDoc, num, maxWidth) {
+      const page = await pdfDoc.getPage(num);
+      const baseViewport = page.getViewport({ scale: 1 });
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const scale = (maxWidth * dpr) / baseViewport.width;
+      const viewport = page.getViewport({ scale: scale });
+      const canvas = document.createElement("canvas");
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+      const ctx = canvas.getContext("2d");
+      await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+      return canvas.toDataURL("image/jpeg", 0.85);
+    }
+
+    pdfjsLib.getDocument("catalogo-medcontrol.pdf").promise.then(async function (pdfDoc) {
+      const totalPages = pdfDoc.numPages;
+      const maxWidth = Math.min(wrap.clientWidth || 480, 480);
+      const images = [];
+      for (let i = 1; i <= totalPages; i++) {
+        images.push(await renderPageToImage(pdfDoc, i, maxWidth));
+      }
+
+      loading.style.display = "none";
+
+      const pageFlip = new St.PageFlip(bookEl, {
+        width: maxWidth,
+        height: Math.round(maxWidth * 1.35),
+        size: "stretch",
+        minWidth: 260,
+        maxWidth: 520,
+        minHeight: 340,
+        maxHeight: 720,
+        showCover: false,
+        usePortrait: true,
+        maxShadowOpacity: 0.5,
+        mobileScrollSupport: false,
+        useMouseEvents: true,
+        drawShadow: true,
+        flippingTime: 500,
+      });
+
+      pageFlip.loadFromImages(images);
+
+      function updateControls() {
+        const idx = pageFlip.getCurrentPageIndex();
+        pageInfo.textContent = (idx + 1) + " / " + totalPages;
+        prevBtn.disabled = idx <= 0;
+        nextBtn.disabled = idx >= totalPages - 1;
+      }
+
+      pageFlip.on("flip", updateControls);
+      updateControls();
+
+      prevBtn.onclick = function () { pageFlip.flipPrev(); };
+      nextBtn.onclick = function () { pageFlip.flipNext(); };
+
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "ArrowRight") pageFlip.flipNext();
+        if (e.key === "ArrowLeft") pageFlip.flipPrev();
+      });
+    }).catch(function () {
+      loading.innerHTML = "Não foi possível carregar o catálogo. <a href=\\"catalogo-medcontrol.pdf\\" style=\\"color:#fff;text-decoration:underline;\\" target=\\"_blank\\">Baixar PDF</a>";
+    });
+  })();
+  </script>
+'''
+
 catalogo_body = f'''{page_banner(
     "Catálogo",
     "Catálogo de produtos MedControl.",
-    "Explore nossa linha completa de equipamentos, insumos e acessórios para esterilização hospitalar. Toque em um produto para ver todos os detalhes.",
+    "Folheie o catálogo completo abaixo, ou explore produtos em destaque cadastrados individualmente logo mais abaixo.",
     "Catálogo",
 )}
+    <!-- ===================== CATÁLOGO EM PDF (FOLHEÁVEL) ===================== -->
+    <section class="flipbook-section">
+      <div class="container section-inner">
+        <div class="flipbook-intro">
+          <span class="eyebrow">Catálogo completo</span>
+          <h2>Folheie nosso catálogo, como se fosse de papel.</h2>
+          <p>Arraste o canto da página com o mouse ou o dedo, ou use as setas abaixo.</p>
+        </div>
+        <div class="flipbook-wrap" id="flipWrap">
+          <div class="flipbook-loading" id="flipLoading">
+            <div class="flipbook-spinner"></div>
+            <span>Carregando catálogo…</span>
+          </div>
+          <div id="pageFlipBook"></div>
+          <div class="flipbook-controls">
+            <button type="button" id="flipPrevBtn" aria-label="Página anterior">‹</button>
+            <span class="flipbook-page-info" id="flipPageInfo">– / –</span>
+            <button type="button" id="flipNextBtn" aria-label="Próxima página">›</button>
+          </div>
+          <a href="catalogo-medcontrol.pdf" target="_blank" rel="noopener noreferrer" class="flipbook-download">Baixar catálogo em PDF</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== CATÁLOGO ESTRUTURADO (CADASTRADO NO ADMIN) ===================== -->
     <section>
       <div class="container section-inner">
+        <div class="catalog-divider" style="margin-bottom:2rem;">
+          <span class="eyebrow">Produtos em destaque</span>
+          <h2>Alguns produtos, com detalhes prontos para consulta rápida.</h2>
+          <p>Cadastrados individualmente pela nossa equipe — toque em um produto para ver a ficha completa.</p>
+        </div>
         <div class="catalog-grid" id="catalogGrid">
           <p style="grid-column:1/-1;color:#6b6d6e;">Carregando catálogo…</p>
         </div>
@@ -1508,21 +1635,8 @@ catalogo_body = f'''{page_banner(
     </section>
   </main>
 
-'''
-
-page = (
-    head(
-        "Catálogo MedControl — Produtos para Esterilização Hospitalar",
-        "Conheça o catálogo completo da MedControl: equipamentos, insumos, indicadores e acessórios para centrais de esterilização.",
-    )
-    + header(active="catalogo.html")
-    + catalogo_body
-    + footer()
-    + whatsapp_float(CATALOG_SCRIPTS)
-)
-
-# Modal de detalhes do produto (injetado antes do fechamento do </body>)
-CATALOG_MODAL_HTML = '''
+  <!-- Modal de detalhes do produto — precisa existir no DOM ANTES do script
+       que referencia esses IDs rodar, por isso fica aqui e não lá embaixo -->
   <div class="catalog-modal-overlay" id="catalogModalOverlay">
     <div class="catalog-modal">
       <div class="catalog-modal-wrap">
@@ -1539,8 +1653,19 @@ CATALOG_MODAL_HTML = '''
       </div>
     </div>
   </div>
+
 '''
-page = page.replace("</body>\n</html>", CATALOG_MODAL_HTML + "</body>\n</html>")
+
+page = (
+    head(
+        "Catálogo MedControl — Produtos para Esterilização Hospitalar",
+        "Conheça o catálogo completo da MedControl: equipamentos, insumos, indicadores e acessórios para centrais de esterilização.",
+    )
+    + header(active="catalogo.html")
+    + catalogo_body
+    + footer()
+    + whatsapp_float(FLIPBOOK_SCRIPTS + CATALOG_SCRIPTS)
+)
 
 write_page("catalogo.html", page)
 
