@@ -186,24 +186,64 @@
       const prevA = idx >= 0 && idx < list.length - 1 ? list[idx + 1] : null;
       const nextA = idx > 0 ? list[idx - 1] : null;
 
-      const img = a.imageUrl
-        ? '<img src="' + esc(a.imageUrl) + '" alt="' + esc(a.title || "") + '" style="width:100%;border-radius:12px;display:block;">'
-        : '<div class="media-placeholder">[imagem]</div>';
+      function coverOf(item) {
+        return (item.images && item.images[0]) || item.imageUrl || "";
+      }
+
+      const images = Array.isArray(a.images) && a.images.length ? a.images : (a.imageUrl ? [a.imageUrl] : []);
+
+      let heroHtml;
+      if (!images.length) {
+        heroHtml = '<div class="media-placeholder">[imagem]</div>';
+      } else if (images.length === 1) {
+        heroHtml = '<img src="' + esc(images[0]) + '" alt="' + esc(a.title || "") + '" style="width:100%;border-radius:12px;display:block;">';
+      } else {
+        const slides = images.map(function (url) {
+          return '<div class="article-slider-slide"><img src="' + esc(url) + '" alt="' + esc(a.title || "") + '"></div>';
+        }).join("");
+        heroHtml = ''
+          + '<div class="article-slider" id="artSlider">'
+          +   '<div class="article-slider-track" id="artSliderTrack">' + slides + '</div>'
+          +   '<button type="button" class="article-slider-arrow prev" id="artSliderPrev" aria-label="Imagem anterior">‹</button>'
+          +   '<button type="button" class="article-slider-arrow next" id="artSliderNext" aria-label="Próxima imagem">›</button>'
+          +   '<span class="article-slider-counter" id="artSliderCounter">1 / ' + images.length + '</span>'
+          + '</div>';
+      }
+
+      function navLinkHtml(item, cssClass, directionLabel) {
+        const cover = coverOf(item);
+        const thumb = cover ? '<img src="' + esc(cover) + '" alt="">' : '';
+        return ''
+          + '<a href="artigo.html?id=' + item.id + '" class="' + cssClass + '">'
+          +   thumb
+          +   '<span class="text"><span class="direction">' + directionLabel + '</span><span class="title">' + esc(item.title) + '</span></span>'
+          + '</a>';
+      }
 
       let navHtml = '<div class="article-nav">';
-      navHtml += prevA
-        ? '<a href="artigo.html?id=' + prevA.id + '" class="article-nav-link"><span class="direction">← Anterior</span><span class="title">' + esc(prevA.title) + '</span></a>'
-        : '<span></span>';
-      navHtml += nextA
-        ? '<a href="artigo.html?id=' + nextA.id + '" class="article-nav-link next"><span class="direction">Próximo →</span><span class="title">' + esc(nextA.title) + '</span></a>'
-        : '';
+      navHtml += prevA ? navLinkHtml(prevA, "article-nav-link", "← Anterior") : '<span></span>';
+      navHtml += nextA ? navLinkHtml(nextA, "article-nav-link next", "Próximo →") : '';
       navHtml += '</div>';
 
       wrap.innerHTML = ''
         + '<a href="blog.html" class="blog-back-link">← Voltar para o blog</a>'
-        + '<div class="article-hero">' + img + '</div>'
+        + '<div class="article-hero">' + heroHtml + '</div>'
         + '<div class="article-body">' + paragraphs(a.content) + '</div>'
         + navHtml;
+
+      if (images.length > 1) {
+        const track = document.getElementById("artSliderTrack");
+        const counter = document.getElementById("artSliderCounter");
+        const prevBtn = document.getElementById("artSliderPrev");
+        const nextBtn = document.getElementById("artSliderNext");
+        let current = 0;
+        function updateSlider() {
+          track.style.transform = "translateX(-" + (current * 100) + "%)";
+          counter.textContent = (current + 1) + " / " + images.length;
+        }
+        prevBtn.onclick = function () { current = current > 0 ? current - 1 : images.length - 1; updateSlider(); };
+        nextBtn.onclick = function () { current = current < images.length - 1 ? current + 1 : 0; updateSlider(); };
+      }
 
       const bannerEyebrow = document.getElementById("artBannerEyebrow");
       const bannerTitle = document.getElementById("artBannerTitle");

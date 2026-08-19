@@ -112,7 +112,12 @@
   .thumbs-edit { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .75rem; }
   .thumbs-edit .t { position: relative; }
   .thumbs-edit img { width: 5.5rem; height: 4rem; object-fit: cover; border: 1px solid var(--admin-border); border-radius: 6px; display: block; }
-  .thumbs-edit .del { position: absolute; top: -.4rem; right: -.4rem; width: 1.25rem; height: 1.25rem; background: var(--accent); color: #fff; border: none; border-radius: 9999px; font-size: .7rem; cursor: pointer; line-height: 1; }
+  .thumbs-edit .del { position: absolute; top: -.4rem; right: -.4rem; width: 1.25rem; height: 1.25rem; background: var(--accent); color: #fff; border: none; border-radius: 9999px; font-size: .7rem; cursor: pointer; line-height: 1; z-index: 2; }
+  .thumbs-edit .cover-badge { position: absolute; top: .25rem; left: .25rem; background: var(--blue); color: #fff; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; padding: .1rem .35rem; border-radius: 4px; z-index: 2; }
+  .thumbs-edit .reorder { display: flex; justify-content: center; gap: .2rem; margin-top: .25rem; }
+  .thumbs-edit .reorder button { background: #fff; border: 1px solid var(--admin-border); border-radius: 4px; width: 1.3rem; height: 1.1rem; font-size: .65rem; line-height: 1; cursor: pointer; color: var(--text); display: flex; align-items: center; justify-content: center; }
+  .thumbs-edit .reorder button:hover:not(:disabled) { border-color: var(--blue); color: var(--blue); }
+  .thumbs-edit .reorder button:disabled { opacity: .3; cursor: default; }
   .prog { height: .25rem; background: #eee; border-radius: 9999px; overflow: hidden; margin-top: .5rem; display: none; }
   .prog.show { display: block; }
   .prog .bar { height: 100%; background: var(--blue); width: 0; transition: width .2s; }
@@ -405,8 +410,8 @@
       </div>
       <div class="fld"><label>Resumo breve (exibido no card da listagem)</label><textarea id="artExcerpt" rows="2" style="resize:vertical"></textarea></div>
       <div class="fld">
-        <label>Capa do artigo</label>
-        <div class="uploader" id="artUpZone"><div class="hint">Clique para enviar a capa (JPG/PNG)</div><input type="file" id="artFile" accept="image/*"></div>
+        <label>Imagens do artigo (até 5 — a primeira é a capa; use as setinhas para reordenar)</label>
+        <div class="uploader" id="artUpZone"><div class="hint">Clique para enviar uma imagem (JPG/PNG)</div><input type="file" id="artFile" accept="image/*"></div>
         <div class="prog" id="artProg"><div class="bar"></div></div>
         <div class="thumbs-edit" id="artThumb"></div>
       </div>
@@ -487,7 +492,7 @@
 
   const { auth, db, storage } = MC;
   let me = null;
-  let artCoverUrl = "";
+  let artImages = [];
   let editUserId = null;
   let currentStatusFilter = "todos";
   let articlesCache = [];
@@ -719,7 +724,7 @@
       const status = a.status || "rascunho";
       const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td>${a.imageUrl ? `<img class="thumb" src="${esc(a.imageUrl)}">` : `<div class="thumb" style="display:flex;align-items:center;justify-content:center;font-size:9px;color:#9a9c9d;text-align:center;">SEM CAPA</div>`}</td>
+        <td>${(a.images && a.images[0]) || a.imageUrl ? `<img class="thumb" src="${esc((a.images && a.images[0]) || a.imageUrl)}">` : `<div class="thumb" style="display:flex;align-items:center;justify-content:center;font-size:9px;color:#9a9c9d;text-align:center;">SEM CAPA</div>`}</td>
         <td><b>${esc(a.title||"(sem título)")}</b></td>
         <td>${esc(a.category||"—")}</td>
         <td><span class="badge-status ${status}">${status}</span></td>
@@ -758,13 +763,39 @@
     $("artExcerpt").value = a.excerpt || "";
     $("artContent").value = a.content || "";
     $("artStatus").value = a.status || "rascunho";
-    artCoverUrl = a.imageUrl || "";
-    $("artThumb").innerHTML = artCoverUrl
-      ? `<div class="t"><img src="${artCoverUrl}"><button class="del" type="button">×</button></div>`
-      : "";
-    const delBtn = $("artThumb").querySelector(".del");
-    if (delBtn) delBtn.onclick = () => { artCoverUrl = ""; $("artThumb").innerHTML = ""; };
+    // Compatibilidade: artigos antigos têm um único "imageUrl"; novos usam "images" (array até 5)
+    artImages = Array.isArray(a.images) ? a.images.slice(0, 5) : (a.imageUrl ? [a.imageUrl] : []);
+    renderArtThumbs();
     $("ovArticle").classList.add("open");
+  }
+
+  function renderArtThumbs(){
+    const wrap = $("artThumb");
+    wrap.innerHTML = artImages.map((url, i) => `
+      <div class="t">
+        ${i === 0 ? '<span class="cover-badge">Capa</span>' : ''}
+        <img src="${url}">
+        <button class="del" type="button" data-i="${i}">×</button>
+        <div class="reorder">
+          <button type="button" class="mv-left" data-i="${i}" ${i === 0 ? "disabled" : ""}>‹</button>
+          <button type="button" class="mv-right" data-i="${i}" ${i === artImages.length - 1 ? "disabled" : ""}>›</button>
+        </div>
+      </div>
+    `).join("");
+    wrap.querySelectorAll(".del").forEach(b => b.onclick = () => {
+      artImages.splice(Number(b.dataset.i), 1);
+      renderArtThumbs();
+    });
+    wrap.querySelectorAll(".mv-left").forEach(b => b.onclick = () => {
+      const i = Number(b.dataset.i);
+      [artImages[i - 1], artImages[i]] = [artImages[i], artImages[i - 1]];
+      renderArtThumbs();
+    });
+    wrap.querySelectorAll(".mv-right").forEach(b => b.onclick = () => {
+      const i = Number(b.dataset.i);
+      [artImages[i], artImages[i + 1]] = [artImages[i + 1], artImages[i]];
+      renderArtThumbs();
+    });
   }
 
   async function saveArticle(){
@@ -775,7 +806,8 @@
       category: $("artCategory").value.trim(),
       excerpt: $("artExcerpt").value.trim(),
       content: $("artContent").value.trim(),
-      imageUrl: artCoverUrl,
+      images: artImages,
+      imageUrl: artImages[0] || "", // mantido por compatibilidade com registros antigos
       status: $("artStatus").value,
       updatedAt: ts(),
       updatedBy: me.email,
@@ -795,11 +827,13 @@
     $("artUpZone").onclick = (e) => { if (e.target.tagName !== "INPUT") $("artFile").click(); };
     $("artFile").onchange = (e) => {
       const f = e.target.files[0];
-      if (f) uploadCoverImage(f, $("artProg"), (url) => {
-        artCoverUrl = url;
-        $("artThumb").innerHTML = `<div class="t"><img src="${url}"><button class="del" type="button">×</button></div>`;
-        $("artThumb").querySelector(".del").onclick = () => { artCoverUrl = ""; $("artThumb").innerHTML = ""; };
+      if (!f) return;
+      if (artImages.length >= 5) { alert("Máximo de 5 imagens por artigo. Remova uma para adicionar outra."); e.target.value = ""; return; }
+      uploadCoverImage(f, $("artProg"), (url) => {
+        artImages.push(url);
+        renderArtThumbs();
       });
+      e.target.value = "";
     };
   }
 

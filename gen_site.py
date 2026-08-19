@@ -319,7 +319,7 @@ home_body = f'''    <!-- ===================== HERO ===================== -->
     <section class="about">
       <div class="container section-inner">
         <div class="about-media">
-          <div class="media-placeholder">[imagem]</div>
+          <img src="imagens/fachada-medcontrol.webp" alt="Fachada MedControl" />
         </div>
         <div class="about-copy">
           <span class="eyebrow">Institucional</span>
@@ -489,7 +489,7 @@ quem_somos_body = f'''{page_banner(
     <section class="about">
       <div class="container section-inner">
         <div class="about-media">
-          <div class="media-placeholder">[imagem]</div>
+          <img src="imagens/fachada-medcontrol.webp" alt="Fachada MedControl" />
         </div>
         <div class="about-copy">
           <span class="eyebrow">Nossa história</span>
@@ -1572,8 +1572,13 @@ CATALOG_SCRIPTS = '''
   </script>
 '''
 
-FLIPBOOK_SCRIPTS = '''
-  <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+# Páginas pré-renderizadas do catálogo (imagens/catalogo/pagina-NN.webp).
+# Se o catálogo mudar de número de páginas, atualize CATALOG_PAGE_COUNT (e
+# re-renderize as imagens — ver README, seção "Catálogo em PDF").
+CATALOG_PAGE_COUNT = 20
+CATALOG_PAGE_ASPECT = 1923 / 1400  # altura / largura das imagens renderizadas
+
+FLIPBOOK_SCRIPTS_TEMPLATE = '''
   <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
   <script>
   (function () {
@@ -1585,78 +1590,73 @@ FLIPBOOK_SCRIPTS = '''
     const prevBtn = document.getElementById("flipPrevBtn");
     const nextBtn = document.getElementById("flipNextBtn");
 
-    if (typeof pdfjsLib === "undefined" || typeof St === "undefined") {
+    if (typeof St === "undefined") {
       loading.innerHTML = "Não foi possível carregar o visualizador.";
       return;
     }
-    pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js";
 
-    async function renderPageToImage(pdfDoc, num, maxWidth) {
-      const page = await pdfDoc.getPage(num);
-      const baseViewport = page.getViewport({ scale: 1 });
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      const scale = (maxWidth * dpr) / baseViewport.width;
-      const viewport = page.getViewport({ scale: scale });
-      const canvas = document.createElement("canvas");
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
-      const ctx = canvas.getContext("2d");
-      await page.render({ canvasContext: ctx, viewport: viewport }).promise;
-      return canvas.toDataURL("image/jpeg", 0.85);
+    // Páginas pré-renderizadas em WebP de alta qualidade (imagens/catalogo/) —
+    // muito mais nítido e leve do que renderizar o PDF no navegador da pessoa.
+    // Pra atualizar o catálogo: gere novas imagens pagina-01.webp, pagina-02.webp...
+    // (mesma nomenclatura, numeração com 2 dígitos) e ajuste __CATALOG_PAGE_COUNT__ abaixo.
+    const TOTAL_PAGES = __CATALOG_PAGE_COUNT__;
+    const PAGE_ASPECT = __CATALOG_PAGE_ASPECT__; // altura / largura de cada página
+    const images = [];
+    for (let i = 1; i <= TOTAL_PAGES; i++) {
+      const n = i < 10 ? "0" + i : "" + i;
+      images.push("imagens/catalogo/pagina-" + n + ".webp");
     }
 
-    pdfjsLib.getDocument("catalogo-medcontrol.pdf").promise.then(async function (pdfDoc) {
-      const totalPages = pdfDoc.numPages;
-      const maxWidth = Math.min(wrap.clientWidth || 480, 480);
-      const images = [];
-      for (let i = 1; i <= totalPages; i++) {
-        images.push(await renderPageToImage(pdfDoc, i, maxWidth));
-      }
+    const maxWidth = Math.min(wrap.clientWidth || 480, 480);
+    const totalPages = TOTAL_PAGES;
 
-      loading.style.display = "none";
+    loading.style.display = "none";
 
-      const pageFlip = new St.PageFlip(bookEl, {
-        width: maxWidth,
-        height: Math.round(maxWidth * 1.35),
-        size: "stretch",
-        minWidth: 260,
-        maxWidth: 520,
-        minHeight: 340,
-        maxHeight: 720,
-        showCover: false,
-        usePortrait: true,
-        maxShadowOpacity: 0.5,
-        mobileScrollSupport: false,
-        useMouseEvents: true,
-        drawShadow: true,
-        flippingTime: 500,
-      });
+    const pageFlip = new St.PageFlip(bookEl, {
+      width: maxWidth,
+      height: Math.round(maxWidth * PAGE_ASPECT),
+      size: "stretch",
+      minWidth: 260,
+      maxWidth: 520,
+      minHeight: Math.round(260 * PAGE_ASPECT),
+      maxHeight: Math.round(520 * PAGE_ASPECT),
+      showCover: false,
+      usePortrait: true,
+      maxShadowOpacity: 0.5,
+      mobileScrollSupport: false,
+      useMouseEvents: true,
+      drawShadow: true,
+      flippingTime: 500,
+    });
 
-      pageFlip.loadFromImages(images);
+    pageFlip.loadFromImages(images);
 
-      function updateControls() {
-        const idx = pageFlip.getCurrentPageIndex();
-        pageInfo.textContent = (idx + 1) + " / " + totalPages;
-        prevBtn.disabled = idx <= 0;
-        nextBtn.disabled = idx >= totalPages - 1;
-      }
+    function updateControls() {
+      const idx = pageFlip.getCurrentPageIndex();
+      pageInfo.textContent = (idx + 1) + " / " + totalPages;
+      prevBtn.disabled = idx <= 0;
+      nextBtn.disabled = idx >= totalPages - 1;
+    }
 
-      pageFlip.on("flip", updateControls);
-      updateControls();
+    pageFlip.on("flip", updateControls);
+    updateControls();
 
-      prevBtn.onclick = function () { pageFlip.flipPrev(); };
-      nextBtn.onclick = function () { pageFlip.flipNext(); };
+    prevBtn.onclick = function () { pageFlip.flipPrev(); };
+    nextBtn.onclick = function () { pageFlip.flipNext(); };
 
-      document.addEventListener("keydown", function (e) {
-        if (e.key === "ArrowRight") pageFlip.flipNext();
-        if (e.key === "ArrowLeft") pageFlip.flipPrev();
-      });
-    }).catch(function () {
-      loading.innerHTML = "Não foi possível carregar o catálogo. <a href=\\"catalogo-medcontrol.pdf\\" style=\\"color:#fff;text-decoration:underline;\\" target=\\"_blank\\">Baixar PDF</a>";
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowRight") pageFlip.flipNext();
+      if (e.key === "ArrowLeft") pageFlip.flipPrev();
     });
   })();
   </script>
 '''
+
+FLIPBOOK_SCRIPTS = (
+    FLIPBOOK_SCRIPTS_TEMPLATE
+    .replace("__CATALOG_PAGE_COUNT__", str(CATALOG_PAGE_COUNT))
+    .replace("__CATALOG_PAGE_ASPECT__", str(round(CATALOG_PAGE_ASPECT, 4)))
+)
 
 catalogo_body = f'''{page_banner(
     "Catálogo",
@@ -1778,8 +1778,9 @@ BLOG_LIST_SCRIPTS = '''
         let html = "";
         snap.forEach(function (doc) {
           const a = doc.data();
-          const img = a.imageUrl
-            ? '<img src="' + esc(a.imageUrl) + '" alt="' + esc(a.title || "") + '" style="width:100%;height:200px;object-fit:cover;display:block;border-bottom:1px solid var(--gray-light);">'
+          const cover = (a.images && a.images[0]) || a.imageUrl;
+          const img = cover
+            ? '<img src="' + esc(cover) + '" alt="' + esc(a.title || "") + '" class="blog-card-img">'
             : '<div class="media-placeholder">[imagem]</div>';
           html += ''
             + '<article class="blog-card">'
@@ -1874,24 +1875,64 @@ ARTIGO_SCRIPTS = '''
       const prevA = idx >= 0 && idx < list.length - 1 ? list[idx + 1] : null;
       const nextA = idx > 0 ? list[idx - 1] : null;
 
-      const img = a.imageUrl
-        ? '<img src="' + esc(a.imageUrl) + '" alt="' + esc(a.title || "") + '" style="width:100%;border-radius:12px;display:block;">'
-        : '<div class="media-placeholder">[imagem]</div>';
+      function coverOf(item) {
+        return (item.images && item.images[0]) || item.imageUrl || "";
+      }
+
+      const images = Array.isArray(a.images) && a.images.length ? a.images : (a.imageUrl ? [a.imageUrl] : []);
+
+      let heroHtml;
+      if (!images.length) {
+        heroHtml = '<div class="media-placeholder">[imagem]</div>';
+      } else if (images.length === 1) {
+        heroHtml = '<img src="' + esc(images[0]) + '" alt="' + esc(a.title || "") + '" style="width:100%;border-radius:12px;display:block;">';
+      } else {
+        const slides = images.map(function (url) {
+          return '<div class="article-slider-slide"><img src="' + esc(url) + '" alt="' + esc(a.title || "") + '"></div>';
+        }).join("");
+        heroHtml = ''
+          + '<div class="article-slider" id="artSlider">'
+          +   '<div class="article-slider-track" id="artSliderTrack">' + slides + '</div>'
+          +   '<button type="button" class="article-slider-arrow prev" id="artSliderPrev" aria-label="Imagem anterior">‹</button>'
+          +   '<button type="button" class="article-slider-arrow next" id="artSliderNext" aria-label="Próxima imagem">›</button>'
+          +   '<span class="article-slider-counter" id="artSliderCounter">1 / ' + images.length + '</span>'
+          + '</div>';
+      }
+
+      function navLinkHtml(item, cssClass, directionLabel) {
+        const cover = coverOf(item);
+        const thumb = cover ? '<img src="' + esc(cover) + '" alt="">' : '';
+        return ''
+          + '<a href="artigo.html?id=' + item.id + '" class="' + cssClass + '">'
+          +   thumb
+          +   '<span class="text"><span class="direction">' + directionLabel + '</span><span class="title">' + esc(item.title) + '</span></span>'
+          + '</a>';
+      }
 
       let navHtml = '<div class="article-nav">';
-      navHtml += prevA
-        ? '<a href="artigo.html?id=' + prevA.id + '" class="article-nav-link"><span class="direction">← Anterior</span><span class="title">' + esc(prevA.title) + '</span></a>'
-        : '<span></span>';
-      navHtml += nextA
-        ? '<a href="artigo.html?id=' + nextA.id + '" class="article-nav-link next"><span class="direction">Próximo →</span><span class="title">' + esc(nextA.title) + '</span></a>'
-        : '';
+      navHtml += prevA ? navLinkHtml(prevA, "article-nav-link", "← Anterior") : '<span></span>';
+      navHtml += nextA ? navLinkHtml(nextA, "article-nav-link next", "Próximo →") : '';
       navHtml += '</div>';
 
       wrap.innerHTML = ''
         + '<a href="blog.html" class="blog-back-link">← Voltar para o blog</a>'
-        + '<div class="article-hero">' + img + '</div>'
+        + '<div class="article-hero">' + heroHtml + '</div>'
         + '<div class="article-body">' + paragraphs(a.content) + '</div>'
         + navHtml;
+
+      if (images.length > 1) {
+        const track = document.getElementById("artSliderTrack");
+        const counter = document.getElementById("artSliderCounter");
+        const prevBtn = document.getElementById("artSliderPrev");
+        const nextBtn = document.getElementById("artSliderNext");
+        let current = 0;
+        function updateSlider() {
+          track.style.transform = "translateX(-" + (current * 100) + "%)";
+          counter.textContent = (current + 1) + " / " + images.length;
+        }
+        prevBtn.onclick = function () { current = current > 0 ? current - 1 : images.length - 1; updateSlider(); };
+        nextBtn.onclick = function () { current = current < images.length - 1 ? current + 1 : 0; updateSlider(); };
+      }
 
       const bannerEyebrow = document.getElementById("artBannerEyebrow");
       const bannerTitle = document.getElementById("artBannerTitle");
