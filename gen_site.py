@@ -236,17 +236,6 @@ def footer():
           </ul>
         </div>
 
-        <div class="footer-lines">
-          <h3>Produtos</h3>
-          <ul>
-            <li><a href="phm-medcontrol.html">Equipamentos em comodato</a></li>
-            <li><a href="linhas.html#sterifast">Sistema Sterifast</a></li>
-            <li><a href="linhas.html#embalagens">Embalagens para esterilização</a></li>
-            <li><a href="linhas.html#indicadores">Indicadores e controle de processo</a></li>
-            <li><a href="linhas.html#suporte">Suporte técnico e capacitação</a></li>
-          </ul>
-        </div>
-
         <div class="footer-contact">
           <h3>Contato</h3>
           <ul>
@@ -261,8 +250,8 @@ def footer():
       <div class="footer-bottom">
         <div id="copyright"></div>
         <div class="footer-bottom-links">
-          <a href="#">Política de privacidade</a>
-          <a href="#">Termos de uso</a>
+          <a href="politica-de-privacidade.html">Política de privacidade</a>
+          <a href="termos-de-uso.html">Termos de uso</a>
         </div>
       </div>
     </div>
@@ -313,16 +302,15 @@ home_body = f'''    <!-- ===================== HERO ===================== -->
     </section>
 
     <!-- ===================== SOCIAL PROOF ===================== -->
-    <section aria-label="Instituições atendidas" class="social-proof">
+    <section aria-label="Parceiros" class="social-proof">
       <div class="container">
-        <p>Parceira técnica de hospitais, clínicas e centros cirúrgicos em todo o Brasil</p>
+        <p>Parceiros técnicos e comerciais que apoiam nossas soluções</p>
         <div class="logo-grid">
-          <div>[logo]</div>
-          <div>[logo]</div>
-          <div>[logo]</div>
-          <div>[logo]</div>
-          <div>[logo]</div>
-          <div>[logo]</div>
+          <div><img src="imagens/logo-parceiros-1.png" alt="Parceiro MedControl" /></div>
+          <div><img src="imagens/logo-parceiros-2.png" alt="Parceiro MedControl" /></div>
+          <div><img src="imagens/logo-parceiros-3.png" alt="Parceiro MedControl" /></div>
+          <div><img src="imagens/logo-parceiros-4.png" alt="Parceiro MedControl" /></div>
+          <div><img src="imagens/logo-parceiros-5.png" alt="Parceiro MedControl" /></div>
         </div>
       </div>
     </section>
@@ -424,7 +412,6 @@ home_body = f'''    <!-- ===================== HERO ===================== -->
             <p class="body">Envie sua demanda pelo WhatsApp e receba, no mesmo dia útil, cotação e recomendação técnica.</p>
           </div>
         </div>
-        <a href="sobre.html#diferenciais" class="product-card-cta" style="color:var(--blue); margin-top:2.5rem;">Ver todos os diferenciais <span aria-hidden="true">→</span></a>
       </div>
     </section>
 
@@ -1233,6 +1220,227 @@ page = (
 write_page("contato.html", page)
 
 # =============================================================================
+# TERMOS DE USO
+# =============================================================================
+
+termos_body = f'''{page_banner(
+    "Institucional",
+    "Termos de Uso",
+    "Condições gerais para uso do site da MedControl.",
+    "Termos de Uso",
+)}
+    <section>
+      <div class="container section-inner">
+        <div class="legal-body">
+          <p class="legal-updated">Última atualização: agosto de 2026</p>
+
+          <h2>1. Aceitação dos termos</h2>
+          <p>
+            Ao acessar e utilizar o site da MedControl (medcontrolbauru.com.br), você concorda
+            com os termos e condições descritos nesta página. Caso não concorde com algum destes
+            termos, recomendamos que não utilize este site.
+          </p>
+
+          <h2>2. Sobre a MedControl</h2>
+          <p>
+            A MedControl é uma empresa brasileira que fornece produtos e soluções para
+            esterilização hospitalar, com sede em Bauru/SP. Este site tem finalidade
+            institucional e comercial, apresentando nossos produtos, serviços e canais
+            de contato.
+          </p>
+
+          <h2>3. Uso do conteúdo</h2>
+          <p>
+            Todo o conteúdo disponível neste site — textos, imagens, logotipos, catálogos e
+            materiais técnicos — é de propriedade da MedControl ou de seus parceiros, e está
+            protegido pela legislação de propriedade intelectual vigente. É proibida a
+            reprodução, distribuição ou uso comercial deste conteúdo sem autorização prévia
+            por escrito.
+          </p>
+
+          <h2>4. Informações sobre produtos</h2>
+          <p>
+            As informações técnicas, especificações e imagens de produtos apresentadas neste
+            site têm caráter informativo e podem ser alteradas sem aviso prévio. Para
+            informações atualizadas, condições comerciais e disponibilidade, entre em contato
+            diretamente com nossa equipe.
+          </p>
+
+          <h2>5. Formulários e cadastro</h2>
+          <p>
+            Ao preencher formulários de contato neste site, você concorda em fornecer
+            informações verdadeiras e atualizadas. As informações enviadas são utilizadas
+            exclusivamente para retorno comercial e atendimento às suas solicitações, conforme
+            nossa <a href="politica-de-privacidade.html">Política de Privacidade</a>.
+          </p>
+
+          <h2>6. Links externos</h2>
+          <p>
+            Este site pode conter links para sites de terceiros (como redes sociais e
+            parceiros). A MedControl não se responsabiliza pelo conteúdo, políticas ou
+            práticas de sites externos.
+          </p>
+
+          <h2>7. Limitação de responsabilidade</h2>
+          <p>
+            A MedControl envida esforços para manter as informações deste site atualizadas e
+            corretas, mas não garante a ausência de erros ou omissões. O uso das informações
+            aqui contidas é de responsabilidade do usuário.
+          </p>
+
+          <h2>8. Alterações destes termos</h2>
+          <p>
+            Estes termos podem ser atualizados periodicamente, sem aviso prévio, para refletir
+            mudanças em nossas práticas ou na legislação aplicável. Recomendamos a consulta
+            periódica desta página.
+          </p>
+
+          <h2>9. Contato</h2>
+          <p>
+            Dúvidas sobre estes Termos de Uso podem ser encaminhadas para
+            <a href="mailto:contato@medcontrolbauru.com.br"> contato@medcontrolbauru.com.br</a>
+            ou pelos demais canais disponíveis na página de <a href="contato.html">Contato</a>.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+'''
+
+page = (
+    head(
+        "Termos de Uso — MedControl",
+        "Termos de uso do site institucional da MedControl.",
+    )
+    + header(active=None)
+    + termos_body
+    + footer()
+    + whatsapp_float()
+)
+write_page("termos-de-uso.html", page)
+
+# =============================================================================
+# POLÍTICA DE PRIVACIDADE
+# =============================================================================
+
+privacidade_body = f'''{page_banner(
+    "Institucional",
+    "Política de Privacidade",
+    "Como a MedControl coleta, usa e protege as informações fornecidas por você.",
+    "Política de Privacidade",
+)}
+    <section>
+      <div class="container section-inner">
+        <div class="legal-body">
+          <p class="legal-updated">Última atualização: agosto de 2026</p>
+
+          <h2>1. Introdução</h2>
+          <p>
+            A MedControl valoriza a privacidade de quem visita e interage com este site. Esta
+            Política de Privacidade explica quais informações coletamos, como as utilizamos e
+            quais são os seus direitos, em conformidade com a Lei Geral de Proteção de Dados
+            (LGPD — Lei nº 13.709/2018).
+          </p>
+
+          <h2>2. Quais informações coletamos</h2>
+          <p>
+            Coletamos as informações que você nos fornece voluntariamente, principalmente
+            através do formulário de contato deste site, como:
+          </p>
+          <ul>
+            <li>Nome completo</li>
+            <li>E-mail</li>
+            <li>Telefone / WhatsApp</li>
+            <li>Assunto de interesse e mensagem enviada</li>
+          </ul>
+          <p>
+            Também podemos coletar dados de navegação básicos (como páginas visitadas), quando
+            aplicável, para fins de melhoria do site.
+          </p>
+
+          <h2>3. Como usamos suas informações</h2>
+          <p>
+            As informações coletadas são utilizadas exclusivamente para:
+          </p>
+          <ul>
+            <li>Responder às suas solicitações de contato e orçamento</li>
+            <li>Fornecer atendimento comercial e suporte técnico</li>
+            <li>Enviar informações sobre produtos e serviços, quando solicitado</li>
+          </ul>
+          <p>
+            Não vendemos, alugamos ou compartilhamos suas informações pessoais com terceiros
+            para fins de marketing sem o seu consentimento.
+          </p>
+
+          <h2>4. Armazenamento e segurança</h2>
+          <p>
+            As informações enviadas pelo formulário de contato são armazenadas em ambiente
+            seguro, com acesso restrito à nossa equipe autorizada. Adotamos medidas técnicas
+            razoáveis para proteger seus dados contra acesso não autorizado, perda ou alteração.
+          </p>
+
+          <h2>5. Compartilhamento de dados</h2>
+          <p>
+            Suas informações podem ser compartilhadas com prestadores de serviço que auxiliam
+            na operação deste site (como provedores de hospedagem e infraestrutura), sempre
+            sob obrigação de confidencialidade, ou quando exigido por lei.
+          </p>
+
+          <h2>6. Seus direitos</h2>
+          <p>
+            Conforme a LGPD, você tem direito a solicitar, a qualquer momento:
+          </p>
+          <ul>
+            <li>Confirmação da existência de tratamento dos seus dados</li>
+            <li>Acesso, correção ou atualização dos seus dados</li>
+            <li>Exclusão dos seus dados de nossa base, quando aplicável</li>
+            <li>Informações sobre com quem compartilhamos seus dados</li>
+          </ul>
+          <p>
+            Para exercer esses direitos, entre em contato pelo e-mail
+            <a href="mailto:contato@medcontrolbauru.com.br"> contato@medcontrolbauru.com.br</a>.
+          </p>
+
+          <h2>7. Cookies</h2>
+          <p>
+            Este site pode utilizar cookies e tecnologias similares para melhorar a experiência
+            de navegação. Você pode gerenciar ou desativar cookies nas configurações do seu
+            navegador a qualquer momento.
+          </p>
+
+          <h2>8. Alterações desta política</h2>
+          <p>
+            Esta Política de Privacidade pode ser atualizada periodicamente. Recomendamos a
+            consulta periódica desta página para se manter informado sobre eventuais mudanças.
+          </p>
+
+          <h2>9. Contato</h2>
+          <p>
+            Dúvidas sobre esta Política de Privacidade podem ser encaminhadas para
+            <a href="mailto:contato@medcontrolbauru.com.br"> contato@medcontrolbauru.com.br</a>
+            ou pelos demais canais disponíveis na página de <a href="contato.html">Contato</a>.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+'''
+
+page = (
+    head(
+        "Política de Privacidade — MedControl",
+        "Política de privacidade e proteção de dados do site institucional da MedControl.",
+    )
+    + header(active=None)
+    + privacidade_body
+    + footer()
+    + whatsapp_float()
+)
+write_page("politica-de-privacidade.html", page)
+
+# =============================================================================
 # CATÁLOGO — grid dinâmica (Firestore) + modal de detalhes
 # =============================================================================
 
@@ -1453,7 +1661,7 @@ FLIPBOOK_SCRIPTS = '''
 catalogo_body = f'''{page_banner(
     "Catálogo",
     "Catálogo de produtos MedControl.",
-    "Folheie o catálogo completo abaixo, ou explore produtos em destaque cadastrados individualmente logo mais abaixo.",
+    "Folheie o catálogo completo abaixo.",
     "Catálogo",
 )}
     <!-- ===================== CATÁLOGO EM PDF (FOLHEÁVEL) ===================== -->
@@ -1475,40 +1683,54 @@ catalogo_body = f'''{page_banner(
       </div>
     </section>
 
-    <!-- ===================== CATÁLOGO ESTRUTURADO (CADASTRADO NO ADMIN) ===================== -->
-    <section>
+    <!-- ===================== PRODUCT LINES (clonado da home, fundo vermelho) ===================== -->
+    <section class="product-lines product-lines-accent">
       <div class="container section-inner">
-        <div class="catalog-divider" style="margin-bottom:2rem;">
-          <span class="eyebrow">Produtos em destaque</span>
-          <h2>Alguns produtos, com detalhes prontos para consulta rápida.</h2>
-          <p>Cadastrados individualmente pela nossa equipe — toque em um produto para ver a ficha completa.</p>
+        <div class="product-lines-head">
+          <div style="max-width:42rem;">
+            <span class="eyebrow">Produtos</span>
+            <h2>Tudo que sua central de esterilização precisa. Em um só lugar.</h2>
+          </div>
+          <a href="linhas.html" class="btn btn-outline-white">
+            Ver todos os produtos <span aria-hidden="true">→</span>
+          </a>
         </div>
-        <div class="catalog-grid" id="catalogGrid">
-          <p style="grid-column:1/-1;color:#6b6d6e;">Carregando catálogo…</p>
+
+        <div class="product-grid">
+          <article class="product-card">
+            <div class="product-card-top"><span>01</span><span>Linha</span></div>
+            <h3>Equipamentos em comodato</h3>
+            <p>Autoclaves, seladoras, lavadoras termodesinfectoras e esterilizadores a plasma — tecnologia de ponta sem alto investimento inicial.</p>
+            <a href="phm-medcontrol.html" class="product-card-cta">Saiba mais <span aria-hidden="true">→</span></a>
+          </article>
+          <article class="product-card">
+            <div class="product-card-top"><span>02</span><span>Linha</span></div>
+            <h3>Sistema Sterifast</h3>
+            <p>Rastreabilidade técnica completa para a sua CME, com etiquetas automatizadas, registro fotográfico e tablets exclusivos por setor.</p>
+            <a href="linhas.html#sterifast" class="product-card-cta">Saiba mais <span aria-hidden="true">→</span></a>
+          </article>
+          <article class="product-card">
+            <div class="product-card-top"><span>03</span><span>Linha</span></div>
+            <h3>Embalagens para esterilização</h3>
+            <p>Papel grau cirúrgico, bobinas tubulares e envelopes com resistência mecânica validada, em conformidade com ANVISA e normas internacionais.</p>
+            <a href="linhas.html#embalagens" class="product-card-cta">Saiba mais <span aria-hidden="true">→</span></a>
+          </article>
+          <article class="product-card">
+            <div class="product-card-top"><span>04</span><span>Linha</span></div>
+            <h3>Indicadores e controle de processo</h3>
+            <p>Indicadores biológicos, químicos e integradores Tipo 5 que validam cada parâmetro do ciclo, com rastreabilidade auditável.</p>
+            <a href="linhas.html#indicadores" class="product-card-cta">Saiba mais <span aria-hidden="true">→</span></a>
+          </article>
+          <article class="product-card">
+            <div class="product-card-top"><span>05</span><span>Linha</span></div>
+            <h3>Suporte técnico e capacitação</h3>
+            <p>Atendimento consultivo presencial, validação de processos e o programa CME Masterclass by MedControl.</p>
+            <a href="linhas.html#suporte" class="product-card-cta">Saiba mais <span aria-hidden="true">→</span></a>
+          </article>
         </div>
-        <div class="catalog-pagination" id="catalogPagination" style="display:none;"></div>
       </div>
     </section>
   </main>
-
-  <!-- Modal de detalhes do produto — precisa existir no DOM ANTES do script
-       que referencia esses IDs rodar, por isso fica aqui e não lá embaixo -->
-  <div class="catalog-modal-overlay" id="catalogModalOverlay">
-    <div class="catalog-modal">
-      <div class="catalog-modal-wrap">
-        <button type="button" class="catalog-modal-close" id="catalogModalClose">✕</button>
-        <img id="catalogModalImg" class="catalog-modal-img" src="" alt="" />
-        <div class="catalog-modal-body">
-          <span class="cat-label" id="catalogModalLabel"></span>
-          <h2 id="catalogModalTitle"></h2>
-          <div class="description" id="catalogModalDesc"></div>
-          <div class="catalog-modal-specs" id="catalogModalSpecsWrap" style="display:none;">
-            <div id="catalogModalSpecs"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 
 '''
 
@@ -1520,7 +1742,7 @@ page = (
     + header(active="catalogo.html")
     + catalogo_body
     + footer()
-    + whatsapp_float(FLIPBOOK_SCRIPTS + CATALOG_SCRIPTS)
+    + whatsapp_float(FLIPBOOK_SCRIPTS)
 )
 
 write_page("catalogo.html", page)

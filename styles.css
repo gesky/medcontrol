@@ -573,22 +573,24 @@ h2 {
 
 @media (min-width: 768px) {
   .logo-grid {
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(5, 1fr);
   }
 }
 
 .logo-grid div {
   display: flex;
-  height: 3rem;
+  height: 3.5rem;
   align-items: center;
   justify-content: center;
   background-color: var(--gray-light);
   border-radius: var(--radius);
-  font-size: 0.6875rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: #7a7c7d;
+  padding: 0.5rem 0.75rem;
+}
+
+.logo-grid div img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -667,6 +669,27 @@ h2 {
 
 .product-lines .eyebrow::before {
   background-color: var(--accent);
+}
+
+/* Variante com fundo vermelho (usada na página de Catálogo) */
+.product-lines.product-lines-accent {
+  background-color: var(--accent);
+}
+
+.product-lines.product-lines-accent .eyebrow {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.product-lines.product-lines-accent .eyebrow::before {
+  background-color: var(--white);
+}
+
+.product-lines.product-lines-accent .product-card-top {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.product-lines.product-lines-accent .btn-outline-white:hover {
+  background-color: rgba(255, 255, 255, 0.15);
 }
 
 .product-lines-head {
@@ -1006,24 +1029,27 @@ h2 {
 
 .footer-grid {
   display: grid;
-  gap: 3rem;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2.5rem 1.5rem;
+}
+
+.footer-brand {
+  grid-column: 1 / -1;
 }
 
 @media (min-width: 768px) {
   .footer-grid {
     grid-template-columns: repeat(12, 1fr);
+    gap: 3rem;
   }
   .footer-brand {
-    grid-column: span 4;
+    grid-column: span 5;
   }
   .footer-nav {
-    grid-column: span 2;
-  }
-  .footer-lines {
     grid-column: span 3;
   }
   .footer-contact {
-    grid-column: span 3;
+    grid-column: span 4;
   }
 }
 
@@ -1064,7 +1090,6 @@ h2 {
 }
 
 .footer-nav h3,
-.footer-lines h3,
 .footer-contact h3 {
   font-size: 0.75rem;
   font-weight: 700;
@@ -1075,7 +1100,6 @@ h2 {
 }
 
 .footer-nav ul,
-.footer-lines ul,
 .footer-contact ul {
   margin: 1.25rem 0 0 0;
   padding: 0;
@@ -1088,7 +1112,6 @@ h2 {
 }
 
 .footer-nav a:hover,
-.footer-lines a:hover,
 .footer-contact a:hover {
   color: var(--white);
 }
@@ -2391,4 +2414,47 @@ h2 {
   max-width: 34rem;
   margin-left: auto;
   margin-right: auto;
+}
+
+/* ==========================================================================
+   Páginas legais — Termos de Uso / Política de Privacidade
+   ========================================================================== */
+
+.legal-body {
+  max-width: 46rem;
+}
+
+.legal-body p {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: #3a3c3d;
+  margin: 0 0 1.25rem 0;
+}
+
+.legal-body h2 {
+  font-size: 1.25rem;
+  margin: 2.5rem 0 1rem 0;
+  color: var(--text);
+}
+
+.legal-body h2:first-child {
+  margin-top: 0;
+}
+
+.legal-body ul {
+  margin: 0 0 1.25rem 0;
+  padding-left: 1.25rem;
+  color: #3a3c3d;
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.legal-body li {
+  margin-bottom: 0.5rem;
+}
+
+.legal-updated {
+  font-size: 0.8125rem;
+  color: #9a9c9d;
+  margin-bottom: 2.5rem;
 }
