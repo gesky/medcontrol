@@ -70,6 +70,17 @@ def header(active=None):
          target="_blank" rel="noopener noreferrer" class="btn btn-accent header-whatsapp-btn">
         Falar com Especialista
       </a>
+      <button type="button" class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Abrir menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="mobile-menu" id="mobileMenu">
+      <nav class="mobile-menu-links">
+{nav}
+      </nav>
+      <a href="{WA_LINK}" target="_blank" rel="noopener noreferrer" class="btn btn-accent mobile-menu-whatsapp">
+        Falar no WhatsApp
+      </a>
     </div>
   </header>
 
