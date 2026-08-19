@@ -632,6 +632,18 @@ h2 {
   }
 }
 
+/* Modificador: reduz só o espaçamento superior, para encurtar a transição
+   entre duas seções específicas sem alterar o ritmo do resto da página. */
+.section-inner--tight-top {
+  padding-top: 3rem;
+}
+
+@media (min-width: 768px) {
+  .section-inner--tight-top {
+    padding-top: 4rem;
+  }
+}
+
 /* ---------------------------------------------------------------------- */
 /* About                                                                   */
 /* ---------------------------------------------------------------------- */
