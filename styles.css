@@ -376,7 +376,7 @@ h2 {
 .hero {
   position: relative;
   overflow: hidden;
-  background-image: url('imagens/hero-bg.jpg');
+  background-image: url('imagens/hero-bg.webp');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
