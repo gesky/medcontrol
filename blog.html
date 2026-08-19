@@ -179,14 +179,14 @@
             ? '<img src="' + esc(cover) + '" alt="' + esc(a.title || "") + '" class="blog-card-img">'
             : '<div class="media-placeholder">[imagem]</div>';
           html += ''
-            + '<article class="blog-card">'
+            + '<a class="blog-card" href="artigo.html?id=' + doc.id + '">'
             +   img
             +   '<div class="blog-card-body">'
             +     '<h3>' + esc(a.title || "(sem título)") + '</h3>'
             +     '<p>' + esc(a.excerpt || "") + '</p>'
-            +     '<a href="artigo.html?id=' + doc.id + '" class="blog-card-cta">Ler artigo <span aria-hidden="true">→</span></a>'
+            +     '<span class="blog-card-cta">Ler artigo <span aria-hidden="true">→</span></span>'
             +   '</div>'
-            + '</article>';
+            + '</a>';
         });
         grid.innerHTML = html;
       })
