@@ -190,13 +190,15 @@ h2 {
   }
 }
 
-/* Botão do WhatsApp no header: visível só a partir do desktop */
-.header-whatsapp-btn {
+/* Botão do WhatsApp no header: visível só a partir do desktop
+   (seletor combinado .btn.header-whatsapp-btn para garantir especificidade
+   maior que a regra genérica .btn, que também define display) */
+.btn.header-whatsapp-btn {
   display: none;
 }
 
 @media (min-width: 900px) {
-  .header-whatsapp-btn {
+  .btn.header-whatsapp-btn {
     display: inline-flex;
   }
 }
