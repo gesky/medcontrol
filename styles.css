@@ -398,7 +398,7 @@ h2 {
   background-repeat: no-repeat;
 }
 
-/* Fade preto para transparente, da esquerda para a direita */
+/* Fade preto para transparente, da esquerda para a direita (desktop) */
 .hero::before {
   content: '';
   position: absolute;
@@ -411,6 +411,13 @@ h2 {
     rgba(0, 0, 0, 0.06) 100%
   );
   z-index: 0;
+}
+
+/* Mobile: sobreposição sólida em vez de degradê */
+@media (max-width: 899px) {
+  .hero::before {
+    background: rgba(0, 0, 0, 0.15);
+  }
 }
 
 .hero .container {
