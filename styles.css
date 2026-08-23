@@ -996,6 +996,17 @@ h2 {
   margin-right: auto;
 }
 
+.institutional-video {
+  margin: 3rem auto 0;
+  width: 100%;
+  max-width: 900px;
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  box-shadow: 0 20px 45px -15px rgba(0, 0, 0, 0.25);
+  background-color: #000;
+  display: block;
+}
+
 /* ---------------------------------------------------------------------- */
 /* Final CTA / Contato                                                     */
 /* ---------------------------------------------------------------------- */
