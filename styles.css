@@ -27,7 +27,8 @@
 }
 
 html {
-  scroll-behavior: smooth;
+  /* A rolagem suave agora é feita via JS (Lenis) — ver script.js.
+     Não usar "scroll-behavior: smooth" aqui, pois os dois brigam entre si. */
 }
 
 body {
@@ -2602,4 +2603,33 @@ h2 {
   font-size: 0.8125rem;
   color: #9a9c9d;
   margin-bottom: 2.5rem;
+}
+
+/* ==========================================================================
+   Animações de entrada ao rolar (fade + blur sutil)
+   A classe .reveal só é aplicada via JS (script.js) — se o JS não rodar por
+   algum motivo, o conteúdo nunca fica invisível (progressive enhancement).
+   ========================================================================== */
+
+.reveal {
+  opacity: 0;
+  filter: blur(6px);
+  transform: translateY(14px);
+  transition: opacity 0.7s ease, filter 0.7s ease, transform 0.7s ease;
+  will-change: opacity, filter, transform;
+}
+
+.reveal.in-view {
+  opacity: 1;
+  filter: blur(0);
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    filter: none;
+    transform: none;
+    transition: none;
+  }
 }
