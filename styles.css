@@ -1840,6 +1840,18 @@ h2 {
   margin-bottom: 1.5rem;
 }
 
+.grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 1rem;
+}
+
+@media (max-width: 560px) {
+  .grid2 {
+    grid-template-columns: 1fr;
+  }
+}
+
 .form-group label {
   font-size: 0.75rem;
   font-weight: 700;

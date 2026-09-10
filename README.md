@@ -28,15 +28,13 @@ Os demais arquivos (HTML, CSS, JS, PDF) continuam soltos na raiz.
 ## Páginas do site público
 
 - `index.html` — Home
-- `catalogo.html` — **Catálogo de produtos**, com duas partes:
-  1. **Visualizador de PDF folheável** — renderiza `catalogo-medcontrol.pdf` página por
-     página, com efeito de "livro" (arrastar com mouse/touch). Fundo branco na área do
-     visualizador; o título/subtítulo no topo da página continuam com fundo azul. Pra
-     atualizar o catálogo, basta substituir o arquivo `catalogo-medcontrol.pdf` por uma
-     versão nova, com o mesmo nome
-  2. **Grid de produtos em destaque**, dinâmico via Firestore (coleção `catalog`), pra produtos
-     que você quiser cadastrar individualmente com ficha própria (pop-up com descrição completa),
-     4 por linha / 8 por página, com paginação (Anterior/Próxima)
+- `catalogo.html` — **Visualizador de catálogo folheável**, com efeito de "livro" (arrastar
+  com mouse/touch). Usa **imagens pré-renderizadas em WebP** (`imagens/catalogo/pagina-01.webp`
+  a `pagina-20.webp`) em vez de renderizar o PDF ao vivo no navegador — muito mais nítido e
+  leve. Fundo branco na área do visualizador; o título/subtítulo no topo da página continuam
+  com fundo azul. O PDF original (`catalogo-medcontrol.pdf`) continua no site só para o link
+  "Baixar catálogo em PDF". Logo abaixo do visualizador, uma seção clonada da home ("Tudo que
+  sua central de esterilização precisa..."), com fundo vermelho
 - `sobre.html` — Institucional (história + como trabalhamos + diferenciais)
 - `linhas.html` — Produtos (5 linhas, nesta ordem: Equipamentos em comodato → Sistema
   Sterifast → Embalagens para esterilização → Indicadores e controle de processo →
@@ -46,11 +44,21 @@ Os demais arquivos (HTML, CSS, JS, PDF) continuam soltos na raiz.
 - `contato.html` — Contato (formulário funcional, grava lead no Firestore)
 - `blog.html` — Listagem do blog, dinâmica (Firestore)
 - `artigo.html` — Template dinâmico de artigo (`?id=`)
+- `termos-de-uso.html` / `politica-de-privacidade.html` — páginas legais padrão,
+  linkadas no rodapé de todas as páginas
+- `sorteio.html` — página de cadastro para o sorteio da Sobecc (campanha, não está no menu
+  principal — acesso por link direto/QR code)
 
 Menu (nesta ordem): **Catálogo, Produtos, Sobre, Blog, Contato**.
 
 A página e a seção de **Depoimentos foram removidas** do site (não existe mais
 `depoimentos.html`, nem no menu, nem no rodapé, nem teaser na home).
+
+**Importante:** o grid de "produtos em destaque" (que buscava produtos cadastrados no admin,
+coleção `catalog` do Firestore) foi removido de `catalogo.html`, substituído pela seção
+vermelha clonada da home. A aba **Catálogo** do painel administrativo (`admin.html`) continua
+funcionando normalmente para cadastro — só não tem mais onde aparecer no site público no
+momento. Se quiser voltar a exibir esses produtos em algum lugar, é só avisar.
 
 ### Header
 
@@ -66,15 +74,32 @@ Botão principal do hero agora é **"Conheça nossos produtos"**, levando para `
 
 ## Painel administrativo (`admin.html`)
 
-Abas:
+Abas (nesta ordem — Sorteio Sobecc é a primeira, e já abre ativa ao entrar no painel):
 
+- **Sorteio Sobecc** (nova) — lista de cadastros recebidos pelo formulário público `sorteio.html`,
+  com botão para sortear aleatoriamente 1 ou mais ganhadores (você escolhe a quantidade a cada
+  sorteio), exportar CSV, e "Zerar sorteio" pra reiniciar do zero se precisar sortear de novo
+  entre todo mundo
 - **Artigos** — publicar, editar, arquivar, excluir artigos do blog
-- **Catálogo** — cadastrar, editar, arquivar, excluir produtos do catálogo público.
-  Campos: título, categoria, resumo curto (card), descrição completa (pop-up), especificações
-  adicionais (texto livre, um item por linha no formato `Campo: valor`), imagem (convertida
-  automaticamente para WebP, mesmo pipeline dos artigos), e status (rascunho/publicado/arquivado)
+- ~~**Catálogo**~~ — desativado temporariamente (comentado no código, não excluído — ver nota
+  mais abaixo)
 - **Mensagens** — leads recebidos pelo formulário de contato
 - **Usuários & permissões** (só admin) — criar, editar, remover usuários
+
+O painel inteiro foi revisado para funcionar bem no celular: abas com rolagem horizontal,
+tabelas com scroll lateral (em vez de espremer as colunas), modais em tela cheia no mobile,
+e o cabeçalho simplificado (esconde o e-mail em telas pequenas pra não ficar apertado).
+
+### Sorteio Sobecc — como funciona
+
+- Página pública `sorteio.html` (não está no menu principal do site — é uma campanha à parte,
+  pensada pra ser acessada via link direto ou QR code no estande). Campos básicos: nome,
+  e-mail, telefone/WhatsApp e instituição (opcional) — dá pra ajustar os campos depois
+- Os cadastros vão para a coleção `sorteio_participantes` no Firestore
+- No painel, o campo "Quantos ganhadores" permite sortear 1 ou vários de uma vez — o sorteio
+  não repete quem já ganhou antes, a menos que você clique em "Zerar sorteio"
+- Os ganhadores ficam marcados com o status "Ganhador" na tabela, e aparecem destacados no
+  topo do painel até você zerar
 
 ### Catálogo — como funciona
 
@@ -124,16 +149,29 @@ python3 -m http.server 8000
   arquivo no bloco do Sistema Sterifast; é só colocar a imagem com esse nome exato dentro
   da pasta `imagens/` que ela aparece automaticamente, sem precisar mexer em código
 
-- **Visualizador de PDF (`catalogo.html`):** usa PDF.js pra converter cada página do PDF em
-  imagem, e a biblioteca **StPageFlip** pra cuidar da experiência de "livro" (arrastar o canto
-  da página com mouse/touch, dobra realista, responsivo). Ambas via CDN (jsDelivr) — funciona
-  offline localmente também, mas depende de internet quando publicado (o que já é o caso de tudo
-  que usa Firebase). O PDF (`catalogo-medcontrol.pdf`) tem ~9MB — carrega uma vez por visita e
-  fica em cache do navegador depois. Pra atualizar o catálogo, basta subir um novo arquivo com
-  esse mesmo nome por cima do atual no repositório.
+- **Visualizador de catálogo (`catalogo.html`):** as páginas do PDF foram pré-renderizadas
+  uma vez (em alta resolução, 1400×1923px) e salvas como WebP em `imagens/catalogo/`. O
+  visualizador só carrega essas imagens prontas e usa a biblioteca **StPageFlip** (via CDN)
+  pra cuidar da experiência de "livro". Isso ficou bem mais leve (~2,3MB pras 20 páginas, contra
+  9MB do PDF original) e muito mais nítido do que renderizar o PDF ao vivo no navegador de cada
+  visitante — que era o que causava a qualidade baixa na versão anterior.
 
-- A linha "Sistema Sterifast" ainda está com placeholder `[imagem]` — quando tiver a
-  imagem real, é só me mandar que eu aplico do mesmo jeito que as outras
+  **Pra atualizar o catálogo** (trocar conteúdo/adicionar páginas), é preciso re-renderizar as
+  imagens a partir do PDF novo. Um jeito simples, com Python + PyMuPDF:
+  ```python
+  import fitz  # pip install pymupdf
+  doc = fitz.open("catalogo-medcontrol-novo.pdf")
+  target_width = 1400
+  zoom = target_width / doc[0].rect.width
+  mat = fitz.Matrix(zoom, zoom)
+  for i, page in enumerate(doc, start=1):
+      pix = page.get_pixmap(matrix=mat, alpha=False)
+      pix.pil_save(f"imagens/catalogo/pagina-{i:02d}.webp", format="WEBP", quality=82)
+  ```
+  Depois, se o número de páginas mudou, atualize `CATALOG_PAGE_COUNT` em `gen_site.py` (linha
+  perto do `FLIPBOOK_SCRIPTS_TEMPLATE`) e rode `python3 gen_site.py` de novo. Se quiser, me
+  manda o PDF novo que eu faço essa parte.
+
 - `blog.html`/`artigo.html`/`catalogo.html` podem pedir criação de índice composto no
   Firestore na primeira consulta — normal, resolve uma vez só clicando no link do erro
 - Placeholders `[logo]`, `[vídeo]`, `[mapa]` ainda pendentes de mídia real

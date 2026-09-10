@@ -60,5 +60,13 @@ service cloud.firestore {
       allow create: if true;
       allow read, update, delete: if isEditorOrAdmin();
     }
+
+    match /sorteio_participantes/{id} {
+      // Qualquer visitante pode se cadastrar pelo formulário público do
+      // sorteio (sorteio.html), mas só editor/admin logado pode ver a lista,
+      // marcar ganhadores ou excluir cadastros.
+      allow create: if true;
+      allow read, update, delete: if isEditorOrAdmin();
+    }
   }
 }

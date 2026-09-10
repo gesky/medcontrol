@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Artigo — Blog MedControl</title>
-  <meta name="description" content="Conteúdo técnico MedControl sobre esterilização hospitalar e segurança do paciente." />
+  <title>Sorteio MedControl na Sobecc — Cadastre-se e Participe</title>
+  <meta name="description" content="Cadastre-se no sorteio da MedControl durante a Sobecc e concorra a prêmios exclusivos." />
   <meta name="author" content="MedControl" />
 
-  <meta property="og:title" content="Artigo — Blog MedControl" />
-  <meta property="og:description" content="Conteúdo técnico MedControl sobre esterilização hospitalar e segurança do paciente." />
+  <meta property="og:title" content="Sorteio MedControl na Sobecc — Cadastre-se e Participe" />
+  <meta property="og:description" content="Cadastre-se no sorteio da MedControl durante a Sobecc e concorra a prêmios exclusivos." />
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="pt_BR" />
   <meta name="twitter:card" content="summary_large_image" />
@@ -31,7 +31,7 @@
         <a href="catalogo.html">Catálogo</a>
         <a href="linhas.html">Produtos</a>
         <a href="sobre.html">Sobre</a>
-        <a href="blog.html" aria-current="page">Blog</a>
+        <a href="blog.html">Blog</a>
         <a href="contato.html">Contato</a>
       </nav>
       <a href="https://wa.me/551432087108?text=Ol%C3%A1%2C%20gostaria%20de%20falar%20com%20um%20especialista%20MedControl."
@@ -47,7 +47,7 @@
         <a href="catalogo.html">Catálogo</a>
         <a href="linhas.html">Produtos</a>
         <a href="sobre.html">Sobre</a>
-        <a href="blog.html" aria-current="page">Blog</a>
+        <a href="blog.html">Blog</a>
         <a href="contato.html">Contato</a>
       </nav>
       <a href="https://wa.me/551432087108?text=Ol%C3%A1%2C%20gostaria%20de%20falar%20com%20um%20especialista%20MedControl." target="_blank" rel="noopener noreferrer" class="btn btn-accent mobile-menu-whatsapp">
@@ -57,21 +57,94 @@
   </header>
 
   <main>
+    <!-- ===================== BANNER DA PÁGINA ===================== -->
     <section class="page-banner">
       <div class="container">
         <div class="breadcrumb">
           <a href="index.html">Início</a>
           <span aria-hidden="true">/</span>
-          <a href="blog.html">Blog</a>
+          <span>Sorteio</span>
         </div>
-        <span class="eyebrow" id="artBannerEyebrow">Artigo</span>
-        <h1 id="artBannerTitle">Carregando…</h1>
+        <span class="eyebrow">MedControl na Sobecc</span>
+        <h1>Participe do nosso sorteio!</h1>
+        <p class="lead">Cadastre seus dados abaixo e concorra a prêmios exclusivos da MedControl. É rapidinho!</p>
       </div>
     </section>
 
     <section>
-      <div class="container section-inner" id="articleWrap">
-        <p style="color:#6b6d6e;">Carregando artigo…</p>
+      <div class="container section-inner">
+        <div class="contact-form-container" style="max-width:34rem; margin:0 auto;">
+          <span class="form-eyebrow">Cadastro para o sorteio</span>
+
+          <form id="raffleForm">
+            <div class="form-group">
+              <label for="raffleNome">Nome</label>
+              <input type="text" id="raffleNome" placeholder="Seu nome completo">
+            </div>
+
+            <div class="grid2">
+              <div class="form-group">
+                <label for="raffleCidade">Cidade</label>
+                <input type="text" id="raffleCidade" placeholder="Sua cidade">
+              </div>
+              <div class="form-group">
+                <label for="raffleEstado">Estado</label>
+                <select id="raffleEstado">
+                  <option value="" disabled selected>UF</option>
+                  <option value="AC">AC</option><option value="AL">AL</option><option value="AP">AP</option>
+                  <option value="AM">AM</option><option value="BA">BA</option><option value="CE">CE</option>
+                  <option value="DF">DF</option><option value="ES">ES</option><option value="GO">GO</option>
+                  <option value="MA">MA</option><option value="MT">MT</option><option value="MS">MS</option>
+                  <option value="MG">MG</option><option value="PA">PA</option><option value="PB">PB</option>
+                  <option value="PR">PR</option><option value="PE">PE</option><option value="PI">PI</option>
+                  <option value="RJ">RJ</option><option value="RN">RN</option><option value="RS">RS</option>
+                  <option value="RO">RO</option><option value="RR">RR</option><option value="SC">SC</option>
+                  <option value="SP">SP</option><option value="SE">SE</option><option value="TO">TO</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="raffleHospitalClinica">Hospital / Clínica</label>
+              <input type="text" id="raffleHospitalClinica" placeholder="Onde você trabalha">
+            </div>
+
+            <div class="grid2">
+              <div class="form-group">
+                <label for="raffleProfissao">Profissão</label>
+                <input type="text" id="raffleProfissao" placeholder="Ex: Enfermeiro(a)">
+              </div>
+              <div class="form-group">
+                <label for="raffleCargo">Cargo</label>
+                <input type="text" id="raffleCargo" placeholder="Ex: Coordenador(a) de CME">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="raffleEmail">E-mail</label>
+              <input type="email" id="raffleEmail" placeholder="voce@email.com">
+            </div>
+
+            <div class="form-group">
+              <label for="raffleCelular">Celular</label>
+              <input type="tel" id="raffleCelular" placeholder="(14) 99999-0000">
+            </div>
+
+            <div id="raffleFormMsg" class="msg"></div>
+
+            <button type="submit" id="raffleFormSubmit" class="btn btn-accent-lg" style="width: 100%; justify-content: center; border: none; cursor: pointer;">
+              Confirmar cadastro <span aria-hidden="true">→</span>
+            </button>
+          </form>
+
+          <div id="raffleSuccess" style="display:none; text-align:center; padding: 1.5rem 0;">
+            <div style="font-size:2.5rem; margin-bottom:1rem;">🎉</div>
+            <h2 style="font-size:1.25rem; margin-bottom:0.75rem;">Cadastro confirmado!</h2>
+            <p style="color:#55585a; font-size:0.9375rem; line-height:1.6;">
+              Boa sorte! Fique de olho — os ganhadores serão anunciados pela equipe MedControl no estande.
+            </p>
+          </div>
+        </div>
       </div>
     </section>
   </main>
@@ -151,108 +224,63 @@
   <script src="js/firebase-config.js"></script>
   <script>
   (function () {
-    const wrap = document.getElementById("articleWrap");
-    if (!wrap) return;
+    const form = document.getElementById("raffleForm");
+    const msgEl = document.getElementById("raffleFormMsg");
+    const btn = document.getElementById("raffleFormSubmit");
+    if (!form) return;
 
-    function esc(s) {
-      return String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-    }
-    function paragraphs(text) {
-      return (text || "").split(/\n+/).filter(Boolean).map(p => "<p>" + esc(p) + "</p>").join("");
-    }
-
-    const params = new URLSearchParams(window.location.search);
-    const id = params.get("id");
-
-    if (!window.MC || !MC.configured || !MC.db || !id) {
-      wrap.innerHTML = '<p style="color:#6b6d6e;">Artigo não encontrado. <a href="blog.html">Voltar para o blog</a>.</p>';
-      return;
+    function showMsg(text, type) {
+      msgEl.textContent = text;
+      msgEl.className = "msg show " + type;
     }
 
-    Promise.all([
-      MC.db.collection("articles").doc(id).get(),
-      MC.db.collection("articles").where("status", "==", "publicado").orderBy("createdAt", "desc").get()
-    ]).then(function (results) {
-      const doc = results[0];
-      const listSnap = results[1];
-      if (!doc.exists || doc.data().status !== "publicado") {
-        wrap.innerHTML = '<p style="color:#6b6d6e;">Artigo não encontrado ou não publicado. <a href="blog.html">Voltar para o blog</a>.</p>';
+    form.addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      if (!window.MC || !MC.configured || !MC.db) {
+        showMsg("Formulário indisponível no momento. Tente novamente em instantes.", "err");
         return;
       }
-      const a = doc.data();
-      document.title = (a.title || "Artigo") + " — Blog MedControl";
 
-      const list = [];
-      listSnap.forEach(d => list.push({ id: d.id, ...d.data() }));
-      const idx = list.findIndex(x => x.id === id);
-      const prevA = idx >= 0 && idx < list.length - 1 ? list[idx + 1] : null;
-      const nextA = idx > 0 ? list[idx - 1] : null;
+      const nome = document.getElementById("raffleNome").value.trim();
+      const cidade = document.getElementById("raffleCidade").value.trim();
+      const estado = document.getElementById("raffleEstado").value;
+      const hospitalClinica = document.getElementById("raffleHospitalClinica").value.trim();
+      const profissao = document.getElementById("raffleProfissao").value.trim();
+      const cargo = document.getElementById("raffleCargo").value.trim();
+      const email = document.getElementById("raffleEmail").value.trim();
+      const celular = document.getElementById("raffleCelular").value.trim();
 
-      function coverOf(item) {
-        return (item.images && item.images[0]) || item.imageUrl || "";
+      if (!nome || !cidade || !estado || !hospitalClinica || !profissao || !cargo || !email || !celular) {
+        showMsg("Preencha todos os campos antes de enviar.", "err");
+        return;
       }
 
-      const images = Array.isArray(a.images) && a.images.length ? a.images : (a.imageUrl ? [a.imageUrl] : []);
+      btn.disabled = true;
+      const originalText = btn.innerHTML;
+      btn.innerHTML = "Enviando...";
 
-      let heroHtml;
-      if (!images.length) {
-        heroHtml = '<div class="media-placeholder">[imagem]</div>';
-      } else if (images.length === 1) {
-        heroHtml = '<img src="' + esc(images[0]) + '" alt="' + esc(a.title || "") + '" style="width:100%;border-radius:12px;display:block;">';
-      } else {
-        const slides = images.map(function (url) {
-          return '<div class="article-slider-slide"><img src="' + esc(url) + '" alt="' + esc(a.title || "") + '"></div>';
-        }).join("");
-        heroHtml = ''
-          + '<div class="article-slider" id="artSlider">'
-          +   '<div class="article-slider-track" id="artSliderTrack">' + slides + '</div>'
-          +   '<button type="button" class="article-slider-arrow prev" id="artSliderPrev" aria-label="Imagem anterior">‹</button>'
-          +   '<button type="button" class="article-slider-arrow next" id="artSliderNext" aria-label="Próxima imagem">›</button>'
-          +   '<span class="article-slider-counter" id="artSliderCounter">1 / ' + images.length + '</span>'
-          + '</div>';
+      try {
+        await MC.db.collection("sorteio_participantes").add({
+          nome: nome,
+          cidade: cidade,
+          estado: estado,
+          hospitalClinica: hospitalClinica,
+          profissao: profissao,
+          cargo: cargo,
+          email: email,
+          celular: celular,
+          sorteado: false,
+          source: "sorteio.html",
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        });
+        form.style.display = "none";
+        document.getElementById("raffleSuccess").style.display = "block";
+      } catch (err) {
+        showMsg("Não foi possível enviar agora. Tente novamente em instantes.", "err");
+        btn.disabled = false;
+        btn.innerHTML = originalText;
       }
-
-      function navLinkHtml(item, cssClass, directionLabel) {
-        const cover = coverOf(item);
-        const thumb = cover ? '<img src="' + esc(cover) + '" alt="">' : '';
-        return ''
-          + '<a href="artigo.html?id=' + item.id + '" class="' + cssClass + '">'
-          +   thumb
-          +   '<span class="text"><span class="direction">' + directionLabel + '</span><span class="title">' + esc(item.title) + '</span></span>'
-          + '</a>';
-      }
-
-      let navHtml = '<div class="article-nav">';
-      navHtml += prevA ? navLinkHtml(prevA, "article-nav-link", "← Anterior") : '<span></span>';
-      navHtml += nextA ? navLinkHtml(nextA, "article-nav-link next", "Próximo →") : '';
-      navHtml += '</div>';
-
-      wrap.innerHTML = ''
-        + '<a href="blog.html" class="blog-back-link">← Voltar para o blog</a>'
-        + '<div class="article-hero">' + heroHtml + '</div>'
-        + '<div class="article-body">' + paragraphs(a.content) + '</div>'
-        + navHtml;
-
-      if (images.length > 1) {
-        const track = document.getElementById("artSliderTrack");
-        const counter = document.getElementById("artSliderCounter");
-        const prevBtn = document.getElementById("artSliderPrev");
-        const nextBtn = document.getElementById("artSliderNext");
-        let current = 0;
-        function updateSlider() {
-          track.style.transform = "translateX(-" + (current * 100) + "%)";
-          counter.textContent = (current + 1) + " / " + images.length;
-        }
-        prevBtn.onclick = function () { current = current > 0 ? current - 1 : images.length - 1; updateSlider(); };
-        nextBtn.onclick = function () { current = current < images.length - 1 ? current + 1 : 0; updateSlider(); };
-      }
-
-      const bannerEyebrow = document.getElementById("artBannerEyebrow");
-      const bannerTitle = document.getElementById("artBannerTitle");
-      if (bannerEyebrow) bannerEyebrow.textContent = a.category || "Artigo";
-      if (bannerTitle) bannerTitle.textContent = a.title || "";
-    }).catch(function (err) {
-      wrap.innerHTML = '<p style="color:#6b6d6e;">Erro ao carregar o artigo: ' + esc(err.message) + '</p>';
     });
   })();
   </script>

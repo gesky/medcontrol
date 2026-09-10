@@ -122,6 +122,8 @@ def whatsapp_float(extra_scripts=""):
     <span class="whatsapp-float-text">Fale com um especialista</span>
   </a>
 
+  <!-- Rolagem suave (Lenis) — carrega antes do script.js, que a inicializa -->
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js"></script>
   <script src="script.js"></script>
 {extra_scripts}</body>
 </html>
@@ -295,9 +297,12 @@ home_body = f'''    <!-- ===================== HERO ===================== -->
             </a>
           </div>
         </div>
+        <!-- Teste: enfermeira removida do hero da home. Pra trazer de volta,
+             descomente o bloco abaixo.
         <div class="hero-media">
           <img src="imagens/hero-nurse.webp" alt="Profissional de saúde MedControl" class="hero-nurse" />
         </div>
+        -->
       </div>
     </section>
 
@@ -417,10 +422,20 @@ home_body = f'''    <!-- ===================== HERO ===================== -->
 
     <!-- ===================== VÍDEO INSTITUCIONAL ===================== -->
     <section class="video-section">
-      <div class="container section-inner">
+      <div class="container section-inner section-inner--tight-top">
         <span class="eyebrow">Conheça a MedControl</span>
         <h2>Por que hospitais que não podem errar escolhem a MedControl.</h2>
-        <div class="media-placeholder">[vídeo]</div>
+        <video
+          class="institutional-video"
+          controls
+          preload="metadata"
+          poster="imagens/fachada-medcontrol.webp"
+          playsinline
+        >
+          <source src="imagens/video_institucional_site_medcontrol.mp4" type="video/mp4" />
+          Seu navegador não suporta vídeo em HTML5.
+          <a href="imagens/video_institucional_site_medcontrol.mp4">Baixar o vídeo</a>.
+        </video>
       </div>
     </section>
 
@@ -513,7 +528,7 @@ quem_somos_body = f'''{page_banner(
 
     <!-- ===================== COMO TRABALHAMOS ===================== -->
     <section class="differentials">
-      <div class="container section-inner">
+      <div class="container section-inner section-inner--tight-top">
         <div class="differentials-head">
           <span class="eyebrow">Como trabalhamos</span>
           <h2>Parceria consultiva, não relação de fornecedor.</h2>
@@ -541,7 +556,7 @@ quem_somos_body = f'''{page_banner(
 
     <!-- ===================== DIFERENCIAIS (resumido) ===================== -->
     <section id="diferenciais">
-      <div class="container section-inner">
+      <div class="container section-inner section-inner--tight-top">
         <div class="differentials-head">
           <span class="eyebrow">Diferenciais</span>
           <h2>Por que hospitais escolhem — e permanecem com — a MedControl.</h2>
@@ -1220,6 +1235,176 @@ page = (
 write_page("contato.html", page)
 
 # =============================================================================
+# SORTEIO SOBECC — página de cadastro (campanha, não fica no menu principal)
+# =============================================================================
+
+RAFFLE_FORM_SCRIPTS = '''
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script>
+  (function () {
+    const form = document.getElementById("raffleForm");
+    const msgEl = document.getElementById("raffleFormMsg");
+    const btn = document.getElementById("raffleFormSubmit");
+    if (!form) return;
+
+    function showMsg(text, type) {
+      msgEl.textContent = text;
+      msgEl.className = "msg show " + type;
+    }
+
+    form.addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      if (!window.MC || !MC.configured || !MC.db) {
+        showMsg("Formulário indisponível no momento. Tente novamente em instantes.", "err");
+        return;
+      }
+
+      const nome = document.getElementById("raffleNome").value.trim();
+      const cidade = document.getElementById("raffleCidade").value.trim();
+      const estado = document.getElementById("raffleEstado").value;
+      const hospitalClinica = document.getElementById("raffleHospitalClinica").value.trim();
+      const profissao = document.getElementById("raffleProfissao").value.trim();
+      const cargo = document.getElementById("raffleCargo").value.trim();
+      const email = document.getElementById("raffleEmail").value.trim();
+      const celular = document.getElementById("raffleCelular").value.trim();
+
+      if (!nome || !cidade || !estado || !hospitalClinica || !profissao || !cargo || !email || !celular) {
+        showMsg("Preencha todos os campos antes de enviar.", "err");
+        return;
+      }
+
+      btn.disabled = true;
+      const originalText = btn.innerHTML;
+      btn.innerHTML = "Enviando...";
+
+      try {
+        await MC.db.collection("sorteio_participantes").add({
+          nome: nome,
+          cidade: cidade,
+          estado: estado,
+          hospitalClinica: hospitalClinica,
+          profissao: profissao,
+          cargo: cargo,
+          email: email,
+          celular: celular,
+          sorteado: false,
+          source: "sorteio.html",
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        });
+        form.style.display = "none";
+        document.getElementById("raffleSuccess").style.display = "block";
+      } catch (err) {
+        showMsg("Não foi possível enviar agora. Tente novamente em instantes.", "err");
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+      }
+    });
+  })();
+  </script>
+'''
+
+sorteio_body = f'''{page_banner(
+    "MedControl na Sobecc",
+    "Participe do nosso sorteio!",
+    "Cadastre seus dados abaixo e concorra a prêmios exclusivos da MedControl. É rapidinho!",
+    "Sorteio",
+)}
+    <section>
+      <div class="container section-inner">
+        <div class="contact-form-container" style="max-width:34rem; margin:0 auto;">
+          <span class="form-eyebrow">Cadastro para o sorteio</span>
+
+          <form id="raffleForm">
+            <div class="form-group">
+              <label for="raffleNome">Nome</label>
+              <input type="text" id="raffleNome" placeholder="Seu nome completo">
+            </div>
+
+            <div class="grid2">
+              <div class="form-group">
+                <label for="raffleCidade">Cidade</label>
+                <input type="text" id="raffleCidade" placeholder="Sua cidade">
+              </div>
+              <div class="form-group">
+                <label for="raffleEstado">Estado</label>
+                <select id="raffleEstado">
+                  <option value="" disabled selected>UF</option>
+                  <option value="AC">AC</option><option value="AL">AL</option><option value="AP">AP</option>
+                  <option value="AM">AM</option><option value="BA">BA</option><option value="CE">CE</option>
+                  <option value="DF">DF</option><option value="ES">ES</option><option value="GO">GO</option>
+                  <option value="MA">MA</option><option value="MT">MT</option><option value="MS">MS</option>
+                  <option value="MG">MG</option><option value="PA">PA</option><option value="PB">PB</option>
+                  <option value="PR">PR</option><option value="PE">PE</option><option value="PI">PI</option>
+                  <option value="RJ">RJ</option><option value="RN">RN</option><option value="RS">RS</option>
+                  <option value="RO">RO</option><option value="RR">RR</option><option value="SC">SC</option>
+                  <option value="SP">SP</option><option value="SE">SE</option><option value="TO">TO</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="raffleHospitalClinica">Hospital / Clínica</label>
+              <input type="text" id="raffleHospitalClinica" placeholder="Onde você trabalha">
+            </div>
+
+            <div class="grid2">
+              <div class="form-group">
+                <label for="raffleProfissao">Profissão</label>
+                <input type="text" id="raffleProfissao" placeholder="Ex: Enfermeiro(a)">
+              </div>
+              <div class="form-group">
+                <label for="raffleCargo">Cargo</label>
+                <input type="text" id="raffleCargo" placeholder="Ex: Coordenador(a) de CME">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="raffleEmail">E-mail</label>
+              <input type="email" id="raffleEmail" placeholder="voce@email.com">
+            </div>
+
+            <div class="form-group">
+              <label for="raffleCelular">Celular</label>
+              <input type="tel" id="raffleCelular" placeholder="(14) 99999-0000">
+            </div>
+
+            <div id="raffleFormMsg" class="msg"></div>
+
+            <button type="submit" id="raffleFormSubmit" class="btn btn-accent-lg" style="width: 100%; justify-content: center; border: none; cursor: pointer;">
+              Confirmar cadastro <span aria-hidden="true">→</span>
+            </button>
+          </form>
+
+          <div id="raffleSuccess" style="display:none; text-align:center; padding: 1.5rem 0;">
+            <div style="font-size:2.5rem; margin-bottom:1rem;">🎉</div>
+            <h2 style="font-size:1.25rem; margin-bottom:0.75rem;">Cadastro confirmado!</h2>
+            <p style="color:#55585a; font-size:0.9375rem; line-height:1.6;">
+              Boa sorte! Fique de olho — os ganhadores serão anunciados pela equipe MedControl no estande.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+'''
+
+page = (
+    head(
+        "Sorteio MedControl na Sobecc — Cadastre-se e Participe",
+        "Cadastre-se no sorteio da MedControl durante a Sobecc e concorra a prêmios exclusivos.",
+    )
+    + header(active=None)
+    + sorteio_body
+    + footer()
+    + whatsapp_float(RAFFLE_FORM_SCRIPTS)
+)
+write_page("sorteio.html", page)
+
+# =============================================================================
 # TERMOS DE USO
 # =============================================================================
 
@@ -1783,14 +1968,14 @@ BLOG_LIST_SCRIPTS = '''
             ? '<img src="' + esc(cover) + '" alt="' + esc(a.title || "") + '" class="blog-card-img">'
             : '<div class="media-placeholder">[imagem]</div>';
           html += ''
-            + '<article class="blog-card">'
+            + '<a class="blog-card" href="artigo.html?id=' + doc.id + '">'
             +   img
             +   '<div class="blog-card-body">'
             +     '<h3>' + esc(a.title || "(sem título)") + '</h3>'
             +     '<p>' + esc(a.excerpt || "") + '</p>'
-            +     '<a href="artigo.html?id=' + doc.id + '" class="blog-card-cta">Ler artigo <span aria-hidden="true">→</span></a>'
+            +     '<span class="blog-card-cta">Ler artigo <span aria-hidden="true">→</span></span>'
             +   '</div>'
-            + '</article>';
+            + '</a>';
         });
         grid.innerHTML = html;
       })
