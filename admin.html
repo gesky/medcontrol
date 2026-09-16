@@ -88,6 +88,13 @@
   .badge-status.publicado { background: #e4f5ea; color: #1a7f47; }
   .badge-status.rascunho { background: #f0f0f0; color: #6b6d6e; }
   .badge-status.arquivado { background: #fdecec; color: var(--accent); }
+  .badge-status.contatado { background: #e6f0fb; color: var(--blue); }
+  .badge-status.retirado { background: #fdf3d7; color: #9a7b06; }
+
+  .raffle-status-select { font-weight: 700; text-transform: uppercase; letter-spacing: .05em; border-radius: 999px; padding: .25rem .65rem; font-size: 10px; border: 1px solid transparent; }
+  .raffle-status-select.sorteado { background: #e4f5ea; color: #1a7f47; }
+  .raffle-status-select.contatado { background: #e6f0fb; color: var(--blue); }
+  .raffle-status-select.retirado { background: #fdf3d7; color: #9a7b06; }
 
   /* Modal */
   .overlay { position: fixed; inset: 0; background: rgba(20,24,28,.5); display: none; align-items: flex-start; justify-content: center; z-index: 60; padding: 2rem 1rem; overflow-y: auto; }
@@ -165,6 +172,11 @@
   .raffle-winner-item .name { font-weight: 700; color: var(--text); font-size: .9375rem; }
   .raffle-winner-item .contact { font-size: .75rem; color: #55585a; }
   .raffle-count-info { font-size: .8125rem; color: #6b6d6e; margin-bottom: 1rem; }
+  .raffle-status-select { border-radius: 999px; padding: .3rem .6rem; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; border: 1px solid; cursor: pointer; font-family: var(--font-sans); outline: none; }
+  .raffle-status-select.status-participante { background: #f0f0f0; color: #6b6d6e; border-color: #e3e4e5; }
+  .raffle-status-select.status-sorteado { background: #e4f5ea; color: #1a7f47; border-color: #bfe6cd; }
+  .raffle-status-select.status-contatado { background: #eef3fa; color: var(--blue); border-color: #cfe0f5; }
+  .raffle-status-select.status-retirado { background: #fff6d9; color: #8a6d00; border-color: #f0dfa0; }
 
   /* ==========================================================================
      Otimização mobile — abas roláveis, tabelas com scroll, modal em tela cheia
@@ -826,10 +838,31 @@
       : "";
     if (!raffleCache.length) { rows.innerHTML = `<tr><td class="empty-row" colspan="8">Nenhum cadastro ainda.</td></tr>`; return; }
     rows.innerHTML = "";
-    raffleCache.forEach(p => {
+    // Ganhadores sempre no topo da lista (mais recém-sorteado primeiro),
+    // depois o restante dos participantes na ordem de cadastro — assim,
+    // numa lista grande, dá pra achar quem ganhou sem precisar rolar tudo.
+    const sorted = [...raffleCache].sort((a, b) => {
+      if (a.sorteado && !b.sorteado) return -1;
+      if (!a.sorteado && b.sorteado) return 1;
+      if (a.sorteado && b.sorteado) {
+        const aTime = a.dataSorteio ? a.dataSorteio.seconds : 0;
+        const bTime = b.dataSorteio ? b.dataSorteio.seconds : 0;
+        return bTime - aTime;
+      }
+      return 0; // mantém a ordem original (createdAt desc) entre não-ganhadores
+    });
+    sorted.forEach(p => {
       const dateStr = p.createdAt ? new Date(p.createdAt.seconds*1000).toLocaleDateString('pt-BR') : "—";
       const tr = document.createElement("tr");
       if (p.sorteado) tr.style.background = "#eef3fa";
+      const currentStatus = p.statusSorteio || "sorteado";
+      const statusCell = p.sorteado
+        ? `<select class="status-select raffle-status-select ${currentStatus}" data-id="${p.id}">
+             <option value="sorteado" ${currentStatus === "sorteado" ? "selected" : ""}>🏆 Sorteado</option>
+             <option value="contatado" ${currentStatus === "contatado" ? "selected" : ""}>Contatado</option>
+             <option value="retirado" ${currentStatus === "retirado" ? "selected" : ""}>Prêmio retirado</option>
+           </select>`
+        : '<span class="badge-status rascunho">Participante</span>';
       tr.innerHTML = `
         <td><b>${esc(p.nome||"—")}</b></td>
         <td>${esc(p.cidade||"—")}${p.estado ? "/" + esc(p.estado) : ""}</td>
@@ -837,11 +870,24 @@
         <td>${esc(p.profissao||"—")}${p.cargo ? "<br><span style=\"font-size:11px;color:#9a9c9d\">" + esc(p.cargo) + "</span>" : ""}</td>
         <td>${esc(p.celular||"—")}<br><span style="font-size:11px;color:#9a9c9d">${esc(p.email||"")}</span></td>
         <td>${dateStr}</td>
-        <td>${p.sorteado ? '<span class="badge-status publicado">🏆 Ganhador</span>' : '<span class="badge-status rascunho">Participante</span>'}</td>
+        <td>${statusCell}</td>
         <td><div class="act"><button class="icon-btn danger del-raffle" data-id="${p.id}">Excluir</button></div></td>`;
       rows.appendChild(tr);
     });
     rows.querySelectorAll(".del-raffle").forEach(b => b.onclick = () => delDoc("sorteio_participantes", b.dataset.id, "cadastro", loadRaffle));
+    rows.querySelectorAll(".raffle-status-select").forEach(sel => {
+      sel.onchange = async () => {
+        const id = sel.dataset.id;
+        const newStatus = sel.value;
+        sel.className = "status-select raffle-status-select " + newStatus;
+        try {
+          await db.collection("sorteio_participantes").doc(id).update({ statusSorteio: newStatus });
+          const item = raffleCache.find(x => x.id === id);
+          if (item) item.statusSorteio = newStatus;
+          renderRaffleWinners();
+        } catch(e) { alert("Erro ao atualizar status: " + e.message); }
+      };
+    });
   }
 
   function renderRaffleWinners(){
@@ -849,15 +895,20 @@
     const winners = raffleCache.filter(p => p.sorteado);
     if (!winners.length) { wrap.style.display = "none"; wrap.innerHTML = ""; return; }
     wrap.style.display = "flex";
+    const statusLabels = { sorteado: "🏆 Sorteado", contatado: "Contatado", retirado: "Prêmio retirado" };
     wrap.innerHTML = '<div class="raffle-winners-title">🏆 Ganhadores sorteados</div>'
-      + winners.map(w => `
+      + winners.map(w => {
+        const st = w.statusSorteio || "sorteado";
+        return `
         <div class="raffle-winner-item">
           <span class="trophy">🎉</span>
-          <div>
+          <div style="flex:1">
             <div class="name">${esc(w.nome)}</div>
             <div class="contact">${esc(w.celular||w.email||"")}${w.hospitalClinica ? " · " + esc(w.hospitalClinica) : ""}${w.cidade ? " · " + esc(w.cidade) + (w.estado ? "/" + esc(w.estado) : "") : ""}</div>
           </div>
-        </div>`).join("");
+          <span class="badge-status ${st}">${statusLabels[st]}</span>
+        </div>`;
+      }).join("");
   }
 
   async function drawWinners(){
@@ -879,7 +930,7 @@
     try {
       const batch = db.batch();
       chosen.forEach(w => {
-        batch.update(db.collection("sorteio_participantes").doc(w.id), { sorteado: true, dataSorteio: ts() });
+        batch.update(db.collection("sorteio_participantes").doc(w.id), { sorteado: true, statusSorteio: "sorteado", dataSorteio: ts() });
       });
       await batch.commit();
       await loadRaffle();
@@ -893,7 +944,7 @@
     if (!confirm('Isso remove a marcação de "ganhador" de todos os participantes, permitindo sortear do zero entre todo mundo de novo. Continuar?')) return;
     try {
       const batch = db.batch();
-      winners.forEach(p => batch.update(db.collection("sorteio_participantes").doc(p.id), { sorteado: false, dataSorteio: null }));
+      winners.forEach(p => batch.update(db.collection("sorteio_participantes").doc(p.id), { sorteado: false, statusSorteio: firebase.firestore.FieldValue.delete(), dataSorteio: null }));
       await batch.commit();
       await loadRaffle();
     } catch(e) { alert("Erro ao zerar: " + e.message); }
@@ -905,7 +956,8 @@
     raffleCache.forEach(p => {
       const d = p.createdAt ? new Date(p.createdAt.seconds*1000) : null;
       const dateStr = d ? d.toLocaleDateString('pt-BR') : "";
-      const status = p.sorteado ? "Ganhador" : "Participante";
+      const statusLabels = { sorteado: "Sorteado", contatado: "Contatado", retirado: "Prêmio retirado" };
+      const status = p.sorteado ? (statusLabels[p.statusSorteio] || "Sorteado") : "Participante";
       const clean = (v) => (v || "").replace(/"/g, '""');
       csv += `"${clean(p.nome)}","${clean(p.cidade)}","${clean(p.estado)}","${clean(p.hospitalClinica)}","${clean(p.profissao)}","${clean(p.cargo)}","${clean(p.email)}","${clean(p.celular)}","${dateStr}","${status}"\n`;
     });
