@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Sorteio MedControl na Sobecc — Cadastre-se e Participe</title>
-  <meta name="description" content="Cadastre-se no sorteio da MedControl durante a Sobecc e concorra a prêmios exclusivos." />
+  <title>Sorteio MedControl: Cadastre-se e Participe</title>
+  <meta name="description" content="Cadastre-se no sorteio da MedControl e concorra a prêmios exclusivos." />
   <meta name="author" content="MedControl" />
 
-  <meta property="og:title" content="Sorteio MedControl na Sobecc — Cadastre-se e Participe" />
-  <meta property="og:description" content="Cadastre-se no sorteio da MedControl durante a Sobecc e concorra a prêmios exclusivos." />
+  <meta property="og:title" content="Sorteio MedControl: Cadastre-se e Participe" />
+  <meta property="og:description" content="Cadastre-se no sorteio da MedControl e concorra a prêmios exclusivos." />
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="pt_BR" />
   <meta name="twitter:card" content="summary_large_image" />
@@ -65,7 +65,7 @@
           <span aria-hidden="true">/</span>
           <span>Sorteio</span>
         </div>
-        <span class="eyebrow">MedControl na Sobecc</span>
+        <span class="eyebrow">Sorteio MedControl</span>
         <h1>Participe do nosso sorteio!</h1>
         <p class="lead">Cadastre seus dados abaixo e concorra a prêmios exclusivos da MedControl. É rapidinho!</p>
       </div>
@@ -130,6 +130,27 @@
               <input type="tel" id="raffleCelular" placeholder="(14) 99999-0000">
             </div>
 
+            <div class="raffle-follow">
+              <div class="raffle-follow-text">
+                <strong>Já está seguindo a gente?</strong>
+                <span>Siga a MedControl no Instagram para participar do sorteio.</span>
+              </div>
+              <a href="https://www.instagram.com/medcontrol.bauru/" target="_blank" rel="noopener noreferrer" class="raffle-follow-btn">Seguir @medcontrol.bauru</a>
+              <div class="form-check">
+                <input type="checkbox" id="raffleFollow">
+                <label for="raffleFollow">Sim, já sigo a MedControl no Instagram.</label>
+              </div>
+            </div>
+
+            <div class="form-check">
+              <input type="checkbox" id="raffleConsent">
+              <label for="raffleConsent">Li e concordo com a <a href="politica-de-privacidade.html" target="_blank" rel="noopener">Política de Privacidade</a>. Autorizo a MedControl a tratar os meus dados e a compartilhá-los com organizadores e parceiros do sorteio, apenas para a realização do sorteio e para entrar em contato comigo sobre produtos e novidades.</label>
+            </div>
+
+            <p class="raffle-lgpd">
+              Seus dados são protegidos pela Lei Geral de Proteção de Dados (LGPD, Lei 13.709/2018). Usamos as informações somente para as finalidades acima e você pode pedir acesso, correção ou exclusão a qualquer momento pelo contato informado na nossa Política de Privacidade.
+            </p>
+
             <div id="raffleFormMsg" class="msg"></div>
 
             <button type="submit" id="raffleFormSubmit" class="btn btn-accent-lg" style="width: 100%; justify-content: center; border: none; cursor: pointer;">
@@ -141,8 +162,13 @@
             <div style="font-size:2.5rem; margin-bottom:1rem;">🎉</div>
             <h2 style="font-size:1.25rem; margin-bottom:0.75rem;">Cadastro confirmado!</h2>
             <p style="color:#55585a; font-size:0.9375rem; line-height:1.6;">
-              Boa sorte! Fique de olho — os ganhadores serão anunciados pela equipe MedControl no estande.
+              Boa sorte! Fique de olho: os ganhadores serão avisados pela equipe MedControl. Seus dados estão protegidos pela LGPD.
             </p>
+            <div class="raffle-photo">
+              <strong>Tire uma foto com a gente!</strong>
+              <span>Registre o momento com a gente e marque a MedControl nas suas redes sociais. Vamos adorar compartilhar.</span>
+              <a href="https://www.instagram.com/medcontrol.bauru/" target="_blank" rel="noopener noreferrer" class="raffle-follow-btn">Marcar @medcontrol.bauru</a>
+            </div>
           </div>
         </div>
       </div>
@@ -250,9 +276,21 @@
       const cargo = document.getElementById("raffleCargo").value.trim();
       const email = document.getElementById("raffleEmail").value.trim();
       const celular = document.getElementById("raffleCelular").value.trim();
+      const consentimento = document.getElementById("raffleConsent").checked;
+      const segueInstagram = document.getElementById("raffleFollow").checked;
 
       if (!nome || !cidade || !estado || !hospitalClinica || !profissao || !cargo || !email || !celular) {
         showMsg("Preencha todos os campos antes de enviar.", "err");
+        return;
+      }
+
+      if (!segueInstagram) {
+        showMsg("Siga a MedControl no Instagram e marque a opção para participar do sorteio.", "err");
+        return;
+      }
+
+      if (!consentimento) {
+        showMsg("Para concluir o cadastro, é preciso aceitar a Política de Privacidade e o tratamento dos dados.", "err");
         return;
       }
 
@@ -270,6 +308,10 @@
           cargo: cargo,
           email: email,
           celular: celular,
+          aceitaContato: consentimento,
+          segueInstagram: segueInstagram,
+          consentimentoLGPD: consentimento,
+          consentimentoLGPDEm: new Date().toISOString(),
           sorteado: false,
           source: "sorteio.html",
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),

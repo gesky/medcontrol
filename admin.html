@@ -269,7 +269,7 @@
 
   <div class="admin-shell">
     <div class="tabs">
-      <button class="tab active" data-tab="raffle">Sorteio Sobecc</button>
+      <button class="tab active" data-tab="raffle">Sorteio</button>
       <button class="tab" data-tab="articles">Artigos</button>
       <!-- Cadastro de Catálogo desativado temporariamente (não visível pro cliente).
            Código mantido comentado, não excluído — para reativar, é só descomentar
@@ -281,11 +281,11 @@
       <button class="tab admin-only" data-tab="users">Usuários & Permissões</button>
     </div>
 
-    <!-- ===================== PAINEL SORTEIO SOBECC ===================== -->
+    <!-- ===================== PAINEL SORTEIO ===================== -->
     <div class="panel active" id="panel-raffle">
       <div class="row-head">
         <div>
-          <h2>Sorteio — Sobecc</h2>
+          <h2>Sorteio</h2>
           <p class="sub">Cadastros recebidos pelo formulário do estande. Sorteie os ganhadores quando quiser.</p>
         </div>
         <button class="icon-btn" id="exportRaffleBtn">↓ Exportar CSV</button>
@@ -815,7 +815,7 @@
   }
 
   /* ============================================================
-     SORTEIO SOBECC
+     SORTEIO
      ============================================================ */
   async function loadRaffle(){
     const rows = $("raffleRows");
@@ -964,7 +964,7 @@
     const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
-    link.href = url; link.download = `MedControl_Sorteio_Sobecc_${new Date().toISOString().slice(0,10)}.csv`;
+    link.href = url; link.download = `MedControl_Sorteio_${new Date().toISOString().slice(0,10)}.csv`;
     link.style.visibility = "hidden"; document.body.appendChild(link); link.click(); document.body.removeChild(link);
   }
 
