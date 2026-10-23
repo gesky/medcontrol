@@ -1,38 +1,67 @@
-// Cron Web Studio · Configuração do Firebase
-// Cole aqui as chaves do app web (Console do Firebase > Configurações do projeto > Seus apps).
-// Usado pela landing (projetos + leads) e pelo admin.html.
+/* ==========================================================================
+   MedControl — Configuração do Firebase (painel administrativo)
+   ==========================================================================
+   1. Crie um projeto em https://console.firebase.google.com
+   2. Ative: Authentication → método "E-mail/senha"
+              Firestore Database → modo produção
+              Storage (opcional — veja IMAGE_MODE abaixo)
+   3. Em "Configurações do projeto → Geral → Seus apps", crie um app Web e
+      cole as chaves abaixo, substituindo os valores de exemplo.
+   4. Crie o primeiro usuário admin manualmente:
+      a) Authentication → Adicionar usuário (e-mail + senha)
+      b) Firestore → coleção "users" → documento com ID = UID desse usuário
+         → campos: { name: "Seu nome", email: "seu@email.com", role: "admin" }
+      Depois disso, você consegue criar os próximos usuários direto pelo painel.
+   ========================================================================== */
 
-window.CRON = (function () {
-  var config = {
-    apiKey: "AIzaSyCSC_zDbZt1ga1GAu3-ldz8CDlEpXhOq9I",
-    authDomain: "cron-91280.firebaseapp.com",
-    projectId: "cron-91280",
-    storageBucket: "cron-91280.firebasestorage.app",
-    messagingSenderId: "421142538286",
-    appId: "1:421142538286:web:358161b84cfce251c497bf"
+(function () {
+  const firebaseConfig = {
+    apiKey: "AIzaSyALDTptO2u9JHDOuS42PO2OfN3WPvBGvks",
+    authDomain: "medcontrol-e07c2.firebaseapp.com",
+    projectId: "medcontrol-e07c2",
+    storageBucket: "medcontrol-e07c2.firebasestorage.app",
+    messagingSenderId: "707582669538",
+    appId: "1:707582669538:web:88d4d121041d174d51a4bb",
   };
 
-  var configured = !!config.apiKey && config.apiKey.indexOf("COLE") !== 0;
-  var app = null, db = null, auth = null;
+  // Enquanto as chaves acima não forem preenchidas, o painel mostra a tela
+  // de configuração em vez de tentar conectar com credenciais inválidas.
+  const isConfigured = firebaseConfig.apiKey !== "COLE_AQUI_SUA_API_KEY";
 
-  if (configured && window.firebase) {
-    try {
-      app = firebase.apps.length ? firebase.app() : firebase.initializeApp(config);
-      db = firebase.firestore();
-      if (firebase.auth) auth = firebase.auth();
-    } catch (e) {
-      console.warn("[Cron] Falha ao iniciar o Firebase:", e);
-      configured = false;
-    }
+  if (isConfigured) {
+    firebase.initializeApp(firebaseConfig);
   }
 
-  return {
-    configured: configured,
-    config: config,
-    app: app,
-    db: db,
-    auth: auth,
-    MIN_PROJECTS: 1,
-    MAX_PROJECTS: 4
+  // Nem toda página carrega todos os SDKs do Firebase — páginas públicas
+  // (blog.html, artigo.html, contato.html) só carregam app + firestore,
+  // sem auth nem storage. Por isso cada recurso só é inicializado se o
+  // SDK correspondente estiver de fato presente na página.
+  function safeAuth() {
+    if (!isConfigured || typeof firebase.auth !== "function") return null;
+    try { return firebase.auth(); } catch (e) { return null; }
+  }
+  function safeFirestore() {
+    if (!isConfigured || typeof firebase.firestore !== "function") return null;
+    try { return firebase.firestore(); } catch (e) { return null; }
+  }
+  function safeStorage() {
+    if (!isConfigured || typeof firebase.storage !== "function") return null;
+    try { return firebase.storage(); } catch (e) { return null; }
+  }
+
+  window.MC = {
+    configured: isConfigured,
+    config: firebaseConfig,
+    auth: safeAuth(),
+    db: safeFirestore(),
+    // Storage é opcional: no plano gratuito (Spark) do Firebase, o Storage
+    // exige upgrade para o plano Blaze. Enquanto isso, IMAGE_MODE "inline"
+    // guarda a capa do artigo como base64 direto no Firestore (funciona,
+    // mas com limite de tamanho por imagem). Quando fizer o upgrade pra
+    // Blaze, troque para "storage" e a capa passa a subir pro Firebase
+    // Storage normalmente.
+    storage: safeStorage(),
+    IMAGE_MODE: "inline", // "inline" ou "storage"
+    ROLES: ["admin", "editor"],
   };
 })();

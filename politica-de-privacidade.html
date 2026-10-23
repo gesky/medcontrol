@@ -1,74 +1,241 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Política de Privacidade | Cron Web Studio</title>
-  <meta name="robots" content="noindex, follow">
-  <link rel="icon" href="img/cron-icon.svg" type="image/svg+xml">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600&display=swap" rel="stylesheet">
-  <style>
-    :root { --lime:#c6ff02; --ink:#1a1a1a; --mist:#e6e6e6; }
-    * { box-sizing: border-box; }
-    ::selection { background: var(--lime); color: var(--ink); }
-    body { margin:0; font-family:"Sora",system-ui,sans-serif; color:var(--ink); background:#fff; line-height:1.7; -webkit-font-smoothing:antialiased; }
-    .wrap { max-width:760px; margin:0 auto; padding:40px 20px 96px; }
-    header { display:flex; align-items:center; justify-content:space-between; margin-bottom:64px; }
-    header img { height:32px; width:auto; }
-    header a.back { font-size:.88rem; border-bottom:1.5px solid rgba(26,26,26,.15); color:inherit; text-decoration:none; }
-    h1 { font-size:clamp(2rem,5vw,2.8rem); font-weight:600; letter-spacing:-.03em; line-height:1.1; margin:0 0 12px; }
-    .upd { color:rgba(26,26,26,.5); font-size:.85rem; margin:0 0 48px; }
-    h2 { font-size:1.15rem; font-weight:600; letter-spacing:-.01em; margin:40px 0 10px; }
-    p, li { color:rgba(26,26,26,.75); font-size:.96rem; }
-    ul { padding-left:20px; }
-    mark { background:var(--lime); padding:0 4px; }
-    a { color:var(--ink); }
-  </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Política de Privacidade — MedControl</title>
+  <meta name="description" content="Política de privacidade e proteção de dados do site institucional da MedControl." />
+  <meta name="author" content="MedControl" />
+
+  <meta property="og:title" content="Política de Privacidade — MedControl" />
+  <meta property="og:description" content="Política de privacidade e proteção de dados do site institucional da MedControl." />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="pt_BR" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="icon" href="imagens/favicon.ico" type="image/x-icon" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" />
+
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <a href="index.html"><img src="img/logo-cron.png" alt="Cron Web Studio"></a>
-      <a href="index.html" class="back">Voltar ao site</a>
-    </header>
+  <!-- ===================== HEADER / NAV ===================== -->
+  <header class="site-header">
+    <div class="container">
+      <a href="index.html" aria-label="MedControl">
+        <img src="imagens/logo.svg" alt="MedControl" class="logo-img" />
+      </a>
+      <nav class="nav-links">
+        <a href="catalogo.html">Catálogo</a>
+        <a href="linhas.html">Produtos</a>
+        <a href="sobre.html">Sobre</a>
+        <a href="blog.html">Blog</a>
+        <a href="contato.html">Contato</a>
+      </nav>
+      <a href="https://wa.me/551432087108?text=Ol%C3%A1%2C%20gostaria%20de%20falar%20com%20um%20especialista%20MedControl."
+         target="_blank" rel="noopener noreferrer" class="btn btn-accent header-whatsapp-btn">
+        Falar com Especialista
+      </a>
+      <button type="button" class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Abrir menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="mobile-menu" id="mobileMenu">
+      <nav class="mobile-menu-links">
+        <a href="catalogo.html">Catálogo</a>
+        <a href="linhas.html">Produtos</a>
+        <a href="sobre.html">Sobre</a>
+        <a href="blog.html">Blog</a>
+        <a href="contato.html">Contato</a>
+      </nav>
+      <a href="https://wa.me/551432087108?text=Ol%C3%A1%2C%20gostaria%20de%20falar%20com%20um%20especialista%20MedControl." target="_blank" rel="noopener noreferrer" class="btn btn-accent mobile-menu-whatsapp">
+        Falar no WhatsApp
+      </a>
+    </div>
+  </header>
 
-    <h1>Política de Privacidade</h1>
-    <p class="upd">Última atualização: outubro de 2026</p>
+  <main>
+    <!-- ===================== BANNER DA PÁGINA ===================== -->
+    <section class="page-banner">
+      <div class="container">
+        <div class="breadcrumb">
+          <a href="index.html">Início</a>
+          <span aria-hidden="true">/</span>
+          <span>Política de Privacidade</span>
+        </div>
+        <span class="eyebrow">Institucional</span>
+        <h1>Política de Privacidade</h1>
+        <p class="lead">Como a MedControl coleta, usa e protege as informações fornecidas por você.</p>
+      </div>
+    </section>
 
-    <p>Esta política explica como a Cron Web Studio trata os dados pessoais enviados pelo formulário de contato deste site, em conformidade com a Lei Geral de Proteção de Dados (Lei nº 13.709/2018, LGPD).</p>
+    <section>
+      <div class="container section-inner">
+        <div class="legal-body">
+          <p class="legal-updated">Última atualização: agosto de 2026</p>
 
-    <h2>1. Quem é o controlador</h2>
-    <p>Cron Web Studio. Contato para assuntos de privacidade: <a href="mailto:contato@cronwebstudio.com.br">contato@cronwebstudio.com.br</a>.</p>
+          <h2>1. Introdução</h2>
+          <p>
+            A MedControl valoriza a privacidade de quem visita e interage com este site. Esta
+            Política de Privacidade explica quais informações coletamos, como as utilizamos e
+            quais são os seus direitos, em conformidade com a Lei Geral de Proteção de Dados
+            (LGPD — Lei nº 13.709/2018).
+          </p>
 
-    <h2>2. Quais dados coletamos</h2>
-    <ul>
-      <li>Dados que você informa: nome, WhatsApp, e-mail (opcional), empresa (opcional), tipo de projeto e mensagem.</li>
-      <li>Dados de contexto do envio: qual botão do site você clicou, a página de origem e, quando existirem, os parâmetros de campanha (UTM) do link que trouxe você até aqui.</li>
-      <li>Registro do seu consentimento, com data e hora.</li>
-    </ul>
+          <h2>2. Quais informações coletamos</h2>
+          <p>
+            Coletamos as informações que você nos fornece voluntariamente, principalmente
+            através do formulário de contato deste site, como:
+          </p>
+          <ul>
+            <li>Nome completo</li>
+            <li>E-mail</li>
+            <li>Telefone / WhatsApp</li>
+            <li>Assunto de interesse e mensagem enviada</li>
+          </ul>
+          <p>
+            Também podemos coletar dados de navegação básicos (como páginas visitadas), quando
+            aplicável, para fins de melhoria do site.
+          </p>
 
-    <h2>3. Para que usamos</h2>
-    <p>Exclusivamente para entrar em contato com você sobre o projeto que motivou o envio: entender sua necessidade, apresentar proposta e dar continuidade à conversa. Não vendemos, alugamos ou cedemos seus dados para terceiros fazerem marketing.</p>
+          <h2>3. Como usamos suas informações</h2>
+          <p>
+            As informações coletadas são utilizadas exclusivamente para:
+          </p>
+          <ul>
+            <li>Responder às suas solicitações de contato e orçamento</li>
+            <li>Fornecer atendimento comercial e suporte técnico</li>
+            <li>Enviar informações sobre produtos e serviços, quando solicitado</li>
+          </ul>
+          <p>
+            Não vendemos, alugamos ou compartilhamos suas informações pessoais com terceiros
+            para fins de marketing sem o seu consentimento.
+          </p>
 
-    <h2>4. Base legal</h2>
-    <p>O tratamento é feito com base no seu consentimento (art. 7º, I, da LGPD), registrado no momento do envio do formulário.</p>
+          <h2>4. Armazenamento e segurança</h2>
+          <p>
+            As informações enviadas pelo formulário de contato são armazenadas em ambiente
+            seguro, com acesso restrito à nossa equipe autorizada. Adotamos medidas técnicas
+            razoáveis para proteger seus dados contra acesso não autorizado, perda ou alteração.
+          </p>
 
-    <h2>5. Onde os dados ficam</h2>
-    <p>Os dados são armazenados no Google Firebase (Cloud Firestore), serviço que atua como operador e pode manter servidores fora do Brasil, com as garantias previstas pela LGPD para transferência internacional. O acesso é restrito à Cron Web Studio.</p>
+          <h2>5. Compartilhamento de dados</h2>
+          <p>
+            Suas informações podem ser compartilhadas com prestadores de serviço que auxiliam
+            na operação deste site (como provedores de hospedagem e infraestrutura), sempre
+            sob obrigação de confidencialidade, ou quando exigido por lei.
+          </p>
 
-    <h2>6. Por quanto tempo</h2>
-    <p>Mantemos os dados enquanto houver relação comercial ou interesse no projeto e, depois disso, por até 24 meses. Você pode pedir a exclusão antes disso a qualquer momento.</p>
+          <h2>6. Seus direitos</h2>
+          <p>
+            Conforme a LGPD, você tem direito a solicitar, a qualquer momento:
+          </p>
+          <ul>
+            <li>Confirmação da existência de tratamento dos seus dados</li>
+            <li>Acesso, correção ou atualização dos seus dados</li>
+            <li>Exclusão dos seus dados de nossa base, quando aplicável</li>
+            <li>Informações sobre com quem compartilhamos seus dados</li>
+          </ul>
+          <p>
+            Para exercer esses direitos, entre em contato pelo e-mail
+            <a href="mailto:contato@medcontrolbauru.com.br"> contato@medcontrolbauru.com.br</a>.
+          </p>
 
-    <h2>7. Seus direitos</h2>
-    <p>Você pode, a qualquer momento e sem custo, solicitar: confirmação de que tratamos seus dados, acesso, correção, exclusão, informação sobre compartilhamento e revogação do consentimento (art. 18 da LGPD). Basta escrever para <a href="mailto:contato@cronwebstudio.com.br">contato@cronwebstudio.com.br</a> e respondemos em até 15 dias.</p>
+          <h2>7. Cookies</h2>
+          <p>
+            Este site pode utilizar cookies e tecnologias similares para melhorar a experiência
+            de navegação. Você pode gerenciar ou desativar cookies nas configurações do seu
+            navegador a qualquer momento.
+          </p>
 
-    <h2>8. Cookies e medição</h2>
-    <p>Este site pode usar ferramentas de medição de audiência e de anúncios (como Google Analytics e Meta Pixel) para entender quais páginas e botões funcionam melhor. Quando ativadas, essas ferramentas podem usar cookies, que você pode bloquear nas configurações do seu navegador.</p>
+          <h2>8. Alterações desta política</h2>
+          <p>
+            Esta Política de Privacidade pode ser atualizada periodicamente. Recomendamos a
+            consulta periódica desta página para se manter informado sobre eventuais mudanças.
+          </p>
 
-    <h2>9. Alterações</h2>
-    <p>Esta política pode ser atualizada. A data no topo sempre indica a versão mais recente.</p>
-  </div>
+          <h2>9. Contato</h2>
+          <p>
+            Dúvidas sobre esta Política de Privacidade podem ser encaminhadas para
+            <a href="mailto:contato@medcontrolbauru.com.br"> contato@medcontrolbauru.com.br</a>
+            ou pelos demais canais disponíveis na página de <a href="contato.html">Contato</a>.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" aria-label="MedControl">
+            <img src="imagens/logo-branco.svg" alt="MedControl" class="footer-logo-img" />
+          </a>
+          <p>Há mais de 39 anos, parceira técnica de hospitais e clínicas brasileiras em esterilização, segurança e controle de infecção. Comprometimento em cada processo.</p>
+          <div class="social-icons">
+            <a href="https://www.instagram.com/medcontrol.bauru/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+            </a>
+            <a href="https://www.facebook.com/medcontrolbauru" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            </a>
+            <a href="https://www.linkedin.com/company/medcontrol/posts/?feedView=all" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+            </a>
+            <a href="https://wa.me/551432087108?text=Ol%C3%A1%2C%20gostaria%20de%20falar%20com%20um%20especialista%20MedControl."
+               target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+              <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20.52 3.48A11.86 11.86 0 0 0 12.06 0C5.5 0 .18 5.32.18 11.88c0 2.09.55 4.13 1.6 5.93L0 24l6.34-1.66a11.86 11.86 0 0 0 5.72 1.46h.01c6.56 0 11.88-5.32 11.88-11.88 0-3.17-1.24-6.15-3.43-8.44ZM12.07 21.5h-.01a9.55 9.55 0 0 1-4.87-1.33l-.35-.21-3.76.98 1-3.66-.23-.38a9.5 9.5 0 0 1-1.46-5.02c0-5.26 4.29-9.54 9.55-9.54 2.55 0 4.94.99 6.74 2.79a9.47 9.47 0 0 1 2.79 6.75c0 5.26-4.28 9.62-9.4 9.62Zm5.44-7.15c-.3-.15-1.77-.87-2.05-.97-.28-.1-.48-.15-.68.15-.2.3-.78.97-.96 1.17-.18.2-.35.22-.65.07-.3-.15-1.27-.47-2.42-1.5-.9-.8-1.5-1.79-1.68-2.09-.18-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.68-1.65-.93-2.26-.25-.6-.5-.52-.68-.53l-.58-.01c-.2 0-.52.07-.79.37-.27.3-1.03 1-1.03 2.45s1.06 2.85 1.21 3.05c.15.2 2.09 3.2 5.06 4.49.71.31 1.26.49 1.7.63.72.23 1.37.2 1.88.12.57-.09 1.77-.72 2.02-1.42.25-.7.25-1.29.17-1.42-.07-.13-.27-.2-.57-.35Z"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="footer-nav">
+          <h3>Navegação</h3>
+          <ul>
+            <li><a href="index.html">Início</a></li>
+            <li><a href="catalogo.html">Catálogo</a></li>
+            <li><a href="sobre.html">Sobre</a></li>
+            <li><a href="linhas.html">Produtos</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="contato.html">Contato</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-contact">
+          <h3>Contato</h3>
+          <ul>
+            <li>Rua Jacy Stevaux Vilaça, 2-66<br />Jardim Contorno — Bauru / SP<br />CEP 17047-250</li>
+            <li><a href="tel:+551432087108">(14) 3208-7108</a></li>
+            <li><a href="mailto:contato@medcontrolbauru.com.br">contato@medcontrolbauru.com.br</a></li>
+            <li>Segunda a sexta · 08h às 17h</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div id="copyright"></div>
+        <div class="footer-bottom-links">
+          <a href="politica-de-privacidade.html">Política de privacidade</a>
+          <a href="termos-de-uso.html">Termos de uso</a>
+        </div>
+      </div>
+      <p class="footer-credit">Desenvolvido por <a href="https://cronwebstudio.com.br" target="_blank" rel="noopener noreferrer">Cron Web Studio</a></p>
+    </div>
+  </footer>
+
+  <!-- ===================== WHATSAPP FLOATING BUTTON ===================== -->
+  <a href="https://wa.me/551432087108?text=Ol%C3%A1%2C%20gostaria%20de%20falar%20com%20um%20especialista%20MedControl."
+     target="_blank" rel="noopener noreferrer" aria-label="Falar no WhatsApp com a MedControl" class="whatsapp-float">
+    <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M20.52 3.48A11.86 11.86 0 0 0 12.06 0C5.5 0 .18 5.32.18 11.88c0 2.09.55 4.13 1.6 5.93L0 24l6.34-1.66a11.86 11.86 0 0 0 5.72 1.46h.01c6.56 0 11.88-5.32 11.88-11.88 0-3.17-1.24-6.15-3.43-8.44ZM12.07 21.5h-.01a9.55 9.55 0 0 1-4.87-1.33l-.35-.21-3.76.98 1-3.66-.23-.38a9.5 9.5 0 0 1-1.46-5.02c0-5.26 4.29-9.54 9.55-9.54 2.55 0 4.94.99 6.74 2.79a9.47 9.47 0 0 1 2.79 6.75c0 5.26-4.28 9.62-9.4 9.62Zm5.44-7.15c-.3-.15-1.77-.87-2.05-.97-.28-.1-.48-.15-.68.15-.2.3-.78.97-.96 1.17-.18.2-.35.22-.65.07-.3-.15-1.27-.47-2.42-1.5-.9-.8-1.5-1.79-1.68-2.09-.18-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.68-1.65-.93-2.26-.25-.6-.5-.52-.68-.53l-.58-.01c-.2 0-.52.07-.79.37-.27.3-1.03 1-1.03 2.45s1.06 2.85 1.21 3.05c.15.2 2.09 3.2 5.06 4.49.71.31 1.26.49 1.7.63.72.23 1.37.2 1.88.12.57-.09 1.77-.72 2.02-1.42.25-.7.25-1.29.17-1.42-.07-.13-.27-.2-.57-.35Z"/></svg>
+    <span class="whatsapp-float-text">Fale com um especialista</span>
+  </a>
+
+  <!-- Rolagem suave (Lenis) — carrega antes do script.js, que a inicializa -->
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
