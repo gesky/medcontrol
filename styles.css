@@ -1852,6 +1852,29 @@ h2 {
   }
 }
 
+.form-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-check input[type="checkbox"] {
+  width: 1.15rem;
+  height: 1.15rem;
+  margin-top: 0.15rem;
+  flex-shrink: 0;
+  accent-color: var(--blue);
+  cursor: pointer;
+}
+
+.form-check label {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: #55585a;
+  cursor: pointer;
+}
+
 .form-group label {
   font-size: 0.75rem;
   font-weight: 700;
@@ -2645,3 +2668,21 @@ h2 {
     transition: none;
   }
 }
+
+/* Sorteio: bloco "siga no Instagram" e aviso LGPD */
+.raffle-follow{background:var(--gray-light);border-radius:.75rem;padding:1rem 1.1rem;margin:0 0 1rem;display:flex;flex-direction:column;gap:.75rem}
+.raffle-follow-text{display:flex;flex-direction:column;gap:.15rem;font-size:.9rem;line-height:1.4;color:var(--text)}
+.raffle-follow-text strong{font-size:.95rem}
+.raffle-follow-btn{align-self:flex-start;display:inline-block;padding:.55rem 1rem;border-radius:999px;background:var(--blue);color:#fff;font-size:.8125rem;font-weight:600;text-decoration:none;transition:background .2s}
+.raffle-follow-btn:hover{background:var(--blue-dark)}
+.raffle-follow .form-check{margin:0}
+.form-check label a{color:var(--blue);text-decoration:underline}
+.raffle-lgpd{font-size:.75rem;line-height:1.55;color:#6b6e70;margin:0 0 1rem}
+
+.raffle-photo{margin-top:1.5rem;background:var(--gray-light);border-radius:.75rem;padding:1.1rem;display:flex;flex-direction:column;align-items:center;gap:.5rem;font-size:.9rem;line-height:1.5;color:var(--text)}
+.raffle-photo strong{font-size:1rem}
+.raffle-photo .raffle-follow-btn{align-self:center;margin-top:.35rem}
+
+.footer-credit{margin-top:1.25rem;font-size:.75rem;letter-spacing:.04em;color:#a9b8cd}
+.footer-credit a{color:var(--white);font-weight:600;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.35);transition:border-color .2s}
+.footer-credit a:hover{border-color:var(--white)}
